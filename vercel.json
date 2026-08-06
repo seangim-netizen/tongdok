@@ -1,48 +1,48 @@
 {
   "rewrites": [
     {
-      "source": "/jang",
-      "destination": "/01_장성주집사_성경통독일기장.html"
+      "source": "/sungjoo",
+      "destination": "/sungjoo.html"
     },
     {
-      "source": "/lee",
-      "destination": "/02_이태웅집사_성경통독일기장.html"
+      "source": "/taewoong",
+      "destination": "/taewoong.html"
     },
     {
-      "source": "/cho",
-      "destination": "/03_조성환권사_성경통독일기장.html"
+      "source": "/sunghwan",
+      "destination": "/sunghwan.html"
     },
     {
-      "source": "/choi",
-      "destination": "/04_최현경권사_성경통독일기장.html"
+      "source": "/hyunkyung",
+      "destination": "/hyunkyung.html"
     },
     {
-      "source": "/gwikim",
-      "destination": "/05_김귀현권사_성경통독일기장.html"
+      "source": "/guihyun",
+      "destination": "/guihyun.html"
     },
     {
-      "source": "/eunwoolee",
-      "destination": "/06_이은우장로_성경통독일기장.html"
+      "source": "/eunwoo",
+      "destination": "/eunwoo.html"
     },
     {
-      "source": "/soheekim",
-      "destination": "/07_김소희집사_성경통독일기장.html"
+      "source": "/sohee",
+      "destination": "/sohee.html"
     },
     {
-      "source": "/sungalee",
-      "destination": "/08_이성아집사_성경통독일기장.html"
+      "source": "/seonga",
+      "destination": "/seonga.html"
     },
     {
-      "source": "/eunjungkim",
-      "destination": "/09_김은정권사_성경통독일기장.html"
+      "source": "/eunjung",
+      "destination": "/eunjung.html"
     },
     {
-      "source": "/kimsiwoong",
-      "destination": "/10_김시웅권사_성경통독일기장.html"
+      "source": "/siwoong",
+      "destination": "/siwoong.html"
     },
     {
       "source": "/",
-      "destination": "/10_김시웅권사_성경통독일기장.html"
+      "destination": "/siwoong.html"
     }
   ]
 }
