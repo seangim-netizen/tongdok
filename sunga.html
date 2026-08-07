@@ -25,15 +25,15 @@
     }
     
     [data-theme="light"] {
-      --bg-color: #f1f5f9;
+      --bg-color: #fbf7ee; /* Warm Cream Ivory Color from attached image */
       --card-bg: #ffffff;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
+      --text-primary: #292524;
+      --text-secondary: #78716c;
       --accent-green: #059669;
       --accent-gold: #d97706;
-      --border-color: #cbd5e1;
-      --nav-bg: #ffffff;
-      --input-bg: #f8fafc;
+      --border-color: #e7e0d3;
+      --nav-bg: #f5efe2;
+      --input-bg: #fdfbf7;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -62,14 +62,13 @@
       background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; line-height: 1.4;
     }
 
-    .bible-verse-card { background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15 ease, background-color 0.2s ease; }
+    .bible-verse-card { background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15s ease, background-color 0.2s ease; }
     .bible-verse-card:active { transform: scale(0.98); background: var(--border-color); }
     .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
     
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05rem; }
-    .version-tag { font-size: 0.75rem; background: var(--border-color); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold; vertical-align: middle; }
 
-    .note-indicator { font-size: 0.8rem; color: var(--accent-gold); font-weight: bold; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+    .note-indicator { font-size: 0.85rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border-color); display: flex; align-items: center; gap: 4px; }
 
     .verse-note-input { width: 100%; margin-top: 12px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 8px; color: var(--text-primary); padding: 12px; font-size: 1.0rem; outline: none; display: none; line-height: 1.5; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
 
@@ -605,13 +604,13 @@
         var verses = bookData[c.toString()] || [];
         var chHeader = document.createElement('div');
         chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.3rem; margin-bottom: 0.8rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;';
-        chHeader.innerText = '📖 ' + item.book + ' ' + c + '장 [' + currentLabel + ']';
+        chHeader.innerText = '📖 ' + item.book + ' ' + c + '장';
         container.appendChild(chHeader);
 
         verses.forEach(function(vText, idx) {
           var vNum = (idx + 1);
           var verseKey = item.book + '_' + c + '_' + vNum;
-          var fullVerseString = '[' + currentLabel + '] ' + item.book + ' ' + c + ':' + vNum + ' - ' + vText;
+          var fullVerseString = item.book + ' ' + c + ':' + vNum + ' - ' + vText;
           var savedNote = verseNotes[verseKey] || '';
 
           var itemEl = document.createElement('div');
@@ -619,7 +618,7 @@
           
           var noteIndicatorHTML = savedNote ? '<div class="note-indicator">📝 <b>메모</b>: ' + savedNote + '</div>' : '';
 
-          itemEl.innerHTML = '<span class="version-tag">' + currentLabel + '</span><span class="verse-num">' + vNum + '</span> ' + vText + 
+          itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
             noteIndicatorHTML +
             '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절 한 줄 메모 작성..." value="' + savedNote + '">';
 
