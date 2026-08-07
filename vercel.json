@@ -29,8 +29,8 @@
       "destination": "/sohee.html"
     },
     {
-      "source": "/seonga",
-      "destination": "/seonga.html"
+      "source": "/sunga",
+      "destination": "/sunga.html"
     },
     {
       "source": "/eunjung",
@@ -39,6 +39,46 @@
     {
       "source": "/siwoong",
       "destination": "/siwoong.html"
+    },
+    {
+      "source": "/jungho",
+      "destination": "/jungho.html"
+    },
+    {
+      "source": "/yonghee",
+      "destination": "/yonghee.html"
+    },
+    {
+      "source": "/jihyun",
+      "destination": "/jihyun.html"
+    },
+    {
+      "source": "/yoonsook",
+      "destination": "/yoonsook.html"
+    },
+    {
+      "source": "/minyoung",
+      "destination": "/minyoung.html"
+    },
+    {
+      "source": "/yangsik",
+      "destination": "/yangsik.html"
+    },
+    {
+      "source": "/kyungmyun",
+      "destination": "/kyungmyun.html"
+    },
+    {
+      "source": "/junghoon",
+      "destination": "/junghoon.html"
+    },
+    {
+      "source": "/yosep",
+      "destination": "/yosep.html"
+    },
+    {
+      "source": "/jungmi",
+      "destination": "/jungmi.html"
     },
     {
       "source": "/",
