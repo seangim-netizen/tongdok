@@ -278,7 +278,7 @@
     var THEME_KEY = 'tongdok_theme_' + 'guihyun';
     var BIBLE_VER_KEY = 'tongdok_bible_ver_' + 'guihyun';
 
-    var currentBibleVersion = 'KG'; // KG: 개역개정 (Default!), KH: 개역한글
+    var currentBibleVersion = 'KG'; // KG: 개역개정, KH: 개역한글, SB: 새번역
 
     var scheduleData = [
       {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
@@ -429,17 +429,25 @@
     }
 
     window.toggleBibleVersion = function() {
-      currentBibleVersion = (currentBibleVersion === 'KG') ? 'KH' : 'KG';
+      if (currentBibleVersion === 'KG') {
+        currentBibleVersion = 'KH';
+      } else if (currentBibleVersion === 'KH') {
+        currentBibleVersion = 'SB';
+      } else {
+        currentBibleVersion = 'KG';
+      }
       localStorage.setItem(BIBLE_VER_KEY, currentBibleVersion);
       updateBibleVersionUI();
       renderBible(scheduleData[activeDay]);
-      showToast((currentBibleVersion === 'KG' ? '📖 개역개정' : '📖 개역한글') + ' 버전으로 변경되었습니다!');
+      
+      var verName = (currentBibleVersion === 'KG') ? '개역개정' : ((currentBibleVersion === 'KH') ? '개역한글' : '새번역');
+      showToast('📖 ' + verName + ' 버전으로 변경되었습니다!');
     };
 
     function updateBibleVersionUI() {
       var label = document.getElementById('bibleVersionLabel');
       var title = document.getElementById('readerTitleLabel');
-      var name = (currentBibleVersion === 'KG') ? '개역개정' : '개역한글';
+      var name = (currentBibleVersion === 'KG') ? '개역개정' : ((currentBibleVersion === 'KH') ? '개역한글' : '새번역');
 
       if (label) label.innerText = name;
       if (title) title.innerText = '📖 성경 [' + name + ']';
@@ -489,7 +497,6 @@
       updateCompleteButtonUI();
       renderSchedule();
 
-      // Ensure 100% Guaranteed Advance to Next Day!
       if (isNowDone && activeDay < scheduleData.length - 1) {
         activeDay = activeDay + 1;
         var nextItem = scheduleData[activeDay];
@@ -555,7 +562,7 @@
     function copyVerseText(text) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text);
-        showToast('📋 구절 구절이 복사되었습니다!');
+        showToast('📋 구절이 복사되었습니다!');
       } else {
         var ta = document.createElement('textarea');
         ta.value = text;
@@ -563,7 +570,7 @@
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        showToast('📋 구절 구절이 복사되었습니다!');
+        showToast('📋 구절이 복사되었습니다!');
       }
     }
 
@@ -578,7 +585,10 @@
         return;
       }
 
-      var db = (currentBibleVersion === 'KG') ? (window.BIBLE_FULL_DB_KG || {}) : (window.BIBLE_FULL_DB_KH || {});
+      var db = window.BIBLE_FULL_DB_KG || {};
+      if (currentBibleVersion === 'KH') db = window.BIBLE_FULL_DB_KH || {};
+      if (currentBibleVersion === 'SB') db = window.BIBLE_FULL_DB_SB || {};
+
       var bookData = db[item.book] || {};
 
       for (var c = item.start; c <= item.end; c++) {
