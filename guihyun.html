@@ -60,9 +60,7 @@
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
-    .backup-row { display: flex; gap: 10px; margin-top: 12px; }
-    .btn-backup { flex: 1; padding: 12px; font-size: 0.9rem; font-weight: bold; background: #334155; color: #34d399; border: 1px solid #10b981; border-radius: 8px; cursor: pointer; text-align: center; }
-    .btn-backup:hover { background: #064e3b; }
+    .sync-status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 12px; background: #064e3b; color: #34d399; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
 
     .mobile-bottom-nav {
       height: 60px; min-height: 60px; padding-bottom: env(safe-area-inset-bottom, 0px); background: #1e293b; border-top: 1px solid var(--border-color); display: flex; width: 100%; flex-shrink: 0; z-index: 1000;
@@ -165,8 +163,9 @@
 
     <!-- TAB 2: 일기쓰기 -->
     <section id="tab-editor" class="tab-page">
-      <div style="font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 16px;">
-        ✏️ 통독 일기 작성
+      <div style="font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <span>✏️ 통독 일기 작성</span>
+        <span class="sync-status-badge" id="syncStatusBadge">⚡ 실시간 서버 자동동기화 ON</span>
       </div>
       <div class="journal-box">
         <div class="journal-box-title">📖 은혜받은 말씀</div>
@@ -175,18 +174,6 @@
       <div class="journal-box">
         <div class="journal-box-title">💡 받은 교훈 및 적용</div>
         <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요." oninput="window.saveJournal()"></textarea>
-      </div>
-
-      <div class="journal-box" style="margin-top: 10px;">
-        <div class="journal-box-title">💾 내 일기 백업 / 다른 기기로 옮기기</div>
-        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px;">
-          스마트폰이나 다른 브라우저로 작성한 일기를 옮기려면 아래 백업/불러오기 버튼을 누르세요.
-        </div>
-        <div class="backup-row">
-          <button class="btn-backup" onclick="window.exportBackup()">💾 일기 백업(저장)</button>
-          <button class="btn-backup" onclick="document.getElementById('importFileInput').click()">📂 백업 불러오기</button>
-          <input type="file" id="importFileInput" style="display:none;" accept="*/*" onchange="window.importBackup(event)">
-        </div>
       </div>
     </section>
 
@@ -231,6 +218,8 @@
   <script>
   (function() {
     var STORAGE_KEY = 'tongdok_journal_data_v2_' + 'guihyun';
+    var API_CLOUD_KEY = 'guihyun';
+    var API_URL = 'https://kvdb.io/4y9n1a8Vp9k8X/' + API_CLOUD_KEY;
 
     var scheduleData = [
       {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
@@ -356,10 +345,30 @@
       if (saved) {
         try { journals = JSON.parse(saved); } catch(e) { journals = {}; }
       }
+
+      // Background Fetch Cloud Auto Sync
+      fetch(API_URL)
+        .then(function(res) { return res.json(); })
+        .then(function(cloudData) {
+          if (cloudData && typeof cloudData === 'object' && Object.keys(cloudData).length > 0) {
+            journals = cloudData;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(journals));
+            renderBible(scheduleData[activeDay] || scheduleData[1]);
+            renderSchedule();
+          }
+        })
+        .catch(function(err) {});
     }
 
     function saveJournals() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(journals));
+      
+      // Auto Push Cloud Sync Without Files
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(journals)
+      }).catch(function(e) {});
     }
 
     window.switchTab = function(tabName) {
@@ -393,39 +402,6 @@
       if (g) journals[key].grace = g.value;
       if (l) journals[key].lesson = l.value;
       saveJournals();
-    };
-
-    window.exportBackup = function() {
-      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(journals, null, 2));
-      var downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "guihyun_tongdok_backup.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      alert("🎉 일기 백업 파일이 다운로드 되었습니다! 다른 기기나 브라우저에서 '백업 불러오기'를 눌러 선택하세요.");
-    };
-
-    window.importBackup = function(event) {
-      var file = event.target.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          var text = e.target.result;
-          var importedData = JSON.parse(text);
-          if (typeof importedData === 'object' && importedData !== null) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(importedData));
-            alert("✅ 일기 데이터가 100% 성공적으로 복구되었습니다! 화면을 새로고침합니다.");
-            window.location.reload();
-          } else {
-            alert("❌ 올바른 일기 백업 형식이 아닙니다.");
-          }
-        } catch (err) {
-          alert("❌ 백업 파일을 읽는데 실패했습니다: " + err.message);
-        }
-      };
-      reader.readAsText(file, "UTF-8");
     };
 
     function updateCompleteButtonUI() {
