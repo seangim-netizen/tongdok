@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" href="app_logo.png">
   <link rel="apple-touch-icon" href="app_logo.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="박지현 집사 통독일기장">
   <title>📖 박지현 집사님의 성경통독일기장</title>
   <style>
@@ -45,12 +46,12 @@
     .app-header {
       height: 56px; min-height: 56px; padding-top: env(safe-area-inset-top, 0px); background: var(--nav-bg); padding-left: 10px; padding-right: 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-shrink: 0; z-index: 100;
     }
-    .header-logo-box { display: flex; align-items: center; gap: 8px; }
+    .header-logo-box { display: flex; align-items: center; gap: 6px; }
     .app-brand-logo { height: 32px; border-radius: 4px; object-fit: contain; }
-    .logo-title { font-size: 0.95rem; font-weight: 800; color: var(--accent-green); white-space: nowrap; }
+    .logo-title { font-size: 0.92rem; font-weight: 800; color: var(--accent-green); white-space: nowrap; }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; z-index: 100;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 5px 10px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; white-space: nowrap; z-index: 100;
     }
 
     .app-container { flex: 1 1 auto; position: relative; overflow: hidden; width: 100%; }
@@ -140,6 +141,25 @@
 
     .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     .toast-msg.show { opacity: 1; }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 20000; padding: 20px; backdrop-filter: blur(4px);
+    }
+    .modal-overlay.show { display: flex !important; }
+    .modal-card {
+      background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 16px; width: 100%; max-width: 440px; padding: 22px; color: var(--text-primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+    .modal-title { font-size: 1.15rem; font-weight: 800; color: var(--accent-green); display: flex; align-items: center; gap: 6px; }
+    .modal-close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; padding: 0 4px; }
+    
+    .guide-step-card {
+      background: var(--input-bg); border-left: 4px solid var(--accent-gold); border-radius: 8px; padding: 14px; margin-bottom: 14px; font-size: 0.92rem; line-height: 1.6;
+    }
+    .guide-step-card h4 { font-size: 1.0rem; color: var(--accent-gold); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .guide-step-card ol { padding-left: 20px; margin-top: 4px; }
+    .guide-step-card li { margin-bottom: 4px; }
   </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -216,8 +236,11 @@
       <img src="app_logo.png" alt="LoginChurch" class="app-brand-logo">
       <div class="logo-title">박지현 집사</div>
     </div>
-    <div style="display: flex; align-items: center; gap: 5px;">
-      <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold); font-size: 0.9rem; padding: 6px 14px;">
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <button class="tool-btn" id="btnShortcutGuide" style="border-color: var(--accent-green); color: var(--accent-green);">
+        📲 <span>바로가기</span>
+      </button>
+      <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
         📖 <span id="bibleVersionLabel">개역개정</span>
       </button>
       <button class="tool-btn" id="btnThemeToggle">
@@ -301,6 +324,44 @@
       <span>통독표</span>
     </button>
   </nav>
+
+  <!-- HOME SCREEN SHORTCUT MODAL GUIDE -->
+  <div class="modal-overlay" id="shortcutModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📲 홈화면 아이콘 추가 안내</div>
+        <button class="modal-close-btn" id="btnCloseModal">&times;</button>
+      </div>
+
+      <div style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5;">
+        스마트폰 바탕화면에 앱 아이콘으로 만들어 두시면 <b>매일 1초 만에 바로 통독 일기장으로 접속</b>하실 수 있습니다!
+      </div>
+
+      <!-- IPHONE SAFARI -->
+      <div class="guide-step-card">
+        <h4>📱 아이폰 (Safari 브라우저)</h4>
+        <ol>
+          <li>화면 하단 중앙의 <b>[공유 버튼 ⎋]</b>을 누릅니다.</li>
+          <li>메뉴를 아래로 올려 <b>[홈 화면에 추가 ➕]</b>를 누릅니다.</li>
+          <li>우측 상단 <b>[추가]</b> 버튼을 누르면 스마트폰 바탕화면에 앱 아이콘이 생성됩니다!</li>
+        </ol>
+      </div>
+
+      <!-- GALAXY / ANDROID -->
+      <div class="guide-step-card" style="border-left-color: var(--accent-green);">
+        <h4 style="color: var(--accent-green);">📱 갤럭시 (삼성인터넷 / 크롬)</h4>
+        <ol>
+          <li><b>[삼성인터넷]</b>: 하단 우측 메뉴 <b>[☰]</b> ➔ <b>[현재 페이지 추가]</b> ➔ <b>[홈 화면]</b> 터치</li>
+          <li><b>[크롬(Chrome)]</b>: 우측 상단 <b>[⋮]</b> ➔ <b>[홈 화면에 추가]</b> 터치</li>
+          <li>바탕화면에 로그인처치 브랜드 앱 아이콘이 완성됩니다!</li>
+        </ol>
+      </div>
+
+      <button id="btnModalOk" style="width: 100%; padding: 14px; background: var(--accent-green); color: #fff; border: none; border-radius: 10px; font-size: 1.0rem; font-weight: bold; cursor: pointer; margin-top: 6px;">
+        확인했습니다 👍
+      </button>
+    </div>
+  </div>
 
   <div class="toast-msg" id="toastMsg">📋 말씀 구절이 복사되었습니다!</div>
 
@@ -668,6 +729,16 @@
       }
     }
 
+    function openShortcutModal() {
+      var m = document.getElementById('shortcutModal');
+      if (m) m.classList.add('show');
+    }
+
+    function closeShortcutModal() {
+      var m = document.getElementById('shortcutModal');
+      if (m) m.classList.remove('show');
+    }
+
     function renderBible(item) {
       var container = document.getElementById('bibleTextContainer');
       if (!container) return;
@@ -763,7 +834,6 @@
           itemEl.addEventListener('mouseleave', cancelPress);
           itemEl.addEventListener('touchmove', cancelPress);
 
-          // Bind Copy Note Button
           var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
           if (btnCopy) {
             btnCopy.addEventListener('click', function(ev) {
@@ -771,7 +841,6 @@
             });
           }
 
-          // Bind Save Button
           var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
           if (btnSave) {
             btnSave.addEventListener('click', function(ev) {
@@ -779,7 +848,6 @@
             });
           }
 
-          // Bind Cancel Button
           var btnCancel = itemEl.querySelector('#btncancel_' + verseKey);
           if (btnCancel) {
             btnCancel.addEventListener('click', function(ev) {
@@ -840,6 +908,15 @@
         container.appendChild(card);
       });
     }
+
+    var bShortcut = document.getElementById('btnShortcutGuide');
+    if (bShortcut) bShortcut.addEventListener('click', openShortcutModal);
+
+    var bCloseModal = document.getElementById('btnCloseModal');
+    if (bCloseModal) bCloseModal.addEventListener('click', closeShortcutModal);
+
+    var bModalOk = document.getElementById('btnModalOk');
+    if (bModalOk) bModalOk.addEventListener('click', closeShortcutModal);
 
     var b1 = document.getElementById('btnBibleVerToggle');
     if (b1) b1.addEventListener('click', switchBibleVersion);
