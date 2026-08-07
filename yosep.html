@@ -25,15 +25,15 @@
     }
     
     [data-theme="light"] {
-      --bg-color: #fbf7ee; /* Warm Cream Ivory Color from attached image */
-      --card-bg: #ffffff;
+      --bg-color: #fbf7ee; /* Warm Ivory Base */
+      --card-bg: #f4eee1; /* Matched Warm Cream Card - Soft & Natural, NOT PURE WHITE */
       --text-primary: #292524;
       --text-secondary: #78716c;
       --accent-green: #059669;
       --accent-gold: #d97706;
-      --border-color: #e7e0d3;
-      --nav-bg: #f5efe2;
-      --input-bg: #fdfbf7;
+      --border-color: #e5dccb;
+      --nav-bg: #efe7d7;
+      --input-bg: #e8dfcd;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -286,7 +286,7 @@
     var THEME_KEY = 'tongdok_theme_' + 'yosep';
     var BIBLE_VER_KEY = 'tongdok_bible_ver_' + 'yosep';
 
-    var currentBibleVersion = 'KG'; // KG: 개역개정, KH: 개역한글, SB: 새번역
+    var currentBibleVersion = 'KG'; // KG: 개역개정, KH: 개역한글
 
     var scheduleData = [
       {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
@@ -439,8 +439,6 @@
     function switchBibleVersion() {
       if (currentBibleVersion === 'KG') {
         currentBibleVersion = 'KH';
-      } else if (currentBibleVersion === 'KH') {
-        currentBibleVersion = 'SB';
       } else {
         currentBibleVersion = 'KG';
       }
@@ -448,14 +446,14 @@
       updateBibleVersionUI();
       renderBible(scheduleData[activeDay]);
       
-      var verName = (currentBibleVersion === 'KG') ? '개역개정' : ((currentBibleVersion === 'KH') ? '개역한글' : '새번역');
+      var verName = (currentBibleVersion === 'KG') ? '개역개정' : '개역한글';
       showToast('📖 ' + verName + ' 버전으로 전환되었습니다!');
     }
 
     function updateBibleVersionUI() {
       var label = document.getElementById('bibleVersionLabel');
       var title = document.getElementById('readerTitleLabel');
-      var name = (currentBibleVersion === 'KG') ? '개역개정' : ((currentBibleVersion === 'KH') ? '개역한글' : '새번역');
+      var name = (currentBibleVersion === 'KG') ? '개역개정' : '개역한글';
 
       if (label) label.innerText = name;
       if (title) title.innerText = '📖 성경 [' + name + ']';
@@ -596,7 +594,6 @@
       var db = window.BIBLE_FULL_DB_KG || {};
       var currentLabel = '개역개정';
       if (currentBibleVersion === 'KH') { db = window.BIBLE_FULL_DB_KH || {}; currentLabel = '개역한글'; }
-      if (currentBibleVersion === 'SB') { db = window.BIBLE_FULL_DB_SB || {}; currentLabel = '새번역'; }
 
       var bookData = db[item.book] || {};
 
