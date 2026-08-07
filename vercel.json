@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/sungjoo",
@@ -79,6 +81,10 @@
     {
       "source": "/jungmi",
       "destination": "/jungmi.html"
+    },
+    {
+      "source": "/:slug",
+      "destination": "/:slug.html"
     },
     {
       "source": "/",

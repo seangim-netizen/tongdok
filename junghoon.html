@@ -6,6 +6,10 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="icon" type="image/png" href="app_logo.png">
+  <link rel="apple-touch-icon" href="app_logo.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="나정훈 권사 통독일기장">
   <title>📖 나정훈 권사님의 성경통독일기장</title>
   <style>
     :root {
@@ -16,43 +20,71 @@
       --accent-green: #10b981;
       --accent-gold: #f59e0b;
       --border-color: #334155;
+      --nav-bg: #1e293b;
+      --input-bg: #0f172a;
     }
+    
+    [data-theme="light"] {
+      --bg-color: #f1f5f9;
+      --card-bg: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent-green: #059669;
+      --accent-gold: #d97706;
+      --border-color: #cbd5e1;
+      --nav-bg: #ffffff;
+      --input-bg: #f8fafc;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
     html, body {
-      height: 100%; width: 100%; background-color: var(--bg-color); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden;
+      height: 100%; width: 100%; background-color: var(--bg-color); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
     .app-header {
-      height: 56px; min-height: 56px; padding-top: env(safe-area-inset-top, 0px); background: #1e293b; padding-left: 16px; padding-right: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-shrink: 0; z-index: 100;
+      height: 56px; min-height: 56px; padding-top: env(safe-area-inset-top, 0px); background: var(--nav-bg); padding-left: 10px; padding-right: 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-shrink: 0; z-index: 100;
     }
-    .logo-title { font-size: 1.15rem; font-weight: 800; color: var(--accent-green); }
-    .header-passage { font-weight: 800; color: var(--accent-gold); font-size: 1.0rem; }
+    .header-logo-box { display: flex; align-items: center; gap: 6px; }
+    .app-brand-logo { height: 28px; border-radius: 4px; object-fit: contain; }
+    .logo-title { font-size: 0.95rem; font-weight: 800; color: var(--accent-green); white-space: nowrap; }
+    .header-passage { font-weight: 800; color: var(--accent-gold); font-size: 0.9rem; white-space: nowrap; }
+
+    .tool-btn {
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 8px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; white-space: nowrap;
+    }
 
     .app-container { flex: 1 1 auto; position: relative; overflow: hidden; width: 100%; }
     
     .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 16px; padding-bottom: 100px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .tab-page.active { display: flex !important; }
 
-    .bible-verse-item { background: #1e293b; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; }
-    .verse-num { font-weight: bold; color: #34d399; margin-right: 8px; font-size: 1.05rem; }
+    .bible-verse-card { background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; transition: transform 0.1s ease; }
+    .bible-verse-card:active { transform: scale(0.99); }
+    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05rem; }
     
-    .complete-card { background: #1e293b; border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+    .verse-actions { display: flex; gap: 8px; margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px; justify-content: flex-end; }
+    .btn-verse-tool { background: none; border: none; color: var(--accent-gold); font-size: 0.8rem; font-weight: bold; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+    .btn-verse-tool:hover { background: var(--border-color); }
+
+    .verse-note-input { width: 100%; margin-top: 8px; background: var(--input-bg); border: 1px solid var(--accent-green); border-radius: 6px; color: var(--text-primary); padding: 8px 10px; font-size: 0.9rem; outline: none; display: none; }
+
+    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
-    .btn-complete.not-completed:hover { background: #059669; }
+    .btn-complete.not-completed:hover { opacity: 0.9; }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
 
-    .journal-box { background: #1e293b; border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
+    .journal-box { background: var(--card-bg); border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
     .journal-box-title { font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 10px; }
-    textarea { width: 100%; min-height: 160px; background: #0f172a; border: 1px solid var(--border-color); border-radius: 10px; color: #fff; padding: 14px; font-size: 1.05rem; resize: vertical; outline: none; line-height: 1.65; }
+    textarea { width: 100%; min-height: 160px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 14px; font-size: 1.05rem; resize: vertical; outline: none; line-height: 1.65; }
 
-    .progress-box { background: #1e293b; border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
-    .progress-bar-bg { background: #0f172a; height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
-    .progress-bar-fill { background: linear-gradient(90deg, #10b981, #34d399); height: 100%; width: 0%; transition: width 0.3s ease; }
+    .progress-box { background: var(--card-bg); border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
+    .progress-bar-bg { background: var(--input-bg); height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent-green), #34d399); height: 100%; width: 0%; transition: width 0.3s ease; }
 
-    .schedule-card { background: #1e293b; padding: 16px 20px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
-    .schedule-card.active { border-color: var(--accent-green); background: #064e3b; }
+    .schedule-card { background: var(--card-bg); padding: 16px 20px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
+    .schedule-card.active { border-color: var(--accent-green); background: var(--border-color); }
     .schedule-card.is-done { border-left: 5px solid var(--accent-green); }
     .schedule-meta { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 4px; }
     .schedule-passage { font-weight: bold; font-size: 1.05rem; }
@@ -60,43 +92,28 @@
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
-    /* Large, spacious mobile bottom navigation bar */
     .mobile-bottom-nav {
       height: calc(72px + env(safe-area-inset-bottom, 0px));
       min-height: 72px;
       padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
-      background: #1e293b;
-      border-top: 2px solid #334155;
+      background: var(--nav-bg);
+      border-top: 2px solid var(--border-color);
       display: flex;
       width: 100%;
       flex-shrink: 0;
       z-index: 9999;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     }
     .nav-tab-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #94a3b8;
-      font-size: 0.95rem;
-      font-weight: 800;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding-top: 6px;
-      transition: all 0.2s ease;
+      flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); font-size: 0.95rem; font-weight: 800; cursor: pointer; border: none; background: none; padding-top: 6px; transition: all 0.2s ease;
     }
     .nav-tab-item.active {
-      color: #10b981;
-      background: #0f172a;
-      border-top: 3px solid #10b981;
+      color: var(--accent-green); background: var(--input-bg); border-top: 3px solid var(--accent-green);
     }
-    .nav-tab-icon {
-      font-size: 1.5rem;
-      margin-bottom: 3px;
-    }
+    .nav-tab-icon { font-size: 1.5rem; margin-bottom: 3px; }
+
+    .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .toast-msg.show { opacity: 1; }
   </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -169,23 +186,33 @@
 <body>
 
   <header class="app-header">
-    <div class="logo-title">📖 나정훈 권사님의 통독일기장</div>
-    <div class="header-passage" id="headerPassage">출애굽기 1~3장</div>
+    <div class="header-logo-box">
+      <img src="app_logo.png" alt="LoginChurch" class="app-brand-logo">
+      <div class="logo-title">나정훈 권사</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 5px;">
+      <button class="tool-btn" style="border-color: var(--accent-gold); color: var(--accent-gold);" onclick="window.toggleBibleVersion()">
+        📖 <span id="bibleVersionLabel">개역개정</span>
+      </button>
+      <button class="tool-btn" onclick="window.toggleTheme()">
+        <span id="themeIcon">☀️</span> <span id="themeText">밝게</span>
+      </button>
+    </div>
   </header>
 
   <div class="app-container">
     <!-- TAB 1: 성경읽기 -->
     <section id="tab-reader" class="tab-page active">
-      <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-bottom: 14px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-        <span>📖 성경[개역한글]</span>
-        <span id="readingStatusBadge" style="font-size: 0.9rem; padding: 4px 10px; border-radius: 14px; background: #334155; color: #94a3b8; font-weight: bold;">미완료</span>
+      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <span id="readerTitleLabel">📖 성경 [개역개정]</span>
+        <span id="readingStatusBadge" style="font-size: 0.85rem; padding: 4px 10px; border-radius: 14px; background: var(--border-color); color: var(--text-secondary); font-weight: bold;">미완료</span>
       </div>
       <div id="bibleTextContainer"></div>
       
       <div class="complete-card">
         <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 12px;">오늘 성경 읽기를 모두 마치셨나요?</div>
         <button id="btnToggleComplete" class="btn-complete not-completed" onclick="window.toggleComplete()">
-          ✅ 오늘 말씀 통독 완료하기
+          ✅ 오늘 말씀 통독 완료하기 (완료 시 다음날 이동)
         </button>
       </div>
     </section>
@@ -243,9 +270,15 @@
     </button>
   </nav>
 
+  <div class="toast-msg" id="toastMsg">📋 말씀 구절이 복사되었습니다!</div>
+
   <script>
   (function() {
-    var STORAGE_KEY = 'tongdok_journal_v5_' + 'junghoon';
+    var STORAGE_KEY = 'tongdok_journal_v6_' + 'junghoon';
+    var THEME_KEY = 'tongdok_theme_' + 'junghoon';
+    var BIBLE_VER_KEY = 'tongdok_bible_ver_' + 'junghoon';
+
+    var currentBibleVersion = 'KG'; // KG: 개역개정 (Default!), KH: 개역한글
 
     var scheduleData = [
       {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
@@ -365,18 +398,71 @@
 
     var activeDay = 1;
     var journals = {};
+    var verseNotes = {};
 
     function loadJournals() {
       var saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        try { journals = JSON.parse(saved); } catch(e) { journals = {}; }
+        try {
+          var parsed = JSON.parse(saved);
+          journals = parsed.journals || {};
+          verseNotes = parsed.verseNotes || {};
+        } catch(e) { journals = {}; verseNotes = {}; }
       }
+      var savedTheme = localStorage.getItem(THEME_KEY);
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeUI(savedTheme);
+      }
+
+      var savedVer = localStorage.getItem(BIBLE_VER_KEY);
+      if (savedVer) {
+        currentBibleVersion = savedVer;
+      }
+      updateBibleVersionUI();
     }
 
     function saveJournals() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(journals));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes }));
       } catch(e) {}
+    }
+
+    window.toggleBibleVersion = function() {
+      currentBibleVersion = (currentBibleVersion === 'KG') ? 'KH' : 'KG';
+      localStorage.setItem(BIBLE_VER_KEY, currentBibleVersion);
+      updateBibleVersionUI();
+      renderBible(scheduleData[activeDay]);
+      showToast((currentBibleVersion === 'KG' ? '📖 개역개정' : '📖 개역한글') + ' 버전으로 변경되었습니다!');
+    };
+
+    function updateBibleVersionUI() {
+      var label = document.getElementById('bibleVersionLabel');
+      var title = document.getElementById('readerTitleLabel');
+      var name = (currentBibleVersion === 'KG') ? '개역개정' : '개역한글';
+
+      if (label) label.innerText = name;
+      if (title) title.innerText = '📖 성경 [' + name + ']';
+    }
+
+    window.toggleTheme = function() {
+      var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      var nextTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      localStorage.setItem(THEME_KEY, nextTheme);
+      updateThemeUI(nextTheme);
+    };
+
+    function updateThemeUI(theme) {
+      var icon = document.getElementById('themeIcon');
+      var text = document.getElementById('themeText');
+      if (theme === 'light') {
+        if (icon) icon.innerText = '🌙';
+        if (text) text.innerText = '어둡게';
+      } else {
+        if (icon) icon.innerText = '☀️';
+        if (text) text.innerText = '밝게';
+      }
     }
 
     window.switchTab = function(tabName) {
@@ -395,11 +481,26 @@
     window.toggleComplete = function() {
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
-      journals[key].completed = !journals[key].completed;
+      
+      var isNowDone = !journals[key].completed;
+      journals[key].completed = isNowDone;
       saveJournals();
 
       updateCompleteButtonUI();
       renderSchedule();
+
+      // Ensure 100% Guaranteed Advance to Next Day!
+      if (isNowDone && activeDay < scheduleData.length - 1) {
+        activeDay = activeDay + 1;
+        var nextItem = scheduleData[activeDay];
+        var head = document.getElementById('headerPassage');
+        if (head) head.innerText = nextItem.passage;
+        renderBible(nextItem);
+        renderSchedule();
+
+        var tabReader = document.getElementById('tab-reader');
+        if (tabReader) tabReader.scrollTop = 0;
+      }
     };
 
     window.saveJournal = function() {
@@ -425,7 +526,7 @@
           btn.innerHTML = '🎉 통독 완료됨 (다시 누르면 취소)';
         } else {
           btn.className = 'btn-complete not-completed';
-          btn.innerHTML = '✅ 오늘 말씀 통독 완료하기';
+          btn.innerHTML = '✅ 오늘 말씀 통독 완료하기 (완료 시 다음날 이동)';
         }
       }
 
@@ -435,10 +536,34 @@
           badge.style.color = '#34d399';
           badge.innerText = '✓ 완료됨';
         } else {
-          badge.style.background = '#334155';
-          badge.style.color = '#94a3b8';
+          badge.style.background = 'var(--border-color)';
+          badge.style.color = 'var(--text-secondary)';
           badge.innerText = '미완료';
         }
+      }
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toastMsg');
+      if (t) {
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 2000);
+      }
+    }
+
+    function copyVerseText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+        showToast('📋 구절 구절이 복사되었습니다!');
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('📋 구절 구절이 복사되었습니다!');
       }
     }
 
@@ -448,25 +573,38 @@
       container.innerHTML = '';
 
       if (item.book === '개요 강의') {
-        container.innerHTML = '<div style="padding: 20px; color: var(--accent-gold); line-height: 1.8; background: #1e293b; border-radius: 8px;">📌 2026 하반기 구약 성경통독 클럽 개요 강의일입니다.<br>출애굽기 1장부터 통독 준비를 해주세요.</div>';
+        container.innerHTML = '<div style="padding: 20px; color: var(--accent-gold); line-height: 1.8; background: var(--card-bg); border-radius: 8px;">📌 2026 하반기 구약 성경통독 클럽 개요 강의일입니다.<br>출애굽기 1장부터 통독 준비를 해주세요.</div>';
         updateCompleteButtonUI();
         return;
       }
 
-      var db = window.BIBLE_FULL_DB || {};
+      var db = (currentBibleVersion === 'KG') ? (window.BIBLE_FULL_DB_KG || {}) : (window.BIBLE_FULL_DB_KH || {});
       var bookData = db[item.book] || {};
 
       for (var c = item.start; c <= item.end; c++) {
         var verses = bookData[c.toString()] || [];
         var chHeader = document.createElement('div');
         chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.3rem; margin-bottom: 0.8rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;';
-        chHeader.innerText = '📖 ' + item.book + ' ' + c + '장 (' + verses.length + '개 절 전체)';
+        chHeader.innerText = '📖 ' + item.book + ' ' + c + '장';
         container.appendChild(chHeader);
 
         verses.forEach(function(vText, idx) {
+          var vNum = (idx + 1);
+          var verseKey = item.book + '_' + c + '_' + vNum;
+          var fullVerseString = item.book + ' ' + c + ':' + vNum + ' - ' + vText;
+
           var itemEl = document.createElement('div');
-          itemEl.className = 'bible-verse-item';
-          itemEl.innerHTML = '<span class="verse-num">' + (idx + 1) + '</span> ' + vText;
+          itemEl.className = 'bible-verse-card';
+          itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
+            '<div class="verse-actions"><button class="btn-verse-tool" onclick="event.stopPropagation(); window.toggleVerseNote('' + verseKey + '')">📝 메모 달기</button></div>' +
+            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절 한 줄 메모 작성..." value="' + (verseNotes[verseKey] || '') + '" oninput="window.saveVerseNote('' + verseKey + '', this.value)">';
+
+          itemEl.onclick = function(e) {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+              copyVerseText(fullVerseString);
+            }
+          };
+
           container.appendChild(itemEl);
         });
       }
@@ -480,6 +618,19 @@
 
       updateCompleteButtonUI();
     }
+
+    window.toggleVerseNote = function(verseKey) {
+      var inp = document.getElementById('note_' + verseKey);
+      if (inp) {
+        inp.style.display = (inp.style.display === 'block') ? 'none' : 'block';
+        if (inp.style.display === 'block') inp.focus();
+      }
+    };
+
+    window.saveVerseNote = function(verseKey, val) {
+      verseNotes[verseKey] = val;
+      saveJournals();
+    };
 
     function renderSchedule() {
       var container = document.getElementById('scheduleListContainer');
