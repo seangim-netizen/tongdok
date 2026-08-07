@@ -24,50 +24,79 @@
     }
     
     .app-header {
-      height: 54px; padding-top: env(safe-area-inset-top, 0px); background: #1e293b; padding-left: 16px; padding-right: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-shrink: 0; z-index: 100;
+      height: 56px; min-height: 56px; padding-top: env(safe-area-inset-top, 0px); background: #1e293b; padding-left: 16px; padding-right: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-shrink: 0; z-index: 100;
     }
-    .logo-title { font-size: 1.1rem; font-weight: 700; color: var(--accent-green); }
-    .header-passage { font-weight: 700; color: var(--accent-gold); font-size: 0.95rem; }
+    .logo-title { font-size: 1.15rem; font-weight: 800; color: var(--accent-green); }
+    .header-passage { font-weight: 800; color: var(--accent-gold); font-size: 1.0rem; }
 
     .app-container { flex: 1 1 auto; position: relative; overflow: hidden; width: 100%; }
     
-    .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 16px; padding-bottom: 100px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .tab-page.active { display: flex !important; }
 
-    .bible-verse-item { background: #1e293b; border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; border-left: 4px solid var(--accent-green); font-size: 1.05rem; line-height: 1.7; word-break: keep-all; }
-    .verse-num { font-weight: bold; color: #34d399; margin-right: 8px; font-size: 0.95rem; }
+    .bible-verse-item { background: #1e293b; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; }
+    .verse-num { font-weight: bold; color: #34d399; margin-right: 8px; font-size: 1.05rem; }
     
-    .complete-card { background: #1e293b; border: 2px solid var(--accent-green); border-radius: 12px; padding: 18px; text-align: center; margin-top: 20px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
-    .btn-complete { width: 100%; padding: 16px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+    .complete-card { background: #1e293b; border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+    .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.not-completed:hover { background: #059669; }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
 
-    .journal-box { background: #1e293b; border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
-    .journal-box-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-green); margin-bottom: 8px; }
-    textarea { width: 100%; min-height: 160px; background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; color: #fff; padding: 12px; font-size: 1rem; resize: vertical; outline: none; line-height: 1.6; }
+    .journal-box { background: #1e293b; border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
+    .journal-box-title { font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 10px; }
+    textarea { width: 100%; min-height: 160px; background: #0f172a; border: 1px solid var(--border-color); border-radius: 10px; color: #fff; padding: 14px; font-size: 1.05rem; resize: vertical; outline: none; line-height: 1.65; }
 
-    .progress-box { background: #1e293b; border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
-    .progress-bar-bg { background: #0f172a; height: 10px; border-radius: 5px; overflow: hidden; margin: 8px 0; }
+    .progress-box { background: #1e293b; border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
+    .progress-bar-bg { background: #0f172a; height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
     .progress-bar-fill { background: linear-gradient(90deg, #10b981, #34d399); height: 100%; width: 0%; transition: width 0.3s ease; }
 
-    .schedule-card { background: #1e293b; padding: 14px 18px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
+    .schedule-card { background: #1e293b; padding: 16px 20px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
     .schedule-card.active { border-color: var(--accent-green); background: #064e3b; }
-    .schedule-card.is-done { border-left: 4px solid var(--accent-green); }
-    .schedule-meta { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px; }
-    .schedule-passage { font-weight: bold; font-size: 1rem; }
-    .check-badge { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; }
+    .schedule-card.is-done { border-left: 5px solid var(--accent-green); }
+    .schedule-meta { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 4px; }
+    .schedule-passage { font-weight: bold; font-size: 1.05rem; }
+    .check-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.0rem; font-weight: bold; }
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
-    .save-indicator { font-size: 0.8rem; color: #34d399; font-weight: bold; margin-top: 4px; display: none; }
-
+    /* Large, spacious mobile bottom navigation bar */
     .mobile-bottom-nav {
-      height: 60px; min-height: 60px; padding-bottom: env(safe-area-inset-bottom, 0px); background: #1e293b; border-top: 1px solid var(--border-color); display: flex; width: 100%; flex-shrink: 0; z-index: 1000;
+      height: calc(72px + env(safe-area-inset-bottom, 0px));
+      min-height: 72px;
+      padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
+      background: #1e293b;
+      border-top: 2px solid #334155;
+      display: flex;
+      width: 100%;
+      flex-shrink: 0;
+      z-index: 9999;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
     }
-    .nav-tab-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); font-size: 0.85rem; font-weight: bold; cursor: pointer; border: none; background: none; }
-    .nav-tab-item.active { color: var(--accent-green); background: #334155; }
-    .nav-tab-icon { font-size: 1.25rem; margin-bottom: 2px; }
+    .nav-tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding-top: 6px;
+      transition: all 0.2s ease;
+    }
+    .nav-tab-item.active {
+      color: #10b981;
+      background: #0f172a;
+      border-top: 3px solid #10b981;
+    }
+    .nav-tab-icon {
+      font-size: 1.5rem;
+      margin-bottom: 3px;
+    }
   </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -147,14 +176,14 @@
   <div class="app-container">
     <!-- TAB 1: 성경읽기 -->
     <section id="tab-reader" class="tab-page active">
-      <div style="font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-bottom: 14px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
         <span>📖 성경[개역한글]</span>
-        <span id="readingStatusBadge" style="font-size: 0.85rem; padding: 3px 8px; border-radius: 12px; background: #334155; color: #94a3b8;">미완료</span>
+        <span id="readingStatusBadge" style="font-size: 0.9rem; padding: 4px 10px; border-radius: 14px; background: #334155; color: #94a3b8; font-weight: bold;">미완료</span>
       </div>
       <div id="bibleTextContainer"></div>
       
       <div class="complete-card">
-        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">오늘 성경 읽기를 모두 마치셨나요?</div>
+        <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 12px;">오늘 성경 읽기를 모두 마치셨나요?</div>
         <button id="btnToggleComplete" class="btn-complete not-completed" onclick="window.toggleComplete()">
           ✅ 오늘 말씀 통독 완료하기
         </button>
@@ -163,9 +192,8 @@
 
     <!-- TAB 2: 일기쓰기 -->
     <section id="tab-editor" class="tab-page">
-      <div style="font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-        <span>✏️ 통독 일기 작성</span>
-        <span class="save-indicator" id="saveIndicator">✓ 실시간 자동 저장됨</span>
+      <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-bottom: 14px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px;">
+        ✏️ 통독 일기 작성
       </div>
       <div class="journal-box">
         <div class="journal-box-title">📖 은혜받은 말씀</div>
@@ -180,20 +208,20 @@
     <!-- TAB 3: 통독표 -->
     <section id="tab-schedule" class="tab-page">
       <div class="progress-box">
-        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95rem;">
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.0rem;">
           <span>📊 통독 달성 진도율</span>
           <span id="progressPercent" style="color: var(--accent-green);">0%</span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary);">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
           <span>총 126일 진도</span>
           <span id="progressCount">0 / 126 일 완료</span>
         </div>
       </div>
 
-      <div style="font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 12px;">
+      <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-bottom: 14px;">
         📅 하반기 성경통독 일정표
       </div>
       <div id="scheduleListContainer"></div>
@@ -217,7 +245,7 @@
 
   <script>
   (function() {
-    var STORAGE_KEY = 'tongdok_journal_v3_' + 'sungjoo';
+    var STORAGE_KEY = 'tongdok_journal_v5_' + 'sungjoo';
 
     var scheduleData = [
       {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
@@ -342,24 +370,13 @@
       var saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         try { journals = JSON.parse(saved); } catch(e) { journals = {}; }
-      } else {
-        journals = {};
       }
     }
 
     function saveJournals() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(journals));
-        showSaveIndicator();
       } catch(e) {}
-    }
-
-    function showSaveIndicator() {
-      var ind = document.getElementById('saveIndicator');
-      if (ind) {
-        ind.style.display = 'inline';
-        setTimeout(function() { ind.style.display = 'none'; }, 2000);
-      }
     }
 
     window.switchTab = function(tabName) {
@@ -442,7 +459,7 @@
       for (var c = item.start; c <= item.end; c++) {
         var verses = bookData[c.toString()] || [];
         var chHeader = document.createElement('div');
-        chHeader.style.cssText = 'font-size: 1.1rem; font-weight: 700; color: var(--accent-green); margin-top: 1.2rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;';
+        chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.3rem; margin-bottom: 0.8rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;';
         chHeader.innerText = '📖 ' + item.book + ' ' + c + '장 (' + verses.length + '개 절 전체)';
         container.appendChild(chHeader);
 
