@@ -185,7 +185,7 @@
         <div class="backup-row">
           <button class="btn-backup" onclick="window.exportBackup()">💾 일기 백업(저장)</button>
           <button class="btn-backup" onclick="document.getElementById('importFileInput').click()">📂 백업 불러오기</button>
-          <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="window.importBackup(event)">
+          <input type="file" id="importFileInput" style="display:none;" accept="*/*" onchange="window.importBackup(event)">
         </div>
       </div>
     </section>
@@ -412,17 +412,20 @@
       var reader = new FileReader();
       reader.onload = function(e) {
         try {
-          var importedData = JSON.parse(e.target.result);
-          journals = importedData;
-          saveJournals();
-          renderBible(scheduleData[activeDay] || scheduleData[1]);
-          renderSchedule();
-          alert("✅ 일기 데이터가 100% 성공적으로 불러와졌습니다!");
+          var text = e.target.result;
+          var importedData = JSON.parse(text);
+          if (typeof importedData === 'object' && importedData !== null) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(importedData));
+            alert("✅ 일기 데이터가 100% 성공적으로 복구되었습니다! 화면을 새로고침합니다.");
+            window.location.reload();
+          } else {
+            alert("❌ 올바른 일기 백업 형식이 아닙니다.");
+          }
         } catch (err) {
-          alert("❌ 올바른 백업 파일(JSON)이 아닙니다.");
+          alert("❌ 백업 파일을 읽는데 실패했습니다: " + err.message);
         }
       };
-      reader.readAsText(file);
+      reader.readAsText(file, "UTF-8");
     };
 
     function updateCompleteButtonUI() {
