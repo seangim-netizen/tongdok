@@ -36,7 +36,7 @@
       --input-bg: #f8fafc;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     
     html, body {
       height: 100%; width: 100%; background-color: var(--bg-color); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
@@ -48,7 +48,6 @@
     .header-logo-box { display: flex; align-items: center; gap: 8px; }
     .app-brand-logo { height: 32px; border-radius: 4px; object-fit: contain; }
     .logo-title { font-size: 0.95rem; font-weight: 800; color: var(--accent-green); white-space: nowrap; }
-    .header-passage { font-weight: 800; color: var(--accent-gold); font-size: 0.9rem; white-space: nowrap; }
 
     .tool-btn {
       background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; z-index: 100;
@@ -59,16 +58,20 @@
     .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 16px; padding-bottom: 100px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .tab-page.active { display: flex !important; }
 
-    .bible-verse-card { background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; transition: transform 0.1s ease; }
-    .bible-verse-card:active { transform: scale(0.99); }
-    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05rem; }
-    
-    .verse-actions { display: flex; gap: 8px; margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px; justify-content: flex-end; }
-    .btn-verse-tool { background: var(--bg-color); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem; font-weight: bold; cursor: pointer; padding: 6px 14px; border-radius: 16px; transition: all 0.2s ease; }
-    .btn-verse-tool:hover { background: var(--border-color); }
-    .btn-verse-tool.has-note { background: var(--accent-gold); color: #000; font-weight: 800; }
+    .gesture-tip-box {
+      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; line-height: 1.4;
+    }
 
-    .verse-note-input { width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 8px; color: var(--text-primary); padding: 10px 12px; font-size: 1.0rem; outline: none; display: none; line-height: 1.5; }
+    .bible-verse-card { background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15 ease, background-color 0.2s ease; }
+    .bible-verse-card:active { transform: scale(0.98); background: var(--border-color); }
+    .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
+    
+    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05rem; }
+    .version-tag { font-size: 0.75rem; background: var(--border-color); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold; vertical-align: middle; }
+
+    .note-indicator { font-size: 0.8rem; color: var(--accent-gold); font-weight: bold; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+
+    .verse-note-input { width: 100%; margin-top: 12px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 8px; color: var(--text-primary); padding: 12px; font-size: 1.0rem; outline: none; display: none; line-height: 1.5; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
 
     .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; }
@@ -192,7 +195,7 @@
       <div class="logo-title">김은정 권사</div>
     </div>
     <div style="display: flex; align-items: center; gap: 5px;">
-      <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
+      <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold); font-size: 0.9rem; padding: 6px 14px;">
         📖 <span id="bibleVersionLabel">개역개정</span>
       </button>
       <button class="tool-btn" id="btnThemeToggle">
@@ -204,10 +207,15 @@
   <div class="app-container">
     <!-- TAB 1: 성경읽기 -->
     <section id="tab-reader" class="tab-page active">
-      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 10px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
         <span id="readerTitleLabel">📖 성경 [개역개정]</span>
         <span id="readingStatusBadge" style="font-size: 0.85rem; padding: 4px 10px; border-radius: 14px; background: var(--border-color); color: var(--text-secondary); font-weight: bold;">미완료</span>
       </div>
+
+      <div class="gesture-tip-box">
+        💡 <b>터치 안내</b>: 구절을 <b>짧게 누르면 [구절 복사]</b>, <b>0.5초 꾹~ 누르면 [메모 입력창]</b>이 열립니다!
+      </div>
+
       <div id="bibleTextContainer"></div>
       
       <div class="complete-card">
@@ -442,7 +450,7 @@
       renderBible(scheduleData[activeDay]);
       
       var verName = (currentBibleVersion === 'KG') ? '개역개정' : ((currentBibleVersion === 'KH') ? '개역한글' : '새번역');
-      showToast('📖 ' + verName + ' 버전으로 변경되었습니다!');
+      showToast('📖 ' + verName + ' 버전으로 전환되었습니다!');
     }
 
     function updateBibleVersionUI() {
@@ -587,8 +595,9 @@
       }
 
       var db = window.BIBLE_FULL_DB_KG || {};
-      if (currentBibleVersion === 'KH') db = window.BIBLE_FULL_DB_KH || {};
-      if (currentBibleVersion === 'SB') db = window.BIBLE_FULL_DB_SB || {};
+      var currentLabel = '개역개정';
+      if (currentBibleVersion === 'KH') { db = window.BIBLE_FULL_DB_KH || {}; currentLabel = '개역한글'; }
+      if (currentBibleVersion === 'SB') { db = window.BIBLE_FULL_DB_SB || {}; currentLabel = '새번역'; }
 
       var bookData = db[item.book] || {};
 
@@ -596,40 +605,61 @@
         var verses = bookData[c.toString()] || [];
         var chHeader = document.createElement('div');
         chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.3rem; margin-bottom: 0.8rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;';
-        chHeader.innerText = '📖 ' + item.book + ' ' + c + '장';
+        chHeader.innerText = '📖 ' + item.book + ' ' + c + '장 [' + currentLabel + ']';
         container.appendChild(chHeader);
 
         verses.forEach(function(vText, idx) {
           var vNum = (idx + 1);
           var verseKey = item.book + '_' + c + '_' + vNum;
-          var fullVerseString = item.book + ' ' + c + ':' + vNum + ' - ' + vText;
-          var hasNote = !!verseNotes[verseKey];
+          var fullVerseString = '[' + currentLabel + '] ' + item.book + ' ' + c + ':' + vNum + ' - ' + vText;
+          var savedNote = verseNotes[verseKey] || '';
 
           var itemEl = document.createElement('div');
-          itemEl.className = 'bible-verse-card';
-          itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
-            '<div class="verse-actions"><button class="btn-verse-tool ' + (hasNote ? 'has-note' : '') + '" data-versekey="' + verseKey + '">📝 메모' + (hasNote ? ' (작성됨)' : '') + '</button></div>' +
-            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절에 메모 남기기..." value="' + (verseNotes[verseKey] || '') + '">';
+          itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
+          
+          var noteIndicatorHTML = savedNote ? '<div class="note-indicator">📝 <b>메모</b>: ' + savedNote + '</div>' : '';
 
-          itemEl.addEventListener('click', function(e) {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
-              copyVerseText(fullVerseString);
-            }
-          });
+          itemEl.innerHTML = '<span class="version-tag">' + currentLabel + '</span><span class="verse-num">' + vNum + '</span> ' + vText + 
+            noteIndicatorHTML +
+            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절 한 줄 메모 작성..." value="' + savedNote + '">';
 
-          var noteBtn = itemEl.querySelector('.btn-verse-tool');
-          if (noteBtn) {
-            noteBtn.addEventListener('click', function(e) {
-              e.stopPropagation();
-              var vk = this.getAttribute('data-versekey');
-              var inp = document.getElementById('note_' + vk);
+          var pressTimer = null;
+          var isLongPress = false;
+
+          function startPress(e) {
+            if (e.target.tagName === 'INPUT') return;
+            isLongPress = false;
+            pressTimer = setTimeout(function() {
+              isLongPress = true;
+              var inp = document.getElementById('note_' + verseKey);
               if (inp) {
                 var isShow = (inp.style.display === 'block');
                 inp.style.display = isShow ? 'none' : 'block';
-                if (!isShow) inp.focus();
+                if (!isShow) {
+                  inp.focus();
+                  showToast('📝 메모 작성창이 열렸습니다!');
+                }
               }
-            });
+            }, 500);
           }
+
+          function cancelPress(e) {
+            if (pressTimer) clearTimeout(pressTimer);
+          }
+
+          function endPress(e) {
+            if (pressTimer) clearTimeout(pressTimer);
+            if (!isLongPress && e.target.tagName !== 'INPUT') {
+              copyVerseText(fullVerseString);
+            }
+          }
+
+          itemEl.addEventListener('mousedown', startPress);
+          itemEl.addEventListener('touchstart', startPress, { passive: true });
+          itemEl.addEventListener('mouseup', endPress);
+          itemEl.addEventListener('touchend', endPress);
+          itemEl.addEventListener('mouseleave', cancelPress);
+          itemEl.addEventListener('touchmove', cancelPress);
 
           var noteInp = itemEl.querySelector('.verse-note-input');
           if (noteInp) {
@@ -638,15 +668,21 @@
               verseNotes[vk] = this.value;
               saveJournals();
 
-              var btn = this.parentElement.querySelector('.btn-verse-tool');
-              if (btn) {
-                if (this.value.trim().length > 0) {
-                  btn.className = 'btn-verse-tool has-note';
-                  btn.innerText = '📝 메모 (작성됨)';
+              var card = this.parentElement;
+              var existingInd = card.querySelector('.note-indicator');
+              if (this.value.trim().length > 0) {
+                card.classList.add('has-note-card');
+                if (!existingInd) {
+                  var newInd = document.createElement('div');
+                  newInd.className = 'note-indicator';
+                  newInd.innerHTML = '📝 <b>메모</b>: ' + this.value;
+                  card.insertBefore(newInd, this);
                 } else {
-                  btn.className = 'btn-verse-tool';
-                  btn.innerText = '📝 메모';
+                  existingInd.innerHTML = '📝 <b>메모</b>: ' + this.value;
                 }
+              } else {
+                card.classList.remove('has-note-card');
+                if (existingInd) existingInd.remove();
               }
             });
           }
