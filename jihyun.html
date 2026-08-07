@@ -68,9 +68,32 @@
     
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05rem; }
 
-    .note-indicator { font-size: 0.85rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border-color); display: flex; align-items: center; gap: 4px; }
+    .note-indicator {
+      font-size: 0.95rem; color: var(--accent-gold); font-weight: bold; margin-top: 10px; padding: 10px 12px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.5; white-space: pre-wrap;
+    }
 
-    .verse-note-input { width: 100%; margin-top: 12px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 8px; color: var(--text-primary); padding: 12px; font-size: 1.0rem; outline: none; display: none; line-height: 1.5; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
+    .btn-copy-note {
+      background: var(--input-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 5px 11px; border-radius: 14px; font-size: 0.82rem; font-weight: bold; cursor: pointer; flex-shrink: 0; transition: background 0.2s ease;
+    }
+    .btn-copy-note:active { opacity: 0.7; }
+
+    .verse-note-box {
+      width: 100%; margin-top: 12px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 12px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .verse-note-textarea {
+      width: 100%; min-height: 90px; background: transparent; border: none; color: var(--text-primary); font-size: 1.0rem; line-height: 1.6; outline: none; resize: vertical; font-family: inherit;
+    }
+
+    .note-btn-row {
+      display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 4px;
+    }
+    .btn-note-cancel {
+      background: var(--border-color); color: var(--text-secondary); border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer;
+    }
+    .btn-note-save {
+      background: var(--accent-green); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
 
     .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; }
@@ -287,7 +310,7 @@
     var THEME_KEY = 'tongdok_theme_' + 'jihyun';
     var BIBLE_VER_KEY = 'tongdok_bible_ver_' + 'jihyun';
 
-    var currentBibleVersion = 'KG'; // KG: 개역개정, KH: 개역한글, SB: 새번역
+    var currentBibleVersion = 'KG';
 
     var scheduleData = [
       {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
@@ -572,10 +595,10 @@
       }
     }
 
-    function copyVerseText(text) {
+    function copyTextToClipboard(text, msg) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text);
-        showToast('📋 구절이 복사되었습니다!');
+        showToast(msg || '📋 복사되었습니다!');
       } else {
         var ta = document.createElement('textarea');
         ta.value = text;
@@ -583,7 +606,65 @@
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        showToast('📋 구절이 복사되었습니다!');
+        showToast(msg || '📋 복사되었습니다!');
+      }
+    }
+
+    function copyVerseText(text) {
+      copyTextToClipboard(text, '📋 구절이 복사되었습니다!');
+    }
+
+    function copyNoteText(vk, event) {
+      if (event) event.stopPropagation();
+      var noteVal = verseNotes[vk] || '';
+      if (noteVal.trim().length > 0) {
+        copyTextToClipboard(noteVal, '📝 작성한 메모가 복사되었습니다!');
+      }
+    }
+
+    function saveVerseNote(vk, event) {
+      if (event) event.stopPropagation();
+      var ta = document.getElementById('ta_note_' + vk);
+      var box = document.getElementById('box_note_' + vk);
+      var ind = document.getElementById('ind_note_' + vk);
+
+      if (ta) {
+        var val = ta.value.trim();
+        verseNotes[vk] = val;
+        saveJournals();
+
+        if (box) box.style.display = 'none';
+
+        if (ind) {
+          if (val.length > 0) {
+            ind.style.display = 'flex';
+            var txtSpan = ind.querySelector('.note-text-content');
+            if (txtSpan) txtSpan.innerText = val;
+          } else {
+            ind.style.display = 'none';
+          }
+        }
+
+        var card = box ? box.parentElement : null;
+        if (card) {
+          if (val.length > 0) card.classList.add('has-note-card');
+          else card.classList.remove('has-note-card');
+        }
+
+        showToast('✅ 메모 저장이 완료되었습니다!');
+      }
+    }
+
+    function cancelVerseNote(vk, event) {
+      if (event) event.stopPropagation();
+      var box = document.getElementById('box_note_' + vk);
+      var ind = document.getElementById('ind_note_' + vk);
+      var ta = document.getElementById('ta_note_' + vk);
+      
+      if (ta) ta.value = verseNotes[vk] || '';
+      if (box) box.style.display = 'none';
+      if (ind && verseNotes[vk] && verseNotes[vk].trim().length > 0) {
+        ind.style.display = 'flex';
       }
     }
 
@@ -620,27 +701,45 @@
           var itemEl = document.createElement('div');
           itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
           
-          var noteIndicatorHTML = savedNote ? '<div class="note-indicator">📝 <b>메모</b>: ' + savedNote + '</div>' : '';
+          var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
           itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
-            noteIndicatorHTML +
-            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절 한 줄 메모 작성..." value="' + savedNote + '">';
+            '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
+              '<div style="flex:1;">📝 <b>메모</b>: <span class="note-text-content">' + savedNote + '</span></div>' +
+              '<button class="btn-copy-note" id="btncopy_' + verseKey + '">📋 메모 복사</button>' +
+            '</div>' +
+            '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
+              '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 은혜 및 묵상 메모를 자유롭게 작성하세요... (엔터 줄바꿈 가능)">' + savedNote + '</textarea>' +
+              '<div class="note-btn-row">' +
+                '<button class="btn-note-cancel" id="btncancel_' + verseKey + '">취소</button>' +
+                '<button class="btn-note-save" id="btnsave_' + verseKey + '">✅ 저장 완료</button>' +
+              '</div>' +
+            '</div>';
 
           var pressTimer = null;
           var isLongPress = false;
 
           function startPress(e) {
-            if (e.target.tagName === 'INPUT') return;
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note')) return;
             isLongPress = false;
             pressTimer = setTimeout(function() {
               isLongPress = true;
-              var inp = document.getElementById('note_' + verseKey);
-              if (inp) {
-                var isShow = (inp.style.display === 'block');
-                inp.style.display = isShow ? 'none' : 'block';
+              var box = document.getElementById('box_note_' + verseKey);
+              var ind = document.getElementById('ind_note_' + verseKey);
+              if (box) {
+                var isShow = (box.style.display === 'flex' || box.style.display === 'block');
+                box.style.display = isShow ? 'none' : 'flex';
                 if (!isShow) {
-                  inp.focus();
-                  showToast('📝 메모 작성창이 열렸습니다!');
+                  if (ind) ind.style.display = 'none';
+                  var ta = document.getElementById('ta_note_' + verseKey);
+                  if (ta) {
+                    ta.focus();
+                    showToast('📝 메모 작성창이 열렸습니다!');
+                  }
+                } else {
+                  if (ind && verseNotes[verseKey] && verseNotes[verseKey].trim().length > 0) {
+                    ind.style.display = 'flex';
+                  }
                 }
               }
             }, 500);
@@ -652,7 +751,7 @@
 
           function endPress(e) {
             if (pressTimer) clearTimeout(pressTimer);
-            if (!isLongPress && e.target.tagName !== 'INPUT') {
+            if (!isLongPress && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON') {
               copyVerseText(fullVerseString);
             }
           }
@@ -664,29 +763,27 @@
           itemEl.addEventListener('mouseleave', cancelPress);
           itemEl.addEventListener('touchmove', cancelPress);
 
-          var noteInp = itemEl.querySelector('.verse-note-input');
-          if (noteInp) {
-            noteInp.addEventListener('input', function() {
-              var vk = this.id.replace('note_', '');
-              verseNotes[vk] = this.value;
-              saveJournals();
+          // Bind Copy Note Button
+          var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
+          if (btnCopy) {
+            btnCopy.addEventListener('click', function(ev) {
+              copyNoteText(verseKey, ev);
+            });
+          }
 
-              var card = this.parentElement;
-              var existingInd = card.querySelector('.note-indicator');
-              if (this.value.trim().length > 0) {
-                card.classList.add('has-note-card');
-                if (!existingInd) {
-                  var newInd = document.createElement('div');
-                  newInd.className = 'note-indicator';
-                  newInd.innerHTML = '📝 <b>메모</b>: ' + this.value;
-                  card.insertBefore(newInd, this);
-                } else {
-                  existingInd.innerHTML = '📝 <b>메모</b>: ' + this.value;
-                }
-              } else {
-                card.classList.remove('has-note-card');
-                if (existingInd) existingInd.remove();
-              }
+          // Bind Save Button
+          var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
+          if (btnSave) {
+            btnSave.addEventListener('click', function(ev) {
+              saveVerseNote(verseKey, ev);
+            });
+          }
+
+          // Bind Cancel Button
+          var btnCancel = itemEl.querySelector('#btncancel_' + verseKey);
+          if (btnCancel) {
+            btnCancel.addEventListener('click', function(ev) {
+              cancelVerseNote(verseKey, ev);
             });
           }
 
