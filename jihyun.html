@@ -45,8 +45,8 @@
     .app-header {
       height: 56px; min-height: 56px; padding-top: env(safe-area-inset-top, 0px); background: var(--nav-bg); padding-left: 10px; padding-right: 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-shrink: 0; z-index: 100;
     }
-    .header-logo-box { display: flex; align-items: center; gap: 6px; }
-    .app-brand-logo { height: 28px; border-radius: 4px; object-fit: contain; }
+    .header-logo-box { display: flex; align-items: center; gap: 8px; }
+    .app-brand-logo { height: 32px; border-radius: 4px; object-fit: contain; }
     .logo-title { font-size: 0.95rem; font-weight: 800; color: var(--accent-green); white-space: nowrap; }
     .header-passage { font-weight: 800; color: var(--accent-gold); font-size: 0.9rem; white-space: nowrap; }
 
@@ -691,7 +691,6 @@
       });
     }
 
-    // ATTACH ALL EVENT LISTENERS VIA JS DIRECTLY!
     var b1 = document.getElementById('btnBibleVerToggle');
     if (b1) b1.addEventListener('click', switchBibleVersion);
 
