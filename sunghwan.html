@@ -64,10 +64,11 @@
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05rem; }
     
     .verse-actions { display: flex; gap: 8px; margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px; justify-content: flex-end; }
-    .btn-verse-tool { background: none; border: none; color: var(--accent-gold); font-size: 0.8rem; font-weight: bold; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+    .btn-verse-tool { background: var(--bg-color); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem; font-weight: bold; cursor: pointer; padding: 6px 14px; border-radius: 16px; transition: all 0.2s ease; }
     .btn-verse-tool:hover { background: var(--border-color); }
+    .btn-verse-tool.has-note { background: var(--accent-gold); color: #000; font-weight: 800; }
 
-    .verse-note-input { width: 100%; margin-top: 8px; background: var(--input-bg); border: 1px solid var(--accent-green); border-radius: 6px; color: var(--text-primary); padding: 8px 10px; font-size: 0.9rem; outline: none; display: none; }
+    .verse-note-input { width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 8px; color: var(--text-primary); padding: 10px 12px; font-size: 1.0rem; outline: none; display: none; line-height: 1.5; }
 
     .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; }
@@ -602,12 +603,13 @@
           var vNum = (idx + 1);
           var verseKey = item.book + '_' + c + '_' + vNum;
           var fullVerseString = item.book + ' ' + c + ':' + vNum + ' - ' + vText;
+          var hasNote = !!verseNotes[verseKey];
 
           var itemEl = document.createElement('div');
           itemEl.className = 'bible-verse-card';
           itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
-            '<div class="verse-actions"><button class="btn-verse-tool" data-versekey="' + verseKey + '">📝 메모 달기</button></div>' +
-            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절 한 줄 메모 작성..." value="' + (verseNotes[verseKey] || '') + '">';
+            '<div class="verse-actions"><button class="btn-verse-tool ' + (hasNote ? 'has-note' : '') + '" data-versekey="' + verseKey + '">📝 메모' + (hasNote ? ' (작성됨)' : '') + '</button></div>' +
+            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절에 메모 남기기..." value="' + (verseNotes[verseKey] || '') + '">';
 
           itemEl.addEventListener('click', function(e) {
             if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
@@ -622,8 +624,9 @@
               var vk = this.getAttribute('data-versekey');
               var inp = document.getElementById('note_' + vk);
               if (inp) {
-                inp.style.display = (inp.style.display === 'block') ? 'none' : 'block';
-                if (inp.style.display === 'block') inp.focus();
+                var isShow = (inp.style.display === 'block');
+                inp.style.display = isShow ? 'none' : 'block';
+                if (!isShow) inp.focus();
               }
             });
           }
@@ -634,6 +637,17 @@
               var vk = this.id.replace('note_', '');
               verseNotes[vk] = this.value;
               saveJournals();
+
+              var btn = this.parentElement.querySelector('.btn-verse-tool');
+              if (btn) {
+                if (this.value.trim().length > 0) {
+                  btn.className = 'btn-verse-tool has-note';
+                  btn.innerText = '📝 메모 (작성됨)';
+                } else {
+                  btn.className = 'btn-verse-tool';
+                  btn.innerText = '📝 메모';
+                }
+              }
             });
           }
 
