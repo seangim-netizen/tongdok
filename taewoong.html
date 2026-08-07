@@ -51,7 +51,7 @@
     .header-passage { font-weight: 800; color: var(--accent-gold); font-size: 0.9rem; white-space: nowrap; }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 8px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; white-space: nowrap;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; z-index: 100;
     }
 
     .app-container { flex: 1 1 auto; position: relative; overflow: hidden; width: 100%; }
@@ -70,7 +70,7 @@
     .verse-note-input { width: 100%; margin-top: 8px; background: var(--input-bg); border: 1px solid var(--accent-green); border-radius: 6px; color: var(--text-primary); padding: 8px 10px; font-size: 0.9rem; outline: none; display: none; }
 
     .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
-    .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; }
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.not-completed:hover { opacity: 0.9; }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
@@ -191,10 +191,10 @@
       <div class="logo-title">이태웅 집사</div>
     </div>
     <div style="display: flex; align-items: center; gap: 5px;">
-      <button class="tool-btn" style="border-color: var(--accent-gold); color: var(--accent-gold);" onclick="window.toggleBibleVersion()">
+      <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
         📖 <span id="bibleVersionLabel">개역개정</span>
       </button>
-      <button class="tool-btn" onclick="window.toggleTheme()">
+      <button class="tool-btn" id="btnThemeToggle">
         <span id="themeIcon">☀️</span> <span id="themeText">밝게</span>
       </button>
     </div>
@@ -211,7 +211,7 @@
       
       <div class="complete-card">
         <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 12px;">오늘 성경 읽기를 모두 마치셨나요?</div>
-        <button id="btnToggleComplete" class="btn-complete not-completed" onclick="window.toggleComplete()">
+        <button id="btnToggleComplete" class="btn-complete not-completed">
           ✅ 오늘 말씀 통독 완료하기 (완료 시 다음날 이동)
         </button>
       </div>
@@ -224,11 +224,11 @@
       </div>
       <div class="journal-box">
         <div class="journal-box-title">📖 은혜받은 말씀</div>
-        <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요." oninput="window.saveJournal()"></textarea>
+        <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
       </div>
       <div class="journal-box">
         <div class="journal-box-title">💡 받은 교훈 및 적용</div>
-        <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요." oninput="window.saveJournal()"></textarea>
+        <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
       </div>
     </section>
 
@@ -256,15 +256,15 @@
   </div>
 
   <nav class="mobile-bottom-nav">
-    <button class="nav-tab-item active" id="btn-tab-reader" onclick="window.switchTab('reader')">
+    <button class="nav-tab-item active" id="btn-tab-reader">
       <span class="nav-tab-icon">📖</span>
       <span>성경읽기</span>
     </button>
-    <button class="nav-tab-item" id="btn-tab-editor" onclick="window.switchTab('editor')">
+    <button class="nav-tab-item" id="btn-tab-editor">
       <span class="nav-tab-icon">✏️</span>
       <span>일기쓰기</span>
     </button>
-    <button class="nav-tab-item" id="btn-tab-schedule" onclick="window.switchTab('schedule')">
+    <button class="nav-tab-item" id="btn-tab-schedule">
       <span class="nav-tab-icon">📅</span>
       <span>통독표</span>
     </button>
@@ -273,7 +273,7 @@
   <div class="toast-msg" id="toastMsg">📋 말씀 구절이 복사되었습니다!</div>
 
   <script>
-  (function() {
+  window.addEventListener('DOMContentLoaded', function() {
     var STORAGE_KEY = 'tongdok_journal_v6_' + 'taewoong';
     var THEME_KEY = 'tongdok_theme_' + 'taewoong';
     var BIBLE_VER_KEY = 'tongdok_bible_ver_' + 'taewoong';
@@ -428,7 +428,7 @@
       } catch(e) {}
     }
 
-    window.toggleBibleVersion = function() {
+    function switchBibleVersion() {
       if (currentBibleVersion === 'KG') {
         currentBibleVersion = 'KH';
       } else if (currentBibleVersion === 'KH') {
@@ -442,7 +442,7 @@
       
       var verName = (currentBibleVersion === 'KG') ? '개역개정' : ((currentBibleVersion === 'KH') ? '개역한글' : '새번역');
       showToast('📖 ' + verName + ' 버전으로 변경되었습니다!');
-    };
+    }
 
     function updateBibleVersionUI() {
       var label = document.getElementById('bibleVersionLabel');
@@ -453,13 +453,13 @@
       if (title) title.innerText = '📖 성경 [' + name + ']';
     }
 
-    window.toggleTheme = function() {
+    function toggleThemeMode() {
       var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
       var nextTheme = (currentTheme === 'dark') ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', nextTheme);
       localStorage.setItem(THEME_KEY, nextTheme);
       updateThemeUI(nextTheme);
-    };
+    }
 
     function updateThemeUI(theme) {
       var icon = document.getElementById('themeIcon');
@@ -473,7 +473,7 @@
       }
     }
 
-    window.switchTab = function(tabName) {
+    function switchTab(tabName) {
       var pages = document.querySelectorAll('.tab-page');
       var btns = document.querySelectorAll('.nav-tab-item');
 
@@ -484,9 +484,9 @@
       var targetBtn = document.getElementById('btn-tab-' + tabName);
       if (targetPage) targetPage.classList.add('active');
       if (targetBtn) targetBtn.classList.add('active');
-    };
+    }
 
-    window.toggleComplete = function() {
+    function toggleComplete() {
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
       
@@ -508,9 +508,9 @@
         var tabReader = document.getElementById('tab-reader');
         if (tabReader) tabReader.scrollTop = 0;
       }
-    };
+    }
 
-    window.saveJournal = function() {
+    function saveJournalData() {
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
       var g = document.getElementById('editorGrace');
@@ -518,7 +518,7 @@
       if (g) journals[key].grace = g.value;
       if (l) journals[key].lesson = l.value;
       saveJournals();
-    };
+    }
 
     function updateCompleteButtonUI() {
       var key = 'day_' + activeDay;
@@ -606,14 +606,36 @@
           var itemEl = document.createElement('div');
           itemEl.className = 'bible-verse-card';
           itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
-            '<div class="verse-actions"><button class="btn-verse-tool" onclick="event.stopPropagation(); window.toggleVerseNote('' + verseKey + '')">📝 메모 달기</button></div>' +
-            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절 한 줄 메모 작성..." value="' + (verseNotes[verseKey] || '') + '" oninput="window.saveVerseNote('' + verseKey + '', this.value)">';
+            '<div class="verse-actions"><button class="btn-verse-tool" data-versekey="' + verseKey + '">📝 메모 달기</button></div>' +
+            '<input type="text" class="verse-note-input" id="note_' + verseKey + '" placeholder="이 구절 한 줄 메모 작성..." value="' + (verseNotes[verseKey] || '') + '">';
 
-          itemEl.onclick = function(e) {
+          itemEl.addEventListener('click', function(e) {
             if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
               copyVerseText(fullVerseString);
             }
-          };
+          });
+
+          var noteBtn = itemEl.querySelector('.btn-verse-tool');
+          if (noteBtn) {
+            noteBtn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var vk = this.getAttribute('data-versekey');
+              var inp = document.getElementById('note_' + vk);
+              if (inp) {
+                inp.style.display = (inp.style.display === 'block') ? 'none' : 'block';
+                if (inp.style.display === 'block') inp.focus();
+              }
+            });
+          }
+
+          var noteInp = itemEl.querySelector('.verse-note-input');
+          if (noteInp) {
+            noteInp.addEventListener('input', function() {
+              var vk = this.id.replace('note_', '');
+              verseNotes[vk] = this.value;
+              saveJournals();
+            });
+          }
 
           container.appendChild(itemEl);
         });
@@ -628,19 +650,6 @@
 
       updateCompleteButtonUI();
     }
-
-    window.toggleVerseNote = function(verseKey) {
-      var inp = document.getElementById('note_' + verseKey);
-      if (inp) {
-        inp.style.display = (inp.style.display === 'block') ? 'none' : 'block';
-        if (inp.style.display === 'block') inp.focus();
-      }
-    };
-
-    window.saveVerseNote = function(verseKey, val) {
-      verseNotes[verseKey] = val;
-      saveJournals();
-    };
 
     function renderSchedule() {
       var container = document.getElementById('scheduleListContainer');
@@ -670,22 +679,47 @@
         var card = document.createElement('div');
         card.className = 'schedule-card ' + (item.day === activeDay ? 'active' : '') + (isDone ? ' is-done' : '');
         card.innerHTML = '<div><div class="schedule-meta">Day ' + item.day + ' | ' + item.date + '</div><div class="schedule-passage">' + item.passage + '</div></div><div class="check-badge ' + (isDone ? 'checked' : 'unchecked') + '">' + (isDone ? '✓' : '') + '</div>';
-        card.onclick = function() {
+        card.addEventListener('click', function() {
           activeDay = item.day;
           var head = document.getElementById('headerPassage');
           if (head) head.innerText = item.passage;
           renderBible(item);
           renderSchedule();
-          window.switchTab('reader');
-        };
+          switchTab('reader');
+        });
         container.appendChild(card);
       });
     }
 
+    // ATTACH ALL EVENT LISTENERS VIA JS DIRECTLY!
+    var b1 = document.getElementById('btnBibleVerToggle');
+    if (b1) b1.addEventListener('click', switchBibleVersion);
+
+    var b2 = document.getElementById('btnThemeToggle');
+    if (b2) b2.addEventListener('click', toggleThemeMode);
+
+    var b3 = document.getElementById('btnToggleComplete');
+    if (b3) b3.addEventListener('click', toggleComplete);
+
+    var t1 = document.getElementById('btn-tab-reader');
+    if (t1) t1.addEventListener('click', function() { switchTab('reader'); });
+
+    var t2 = document.getElementById('btn-tab-editor');
+    if (t2) t2.addEventListener('click', function() { switchTab('editor'); });
+
+    var t3 = document.getElementById('btn-tab-schedule');
+    if (t3) t3.addEventListener('click', function() { switchTab('schedule'); });
+
+    var eg = document.getElementById('editorGrace');
+    if (eg) eg.addEventListener('input', saveJournalData);
+
+    var el = document.getElementById('editorLesson');
+    if (el) el.addEventListener('input', saveJournalData);
+
     loadJournals();
     renderBible(scheduleData[1]);
     renderSchedule();
-  })();
+  });
   </script>
 </body>
 </html>
