@@ -42,7 +42,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     
     html, body {
-      position: fixed; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
+      width: 100%; height: 100%; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
     .app-header {
@@ -81,18 +81,15 @@
     }
 
     .app-container {
-      position: absolute;
-      top: calc(52px + env(safe-area-inset-top, 0px));
-      bottom: calc(58px + env(safe-area-inset-bottom, 0px));
-      left: 0;
-      right: 0;
-      width: 100%;
+      flex: 1 1 auto;
+      position: relative;
       overflow: hidden;
+      width: 100%;
       background-color: var(--bg-color);
     }
     
     .tab-page {
-      position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: 25px; overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color);
+      position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color);
     }
     .tab-page.active { display: flex !important; }
 
@@ -156,14 +153,14 @@
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
     .mobile-bottom-nav {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: calc(58px + env(safe-area-inset-bottom, 0px));
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      background: var(--nav-bg);
+      position: fixed;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      height: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
+      padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+      background: var(--nav-bg) !important;
       border-top: 1px solid var(--border-color);
       display: flex;
       align-items: stretch;
@@ -269,7 +266,6 @@
 </head>
 <body>
 
-  <!-- HEADER WITH NEWLY CROPPED LOGIN CHURCH LOGO & DISPLAY NAME -->
   <header class="app-header">
     <div class="header-logo-box">
       <img src="header_logo.png" alt="Login Church" class="app-brand-logo">
@@ -571,7 +567,7 @@
       renderBible(scheduleData[activeDay]);
       
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      showToast('📖 ' + verName + ' 버전으로 전환되었습니다!');
+      showToast('📖 ' + verName + ' 전환');
     }
 
     function updateBibleVersionUI() {
@@ -757,7 +753,6 @@
           if (ind) ind.style.display = 'none';
           if (ta) {
             ta.focus();
-            showToast('📝 묵상 메모장 열림');
           }
           activeOpenNoteKey = vk;
         }
@@ -819,7 +814,7 @@
             var currentTime = new Date().getTime();
             var tapLength = currentTime - lastTapTime;
 
-            if (tapLength < 300 && tapLength > 0) {
+            if (tapLength < 400 && tapLength > 0) {
               if (pressTimer) clearTimeout(pressTimer);
               openNoteBox(verseKey);
             } else {
