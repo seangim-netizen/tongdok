@@ -6,11 +6,11 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#fbf7ee">
+  <meta name="theme-color" content="#0f172a">
   <link rel="icon" type="image/png" href="app_logo.png">
   <link rel="apple-touch-icon" href="app_logo.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="김정미 사모 통독일기장">
   <title>📖 김정미 사모님의 성경통독일기장</title>
   <style>
@@ -45,93 +45,94 @@
       height: 100%; width: 100%; background-color: var(--bg-color); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
+    /* COMPACT SINGLE-LINE MOBILE HEADER */
     .app-header {
-      min-height: 56px;
-      padding-top: max(env(safe-area-inset-top, 0px), 8px);
-      padding-bottom: 8px;
+      height: 52px;
+      min-height: 52px;
+      padding-top: env(safe-area-inset-top, 0px);
       background: var(--nav-bg);
-      padding-left: 12px;
-      padding-right: 12px;
+      padding-left: 8px;
+      padding-right: 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
+      white-space: nowrap;
     }
-    .header-logo-box { display: flex; align-items: center; gap: 8px; }
-    .app-brand-logo { height: 32px; border-radius: 4px; object-fit: contain;  }
-    .logo-title { font-size: 0.98rem; font-weight: 800; color: var(--accent-green); white-space: nowrap; }
+    .header-logo-box { display: flex; align-items: center; gap: 5px; flex-shrink: 1; overflow: hidden; }
+    .app-brand-logo { height: 28px; width: 28px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+    .logo-title { font-size: 0.88rem; font-weight: 800; color: var(--accent-green); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .header-actions-row {
-      display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
+      display: flex; align-items: center; gap: 3px; flex-shrink: 0;
     }
 
     .font-size-control {
-      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;
+      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; height: 30px;
     }
     .font-btn {
-      background: none; border: none; color: var(--text-primary); font-size: 0.88rem; font-weight: bold; padding: 5px 10px; cursor: pointer;
+      background: none; border: none; color: var(--text-primary); font-size: 0.8rem; font-weight: bold; padding: 0 7px; height: 100%; cursor: pointer; display: flex; align-items: center;
     }
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 5px 11px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; z-index: 100;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 8px; height: 30px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
     }
 
     .app-container { flex: 1 1 auto; position: relative; overflow: hidden; width: 100%; }
     
-    .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 14px; padding-bottom: 90px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: 85px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .tab-page.active { display: flex !important; }
 
     .bible-verse-card {
-      background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15s ease, background-color 0.2s ease;
+      background: var(--card-bg); border-radius: 10px; padding: 15px 16px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.72; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15s ease, background-color 0.2s ease;
     }
     .bible-verse-card:active { transform: scale(0.985); background: var(--border-color); }
     .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
     
-    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05em; }
+    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; }
 
     .note-indicator {
-      font-size: 0.95rem; color: var(--accent-gold); font-weight: bold; margin-top: 10px; padding: 10px 12px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.5; white-space: pre-wrap;
+      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap;
     }
 
     .btn-copy-note {
-      background: var(--input-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 5px 11px; border-radius: 14px; font-size: 0.82rem; font-weight: bold; cursor: pointer; flex-shrink: 0;
+      background: var(--input-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 4px 9px; border-radius: 12px; font-size: 0.78rem; font-weight: bold; cursor: pointer; flex-shrink: 0;
     }
 
     .verse-note-box {
-      width: 100%; margin-top: 12px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 12px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 6px;
+      width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 10px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 6px;
     }
 
     .memo-guide-text {
-      font-size: 0.8rem; font-weight: bold; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.78rem; font-weight: bold; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center;
     }
 
     .verse-note-textarea {
-      width: 100%; min-height: 95px; background: transparent; border: none; color: var(--text-primary); font-size: 1.0rem; line-height: 1.6; outline: none; resize: vertical; font-family: inherit;
+      width: 100%; min-height: 90px; background: transparent; border: none; color: var(--text-primary); font-size: 0.98rem; line-height: 1.55; outline: none; resize: vertical; font-family: inherit;
     }
 
-    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
-    .btn-complete { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; }
+    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; margin-bottom: 25px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+    .btn-complete { width: 100%; padding: 16px; font-size: 1.15rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
 
-    .journal-box { background: var(--card-bg); border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
-    .journal-box-title { font-size: 1.1rem; font-weight: bold; color: var(--accent-green); margin-bottom: 10px; }
-    textarea { width: 100%; min-height: 160px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 14px; font-size: 1.05rem; resize: vertical; outline: none; line-height: 1.65; }
+    .journal-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
+    .journal-box-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-green); margin-bottom: 8px; }
+    textarea { width: 100%; min-height: 150px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: 1.0rem; resize: vertical; outline: none; line-height: 1.6; }
 
-    .progress-box { background: var(--card-bg); border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
-    .progress-bar-bg { background: var(--input-bg); height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+    .progress-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
+    .progress-bar-bg { background: var(--input-bg); height: 10px; border-radius: 5px; overflow: hidden; margin: 8px 0; }
     .progress-bar-fill { background: linear-gradient(90deg, var(--accent-green), #34d399); height: 100%; width: 0%; transition: width 0.3s ease; }
 
-    .schedule-card { background: var(--card-bg); padding: 16px 20px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
+    .schedule-card { background: var(--card-bg); padding: 14px 16px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }
     .schedule-card.active { border-color: var(--accent-green); background: var(--border-color); }
     .schedule-card.is-done { border-left: 5px solid var(--accent-green); }
-    .schedule-meta { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 4px; }
-    .schedule-passage { font-weight: bold; font-size: 1.05rem; }
-    .check-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.0rem; font-weight: bold; }
+    .schedule-meta { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 3px; }
+    .schedule-passage { font-weight: bold; font-size: 1.0rem; }
+    .check-badge { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: bold; }
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
@@ -140,7 +141,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: calc(65px + env(safe-area-inset-bottom, 0px));
+      height: calc(62px + env(safe-area-inset-bottom, 0px));
       padding-bottom: env(safe-area-inset-bottom, 0px);
       background: var(--nav-bg);
       border-top: 1px solid var(--border-color);
@@ -150,14 +151,14 @@
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
     }
     .nav-tab-item {
-      flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); font-size: 0.9rem; font-weight: 800; cursor: pointer; border: none; background: none; transition: all 0.2s ease;
+      flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); font-size: 0.85rem; font-weight: 800; cursor: pointer; border: none; background: none; transition: all 0.2s ease;
     }
     .nav-tab-item.active {
       color: var(--accent-green); background: var(--input-bg); border-top: 3px solid var(--accent-green);
     }
-    .nav-tab-icon { font-size: 1.4rem; margin-bottom: 2px; }
+    .nav-tab-icon { font-size: 1.3rem; margin-bottom: 1px; }
 
-    .toast-msg { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .toast-msg { position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     .toast-msg.show { opacity: 1; }
   </style>
   <script src="bible_1Chronicles.js"></script>
@@ -237,10 +238,9 @@
     </div>
 
     <div class="header-actions-row">
-      <!-- Font Size Controller -->
       <div class="font-size-control">
-        <button class="font-btn" id="btnFontDec" title="글씨 작게">가-</button>
-        <button class="font-btn" id="btnFontInc" title="글씨 크게">가+</button>
+        <button class="font-btn" id="btnFontDec">가-</button>
+        <button class="font-btn" id="btnFontInc">가+</button>
       </div>
 
       <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
@@ -255,15 +255,15 @@
   <div class="app-container">
     <!-- TAB 1: 성경읽기 -->
     <section id="tab-reader" class="tab-page active">
-      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 1.05rem; font-weight: 800; color: var(--accent-green); margin-bottom: 10px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
         <span id="readerTitleLabel">📖 성경 [개역개정]</span>
-        <span id="readingStatusBadge" style="font-size: 0.85rem; padding: 4px 10px; border-radius: 14px; background: var(--border-color); color: var(--text-secondary); font-weight: bold;">미완료</span>
+        <span id="readingStatusBadge" style="font-size: 0.82rem; padding: 3px 9px; border-radius: 12px; background: var(--border-color); color: var(--text-secondary); font-weight: bold;">미완료</span>
       </div>
 
       <div id="bibleTextContainer"></div>
       
       <div class="complete-card">
-        <div style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 12px;">오늘 성경 읽기를 모두 마치셨나요?</div>
+        <div style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 10px;">오늘 성경 읽기를 모두 마치셨나요?</div>
         <button id="btnToggleComplete" class="btn-complete not-completed">
           ✅ 오늘 말씀 통독 완료하기 (완료 시 다음날 이동)
         </button>
@@ -272,7 +272,7 @@
 
     <!-- TAB 2: 일기쓰기 -->
     <section id="tab-editor" class="tab-page">
-      <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-bottom: 14px; border-bottom: 2px solid var(--accent-green); padding-bottom: 8px;">
+      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
         ✏️ 통독 일기 작성
       </div>
       <div class="journal-box">
@@ -288,20 +288,20 @@
     <!-- TAB 3: 통독표 -->
     <section id="tab-schedule" class="tab-page">
       <div class="progress-box">
-        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.0rem;">
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95rem;">
           <span>📊 통독 달성 진도율</span>
           <span id="progressPercent" style="color: var(--accent-green);">0%</span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-secondary);">
           <span>총 126일 진도</span>
           <span id="progressCount">0 / 126 일 완료</span>
         </div>
       </div>
 
-      <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-bottom: 14px;">
+      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px;">
         📅 하반기 성경통독 일정표
       </div>
       <div id="scheduleListContainer"></div>
@@ -327,13 +327,14 @@
 
   <script>
   window.addEventListener('DOMContentLoaded', function() {
-    var STORAGE_KEY = 'tongdok_journal_v7_' + 'jungmi';
-    var THEME_KEY = 'tongdok_theme_' + 'jungmi';
-    var BIBLE_VER_KEY = 'tongdok_bible_ver_' + 'jungmi';
-    var FONT_SIZE_KEY = 'tongdok_font_size_' + 'jungmi';
+    // PERMANENT FIXED STORAGE KEY PER MEMBER (PREVENTS RESET ON GITHUB UPDATES!)
+    var PERMANENT_STORAGE_KEY = 'loginchurch_permanent_tongdok_data_' + 'jungmi';
+    var PERMANENT_THEME_KEY = 'loginchurch_permanent_theme_' + 'jungmi';
+    var PERMANENT_VER_KEY = 'loginchurch_permanent_bible_ver_' + 'jungmi';
+    var PERMANENT_FONT_KEY = 'loginchurch_permanent_font_size_' + 'jungmi';
 
-    var currentBibleVersion = 'KG'; // KG, KH, SB
-    var currentFontSize = 1.1; // rem
+    var currentBibleVersion = 'KG';
+    var currentFontSize = 1.1;
     var activeOpenNoteKey = null;
 
     var scheduleData = [
@@ -456,25 +457,66 @@
     var journals = {};
     var verseNotes = {};
 
+    // AUTOMATIC BACKWARD MIGRATION FUNCTION TO PREVENT ANY DATA RESET!
     function loadJournals() {
-      var saved = localStorage.getItem(STORAGE_KEY);
+      var dataLoaded = false;
+
+      // 1. Try Permanent Fixed Key first
+      var saved = localStorage.getItem(PERMANENT_STORAGE_KEY);
       if (saved) {
         try {
           var parsed = JSON.parse(saved);
           journals = parsed.journals || {};
           verseNotes = parsed.verseNotes || {};
-        } catch(e) { journals = {}; verseNotes = {}; }
+          dataLoaded = true;
+        } catch(e) {}
       }
-      var savedTheme = localStorage.getItem(THEME_KEY);
+
+      // 2. If no data in permanent key, check all old version keys and migrate!
+      if (!dataLoaded || (Object.keys(journals).length === 0 && Object.keys(verseNotes).length === 0)) {
+        var oldKeys = [
+          'tongdok_journal_v7_' + 'jungmi',
+          'tongdok_journal_v6_' + 'jungmi',
+          'tongdok_journal_v5_' + 'jungmi',
+          'tongdok_journal_v4_' + 'jungmi',
+          'tongdok_journal_v3_' + 'jungmi',
+          'tongdok_journal_v2_' + 'jungmi',
+          'tongdok_journal_v1_' + 'jungmi',
+          'tongdok_journal_' + 'jungmi',
+          'tongdok_journal_data'
+        ];
+
+        for (var k = 0; k < oldKeys.length; k++) {
+          var oldSaved = localStorage.getItem(oldKeys[k]);
+          if (oldSaved) {
+            try {
+              var oldParsed = JSON.parse(oldSaved);
+              if (oldParsed.journals) Object.assign(journals, oldParsed.journals);
+              if (oldParsed.verseNotes) Object.assign(verseNotes, oldParsed.verseNotes);
+              if (Object.keys(journals).length > 0 || Object.keys(verseNotes).length > 0) {
+                // Save to permanent key immediately!
+                saveJournals();
+                break;
+              }
+            } catch(e) {}
+          }
+        }
+      }
+
+      // Theme migration
+      var savedTheme = localStorage.getItem(PERMANENT_THEME_KEY) || localStorage.getItem('tongdok_theme_' + 'jungmi');
       if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeUI(savedTheme);
       }
-      var savedVer = localStorage.getItem(BIBLE_VER_KEY);
+
+      // Bible ver migration
+      var savedVer = localStorage.getItem(PERMANENT_VER_KEY) || localStorage.getItem('tongdok_bible_ver_' + 'jungmi');
       if (savedVer) { currentBibleVersion = savedVer; }
       updateBibleVersionUI();
 
-      var savedFont = localStorage.getItem(FONT_SIZE_KEY);
+      // Font size migration
+      var savedFont = localStorage.getItem(PERMANENT_FONT_KEY) || localStorage.getItem('tongdok_font_size_' + 'jungmi');
       if (savedFont) {
         currentFontSize = parseFloat(savedFont) || 1.1;
         applyFontSize();
@@ -483,20 +525,20 @@
 
     function saveJournals() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes }));
+        localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes }));
       } catch(e) {}
     }
 
     function applyFontSize() {
       document.documentElement.style.setProperty('--verse-font-size', currentFontSize + 'rem');
-      localStorage.setItem(FONT_SIZE_KEY, currentFontSize);
+      localStorage.setItem(PERMANENT_FONT_KEY, currentFontSize);
     }
 
     function switchBibleVersion() {
       if (currentBibleVersion === 'KG') currentBibleVersion = 'KH';
       else if (currentBibleVersion === 'KH') currentBibleVersion = 'SB';
       else currentBibleVersion = 'KG';
-      localStorage.setItem(BIBLE_VER_KEY, currentBibleVersion);
+      localStorage.setItem(PERMANENT_VER_KEY, currentBibleVersion);
       updateBibleVersionUI();
       renderBible(scheduleData[activeDay]);
       
@@ -516,7 +558,7 @@
       var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
       var nextTheme = (currentTheme === 'dark') ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', nextTheme);
-      localStorage.setItem(THEME_KEY, nextTheme);
+      localStorage.setItem(PERMANENT_THEME_KEY, nextTheme);
       updateThemeUI(nextTheme);
     }
 
@@ -708,7 +750,7 @@
       for (var c = item.start; c <= item.end; c++) {
         var verses = bookData[c.toString()] || [];
         var chHeader = document.createElement('div');
-        chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.3rem; margin-bottom: 0.8rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;';
+        chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.2rem; margin-bottom: 0.7rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4rem;';
         chHeader.innerText = '📖 ' + item.book + ' ' + c + '장';
         container.appendChild(chHeader);
 
@@ -722,7 +764,6 @@
           itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
           var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
-          // MEMO INSIDE GUIDE AS REQUESTED
           itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
             '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
               '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
@@ -730,7 +771,7 @@
             '</div>' +
             '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
               '<div class="memo-guide-text">💡 길게 누르면 [복사] <span>(다른 구절 터치 시 자동 저장)</span></div>' +
-              '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 자유롭게 작성하세요...">' + savedNote + '</textarea>' +
+              '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
             '</div>';
 
           var pressTimer = null;
@@ -765,7 +806,6 @@
             if (pressTimer) clearTimeout(pressTimer);
           });
 
-          // Desktop Event Fallbacks
           itemEl.addEventListener('mousedown', function(e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note')) return;
             pressTimer = setTimeout(function() {
@@ -856,7 +896,6 @@
       });
     }
 
-    // Bind Controls with 100% Guaranteed Working Listeners
     var bFontInc = document.getElementById('btnFontInc');
     if (bFontInc) {
       bFontInc.onclick = function(e) {
