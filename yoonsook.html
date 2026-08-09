@@ -6,10 +6,11 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#fbf7ee">
   <link rel="icon" type="image/png" href="app_logo.png">
   <link rel="apple-touch-icon" href="app_logo.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="이윤숙 권사 통독일기장">
   <title>📖 이윤숙 권사님의 성경통독일기장</title>
   <style>
@@ -23,6 +24,7 @@
       --border-color: #334155;
       --nav-bg: #1e293b;
       --input-bg: #0f172a;
+      --verse-font-size: 1.1rem;
     }
     
     [data-theme="light"] {
@@ -44,37 +46,65 @@
     }
     
     .app-header {
-      height: 56px; min-height: 56px; padding-top: env(safe-area-inset-top, 0px); background: var(--nav-bg); padding-left: 10px; padding-right: 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-shrink: 0; z-index: 100;
+      min-height: 56px;
+      padding-top: max(env(safe-area-inset-top, 0px), 8px);
+      padding-bottom: 8px;
+      background: var(--nav-bg);
+      padding-left: 10px;
+      padding-right: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     .header-logo-box { display: flex; align-items: center; gap: 6px; }
-    .app-brand-logo { height: 32px; border-radius: 4px; object-fit: contain; }
+    .app-brand-logo { height: 32px; border-radius: 4px; object-fit: contain; background-color: #fbf7ee; }
     .logo-title { font-size: 0.92rem; font-weight: 800; color: var(--accent-green); white-space: nowrap; }
 
-    .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 5px 10px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 3px; white-space: nowrap; z-index: 100;
+    .header-actions-row {
+      display: flex; align-items: center; gap: 4px; flex-wrap: nowrap;
     }
+
+    .tool-btn {
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 20px; padding: 5px 9px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; z-index: 100;
+    }
+
+    .font-size-control {
+      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;
+    }
+    .font-btn {
+      background: none; border: none; color: var(--text-primary); font-size: 0.85rem; font-weight: bold; padding: 5px 9px; cursor: pointer; transition: background 0.15s ease;
+    }
+    .font-btn:active { background: var(--border-color); }
 
     .app-container { flex: 1 1 auto; position: relative; overflow: hidden; width: 100%; }
     
-    .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 16px; padding-bottom: 100px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 14px; padding-bottom: 90px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .tab-page.active { display: flex !important; }
 
     .gesture-tip-box {
       background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: bold; margin-bottom: 12px; line-height: 1.55; text-align: center;
     }
 
-    .bible-verse-card { background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15s ease, background-color 0.2s ease; }
-    .bible-verse-card:active { transform: scale(0.98); background: var(--border-color); }
+    .bible-verse-card {
+      background: var(--card-bg); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.75; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+    .bible-verse-card:active { transform: scale(0.985); background: var(--border-color); }
     .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
     
-    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05rem; }
+    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 8px; font-size: 1.05em; }
 
     .note-indicator {
       font-size: 0.95rem; color: var(--accent-gold); font-weight: bold; margin-top: 10px; padding: 10px 12px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.5; white-space: pre-wrap;
     }
 
     .btn-copy-note {
-      background: var(--input-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 5px 11px; border-radius: 14px; font-size: 0.82rem; font-weight: bold; cursor: pointer; flex-shrink: 0; transition: background 0.2s ease;
+      background: var(--input-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 5px 11px; border-radius: 14px; font-size: 0.82rem; font-weight: bold; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s ease;
     }
     .btn-copy-note:active { opacity: 0.7; }
 
@@ -84,16 +114,6 @@
 
     .verse-note-textarea {
       width: 100%; min-height: 90px; background: transparent; border: none; color: var(--text-primary); font-size: 1.0rem; line-height: 1.6; outline: none; resize: vertical; font-family: inherit;
-    }
-
-    .note-btn-row {
-      display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 4px;
-    }
-    .btn-note-cancel {
-      background: var(--border-color); color: var(--text-secondary); border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer;
-    }
-    .btn-note-save {
-      background: var(--accent-green); color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
 
     .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
@@ -120,26 +140,28 @@
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
     .mobile-bottom-nav {
-      height: calc(72px + env(safe-area-inset-bottom, 0px));
-      min-height: 72px;
-      padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(65px + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
       background: var(--nav-bg);
-      border-top: 2px solid var(--border-color);
+      border-top: 1px solid var(--border-color);
       display: flex;
       width: 100%;
-      flex-shrink: 0;
       z-index: 9999;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
     }
     .nav-tab-item {
-      flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); font-size: 0.95rem; font-weight: 800; cursor: pointer; border: none; background: none; padding-top: 6px; transition: all 0.2s ease;
+      flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); font-size: 0.9rem; font-weight: 800; cursor: pointer; border: none; background: none; transition: all 0.2s ease;
     }
     .nav-tab-item.active {
       color: var(--accent-green); background: var(--input-bg); border-top: 3px solid var(--accent-green);
     }
-    .nav-tab-icon { font-size: 1.5rem; margin-bottom: 3px; }
+    .nav-tab-icon { font-size: 1.4rem; margin-bottom: 2px; }
 
-    .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .toast-msg { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     .toast-msg.show { opacity: 1; }
 
     /* Modal Overlay */
@@ -236,7 +258,14 @@
       <img src="app_logo.png" alt="LoginChurch" class="app-brand-logo">
       <div class="logo-title">이윤숙 권사</div>
     </div>
-    <div style="display: flex; align-items: center; gap: 4px;">
+
+    <div class="header-actions-row">
+      <!-- Font Size Controller -->
+      <div class="font-size-control">
+        <button class="font-btn" id="btnFontDec" title="글씨 작게">가-</button>
+        <button class="font-btn" id="btnFontInc" title="글씨 크게">가+</button>
+      </div>
+
       <button class="tool-btn" id="btnShortcutGuide" style="border-color: var(--accent-green); color: var(--accent-green);">
         📲 <span>바로가기</span>
       </button>
@@ -258,8 +287,8 @@
       </div>
 
       <div class="gesture-tip-box">
-        💡 <b>터치를 짧게하면 [복사]</b><br>
-        <b>터치를 길게하면 [메모입력창]</b>
+        💡 <b>길게 누르면 [복사] | 더블클릭은 [메모장]</b><br>
+        <span style="font-size:0.82rem; font-weight:normal; opacity:0.9;">(다른 구절 터치 시 메모 자동 저장 후 닫힘)</span>
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -370,8 +399,11 @@
     var STORAGE_KEY = 'tongdok_journal_v6_' + 'yoonsook';
     var THEME_KEY = 'tongdok_theme_' + 'yoonsook';
     var BIBLE_VER_KEY = 'tongdok_bible_ver_' + 'yoonsook';
+    var FONT_SIZE_KEY = 'tongdok_font_size_' + 'yoonsook';
 
-    var currentBibleVersion = 'KG';
+    var currentBibleVersion = 'KG'; // KG: 개역개정, KH: 개역한글, SB: 새번역
+    var currentFontSize = 1.1; // rem
+    var activeOpenNoteKey = null; // Key of open note box
 
     var scheduleData = [
       {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
@@ -513,12 +545,23 @@
         currentBibleVersion = savedVer;
       }
       updateBibleVersionUI();
+
+      var savedFont = localStorage.getItem(FONT_SIZE_KEY);
+      if (savedFont) {
+        currentFontSize = parseFloat(savedFont) || 1.1;
+        applyFontSize();
+      }
     }
 
     function saveJournals() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes }));
       } catch(e) {}
+    }
+
+    function applyFontSize() {
+      document.documentElement.style.setProperty('--verse-font-size', currentFontSize + 'rem');
+      localStorage.setItem(FONT_SIZE_KEY, currentFontSize);
     }
 
     function switchBibleVersion() {
@@ -571,6 +614,7 @@
     }
 
     function switchTab(tabName) {
+      autoSaveActiveNote();
       var pages = document.querySelectorAll('.tab-page');
       var btns = document.querySelectorAll('.nav-tab-item');
 
@@ -584,6 +628,7 @@
     }
 
     function toggleComplete() {
+      autoSaveActiveNote();
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
       
@@ -671,75 +716,66 @@
       }
     }
 
-    function copyVerseText(text) {
-      copyTextToClipboard(text, '📋 구절이 복사되었습니다!');
-    }
+    function autoSaveActiveNote() {
+      if (activeOpenNoteKey) {
+        var vk = activeOpenNoteKey;
+        var box = document.getElementById('box_note_' + vk);
+        var ind = document.getElementById('ind_note_' + vk);
+        var ta = document.getElementById('ta_note_' + vk);
 
-    function copyNoteText(vk, event) {
-      if (event) event.stopPropagation();
-      var noteVal = verseNotes[vk] || '';
-      if (noteVal.trim().length > 0) {
-        copyTextToClipboard(noteVal, '📝 작성한 메모가 복사되었습니다!');
-      }
-    }
+        if (ta) {
+          var val = ta.value.trim();
+          verseNotes[vk] = val;
+          saveJournals();
 
-    function saveVerseNote(vk, event) {
-      if (event) event.stopPropagation();
-      var ta = document.getElementById('ta_note_' + vk);
-      var box = document.getElementById('box_note_' + vk);
-      var ind = document.getElementById('ind_note_' + vk);
+          if (box) box.style.display = 'none';
 
-      if (ta) {
-        var val = ta.value.trim();
-        verseNotes[vk] = val;
-        saveJournals();
+          if (ind) {
+            if (val.length > 0) {
+              ind.style.display = 'flex';
+              var txtSpan = ind.querySelector('.note-text-content');
+              if (txtSpan) txtSpan.innerText = val;
+            } else {
+              ind.style.display = 'none';
+            }
+          }
 
-        if (box) box.style.display = 'none';
-
-        if (ind) {
-          if (val.length > 0) {
-            ind.style.display = 'flex';
-            var txtSpan = ind.querySelector('.note-text-content');
-            if (txtSpan) txtSpan.innerText = val;
-          } else {
-            ind.style.display = 'none';
+          var card = box ? box.parentElement : null;
+          if (card) {
+            if (val.length > 0) card.classList.add('has-note-card');
+            else card.classList.remove('has-note-card');
           }
         }
-
-        var card = box ? box.parentElement : null;
-        if (card) {
-          if (val.length > 0) card.classList.add('has-note-card');
-          else card.classList.remove('has-note-card');
-        }
-
-        showToast('✅ 메모 저장이 완료되었습니다!');
+        activeOpenNoteKey = null;
       }
     }
 
-    function cancelVerseNote(vk, event) {
-      if (event) event.stopPropagation();
+    function openNoteBox(vk) {
+      if (activeOpenNoteKey && activeOpenNoteKey !== vk) {
+        autoSaveActiveNote();
+      }
       var box = document.getElementById('box_note_' + vk);
       var ind = document.getElementById('ind_note_' + vk);
       var ta = document.getElementById('ta_note_' + vk);
-      
-      if (ta) ta.value = verseNotes[vk] || '';
-      if (box) box.style.display = 'none';
-      if (ind && verseNotes[vk] && verseNotes[vk].trim().length > 0) {
-        ind.style.display = 'flex';
+
+      if (box) {
+        var isShow = (box.style.display === 'flex' || box.style.display === 'block');
+        if (isShow) {
+          autoSaveActiveNote();
+        } else {
+          box.style.display = 'flex';
+          if (ind) ind.style.display = 'none';
+          if (ta) {
+            ta.focus();
+            showToast('📝 메모장 열림 (다른 구절 터치 시 자동 저장)');
+          }
+          activeOpenNoteKey = vk;
+        }
       }
-    }
-
-    function openShortcutModal() {
-      var m = document.getElementById('shortcutModal');
-      if (m) m.classList.add('show');
-    }
-
-    function closeShortcutModal() {
-      var m = document.getElementById('shortcutModal');
-      if (m) m.classList.remove('show');
     }
 
     function renderBible(item) {
+      autoSaveActiveNote();
       var container = document.getElementById('bibleTextContainer');
       if (!container) return;
       container.innerHTML = '';
@@ -765,8 +801,10 @@
 
         verses.forEach(function(vText, idx) {
           var vNum = (idx + 1);
+          // Shared verse key across versions
           var verseKey = item.book + '_' + c + '_' + vNum;
-          var fullVerseString = item.book + ' ' + c + ':' + vNum + ' - ' + vText;
+          // Updated copy format: [출애굽기 1:10] 본문...
+          var formattedCopyStr = '[' + item.book + ' ' + c + ':' + vNum + '] ' + vText;
           var savedNote = verseNotes[verseKey] || '';
 
           var itemEl = document.createElement('div');
@@ -774,84 +812,87 @@
           
           var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
+          // Removed '메모:' prefix as requested
           itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
             '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
-              '<div style="flex:1;">📝 <b>메모</b>: <span class="note-text-content">' + savedNote + '</span></div>' +
+              '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
               '<button class="btn-copy-note" id="btncopy_' + verseKey + '">📋 메모 복사</button>' +
             '</div>' +
             '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
-              '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 은혜 및 묵상 메모를 자유롭게 작성하세요... (엔터 줄바꿈 가능)">' + savedNote + '</textarea>' +
-              '<div class="note-btn-row">' +
-                '<button class="btn-note-cancel" id="btncancel_' + verseKey + '">취소</button>' +
-                '<button class="btn-note-save" id="btnsave_' + verseKey + '">✅ 저장 완료</button>' +
-              '</div>' +
+              '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 은혜 및 묵상 메모를 작성하세요... (다른 구절 클릭 시 자동 저장)">' + savedNote + '</textarea>' +
             '</div>';
 
           var pressTimer = null;
-          var isLongPress = false;
+          var lastTapTime = 0;
 
-          function startPress(e) {
+          // Double Click (Memo) & Long Press (Copy)
+          itemEl.addEventListener('touchstart', function(e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note')) return;
-            isLongPress = false;
-            pressTimer = setTimeout(function() {
-              isLongPress = true;
-              var box = document.getElementById('box_note_' + verseKey);
-              var ind = document.getElementById('ind_note_' + verseKey);
-              if (box) {
-                var isShow = (box.style.display === 'flex' || box.style.display === 'block');
-                box.style.display = isShow ? 'none' : 'flex';
-                if (!isShow) {
-                  if (ind) ind.style.display = 'none';
-                  var ta = document.getElementById('ta_note_' + verseKey);
-                  if (ta) {
-                    ta.focus();
-                    showToast('📝 메모 작성창이 열렸습니다!');
-                  }
-                } else {
-                  if (ind && verseNotes[verseKey] && verseNotes[verseKey].trim().length > 0) {
-                    ind.style.display = 'flex';
-                  }
-                }
-              }
-            }, 500);
-          }
+            var currentTime = new Date().getTime();
+            var tapLength = currentTime - lastTapTime;
 
-          function cancelPress(e) {
-            if (pressTimer) clearTimeout(pressTimer);
-          }
-
-          function endPress(e) {
-            if (pressTimer) clearTimeout(pressTimer);
-            if (!isLongPress && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON') {
-              copyVerseText(fullVerseString);
+            if (tapLength < 300 && tapLength > 0) {
+              // Double click detected -> Open/Close Memo
+              e.preventDefault();
+              if (pressTimer) clearTimeout(pressTimer);
+              openNoteBox(verseKey);
+            } else {
+              // Long press timer -> Copy Verse
+              pressTimer = setTimeout(function() {
+                copyTextToClipboard(formattedCopyStr, '📋 구절이 복사되었습니다!
+' + formattedCopyStr.substring(0, 30) + '...');
+              }, 500);
             }
-          }
+            lastTapTime = currentTime;
+          }, { passive: false });
 
-          itemEl.addEventListener('mousedown', startPress);
-          itemEl.addEventListener('touchstart', startPress, { passive: true });
-          itemEl.addEventListener('mouseup', endPress);
-          itemEl.addEventListener('touchend', endPress);
-          itemEl.addEventListener('mouseleave', cancelPress);
-          itemEl.addEventListener('touchmove', cancelPress);
+          itemEl.addEventListener('touchend', function(e) {
+            if (pressTimer) clearTimeout(pressTimer);
+            if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note')) {
+              if (activeOpenNoteKey && activeOpenNoteKey !== verseKey) {
+                autoSaveActiveNote();
+              }
+            }
+          });
+
+          itemEl.addEventListener('touchmove', function() {
+            if (pressTimer) clearTimeout(pressTimer);
+          });
+
+          // Mouse Event Fallback for Desktop
+          itemEl.addEventListener('mousedown', function(e) {
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note')) return;
+            pressTimer = setTimeout(function() {
+              copyTextToClipboard(formattedCopyStr, '📋 구절이 복사되었습니다!
+' + formattedCopyStr.substring(0, 30) + '...');
+            }, 500);
+          });
+
+          itemEl.addEventListener('mouseup', function(e) {
+            if (pressTimer) clearTimeout(pressTimer);
+          });
+
+          itemEl.addEventListener('dblclick', function(e) {
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note')) return;
+            openNoteBox(verseKey);
+          });
+
+          itemEl.addEventListener('click', function(e) {
+            if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note')) {
+              if (activeOpenNoteKey && activeOpenNoteKey !== verseKey) {
+                autoSaveActiveNote();
+              }
+            }
+          });
 
           var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
           if (btnCopy) {
             btnCopy.addEventListener('click', function(ev) {
-              copyNoteText(verseKey, ev);
-            });
-          }
-
-          var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
-          if (btnSave) {
-            btnSave.addEventListener('click', function(ev) {
-              saveVerseNote(verseKey, ev);
-            });
-          }
-
-          var btnCancel = itemEl.querySelector('#btncancel_' + verseKey);
-          if (btnCancel) {
-            btnCancel.addEventListener('click', function(ev) {
-              cancelVerseNote(verseKey, ev);
+              ev.stopPropagation();
+              var noteVal = verseNotes[verseKey] || '';
+              if (noteVal.trim().length > 0) {
+                copyTextToClipboard(noteVal, '📝 작성한 메모가 복사되었습니다!');
+              }
             });
           }
 
@@ -898,25 +939,57 @@
         card.className = 'schedule-card ' + (item.day === activeDay ? 'active' : '') + (isDone ? ' is-done' : '');
         card.innerHTML = '<div><div class="schedule-meta">Day ' + item.day + ' | ' + item.date + '</div><div class="schedule-passage">' + item.passage + '</div></div><div class="check-badge ' + (isDone ? 'checked' : 'unchecked') + '">' + (isDone ? '✓' : '') + '</div>';
         card.addEventListener('click', function() {
+          autoSaveActiveNote();
           activeDay = item.day;
           var head = document.getElementById('headerPassage');
           if (head) head.innerText = item.passage;
           renderBible(item);
           renderSchedule();
           switchTab('reader');
+          var tabReader = document.getElementById('tab-reader');
+          if (tabReader) tabReader.scrollTop = 0;
         });
         container.appendChild(card);
       });
     }
 
+    // Font size handlers
+    var bFontInc = document.getElementById('btnFontInc');
+    if (bFontInc) bFontInc.addEventListener('click', function() {
+      if (currentFontSize < 1.6) {
+        currentFontSize += 0.1;
+        applyFontSize();
+        showToast('🔍 글자 크기 확대');
+      }
+    });
+
+    var bFontDec = document.getElementById('btnFontDec');
+    if (bFontDec) bFontDec.addEventListener('click', function() {
+      if (currentFontSize > 0.85) {
+        currentFontSize -= 0.1;
+        applyFontSize();
+        showToast('🔍 글자 크기 축소');
+      }
+    });
+
     var bShortcut = document.getElementById('btnShortcutGuide');
-    if (bShortcut) bShortcut.addEventListener('click', openShortcutModal);
+    if (bShortcut) bShortcut.addEventListener('click', function() {
+      autoSaveActiveNote();
+      var m = document.getElementById('shortcutModal');
+      if (m) m.classList.add('show');
+    });
 
     var bCloseModal = document.getElementById('btnCloseModal');
-    if (bCloseModal) bCloseModal.addEventListener('click', closeShortcutModal);
+    if (bCloseModal) bCloseModal.addEventListener('click', function() {
+      var m = document.getElementById('shortcutModal');
+      if (m) m.classList.remove('show');
+    });
 
     var bModalOk = document.getElementById('btnModalOk');
-    if (bModalOk) bModalOk.addEventListener('click', closeShortcutModal);
+    if (bModalOk) bModalOk.addEventListener('click', function() {
+      var m = document.getElementById('shortcutModal');
+      if (m) m.classList.remove('show');
+    });
 
     var b1 = document.getElementById('btnBibleVerToggle');
     if (b1) b1.addEventListener('click', switchBibleVersion);
