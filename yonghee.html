@@ -82,7 +82,9 @@
 
     .app-container { flex: 1 1 auto; position: relative; overflow: hidden; width: 100%; background-color: var(--bg-color); }
     
-    .tab-page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color); }
+    .tab-page {
+      position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color);
+    }
     .tab-page.active { display: flex !important; }
 
     .gesture-tip-box {
@@ -110,7 +112,7 @@
     }
 
     .memo-guide-text {
-      font-size: 0.8rem; font-weight: bold; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 2px;
+      font-size: 0.78rem; font-weight: bold; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 2px;
     }
 
     .verse-note-textarea {
@@ -144,6 +146,7 @@
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
+    /* 100% PERFECT HEIGHT FILL & FULL BLEED BOTTOM NAV BAR */
     .mobile-bottom-nav {
       position: fixed;
       bottom: 0;
@@ -151,23 +154,39 @@
       right: 0;
       width: 100%;
       height: calc(60px + env(safe-area-inset-bottom, 0px));
-      padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
       background: var(--nav-bg);
       border-top: 1px solid var(--border-color);
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-around;
       z-index: 9999;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .nav-tab-item {
-      flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-secondary); font-size: 0.82rem; font-weight: 800; cursor: pointer; border: none; background: none; transition: all 0.2s ease;
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      background: var(--nav-bg);
+      transition: all 0.2s ease;
+      margin: 0;
+      padding: 0;
     }
     .nav-tab-item.active {
-      color: var(--accent-green); background: var(--input-bg); border-top: 3px solid var(--accent-green);
+      color: var(--accent-green);
+      background: var(--input-bg);
+      border-top: 3px solid var(--accent-green);
     }
-    .nav-tab-icon { font-size: 1.25rem; margin-bottom: 2px; }
+    .nav-tab-icon { font-size: 1.35rem; margin-bottom: 2px; }
 
     .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     .toast-msg.show { opacity: 1; }
@@ -271,9 +290,8 @@
         <span id="readingStatusBadge" style="font-size: 0.82rem; padding: 3px 9px; border-radius: 12px; background: var(--border-color); color: var(--text-secondary); font-weight: bold;">미완료</span>
       </div>
 
-      <!-- OUTSIDE SINGLE LINE GUIDE BOX RESTORED AS REQUESTED -->
       <div class="gesture-tip-box">
-        💡 길게 누르면 [복사] | 더블클릭은 [메모장]
+        💡 길게 누르면 [복사] | 더블클릭은 [메모작성]
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -773,7 +791,6 @@
           itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
           var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
-          // INCLUDES BOTH AUTO-SAVE NOTICE & INSIDE SAVE BUTTON AS REQUESTED
           itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
             '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
               '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
@@ -781,7 +798,7 @@
             '</div>' +
             '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
               '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
-              '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 자유롭게 작성하세요...">' + savedNote + '</textarea>' +
+              '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
               '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">✅ 저장 완료</button>' +
             '</div>';
 
