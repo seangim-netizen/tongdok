@@ -42,7 +42,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     
     html, body {
-      width: 100%; height: 100%; min-height: 100vh; min-height: -webkit-fill-available; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
+      position: fixed; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
     .app-header {
@@ -81,15 +81,18 @@
     }
 
     .app-container {
-      flex: 1 1 auto;
-      position: relative;
-      overflow: hidden;
+      position: absolute;
+      top: calc(52px + env(safe-area-inset-top, 0px));
+      bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+      left: 0;
+      right: 0;
       width: 100%;
+      overflow: hidden;
       background-color: var(--bg-color);
     }
     
     .tab-page {
-      position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: calc(90px + env(safe-area-inset-bottom, 25px)); overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color);
+      position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: 25px; overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color);
     }
     .tab-page.active { display: flex !important; }
 
@@ -130,7 +133,7 @@
     }
     .btn-save-note-inside:active { opacity: 0.8; }
 
-    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; margin-bottom: 30px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; margin-bottom: 25px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 16px; font-size: 1.15rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
@@ -152,27 +155,38 @@
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
-    /* ABSOLUTE FIXED BOTTOM NAV FILLING DOWN TO DEVICE BOTTOM BEZEL EDGE */
+    /* STABLE PERFECT BOTTOM NAVIGATION BAR */
     .mobile-bottom-nav {
-      position: fixed !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      width: 100vw !important;
-      min-height: 60px !important;
-      padding-bottom: max(env(safe-area-inset-bottom, 0px), 18px) !important;
-      background: var(--nav-bg) !important;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: calc(58px + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: var(--nav-bg);
       border-top: 1px solid var(--border-color);
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-around;
-      z-index: 99999 !important;
-      box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    /* SAFARI & PWA STANDALONE SPECIFIC FULL BOTTOM BEZEL FILL */
+    @media all and (display-mode: standalone) {
+      .app-container {
+        bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+      }
+      .mobile-bottom-nav {
+        height: calc(64px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
     }
 
     .nav-tab-item {
       flex: 1;
-      height: 52px;
+      height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -194,7 +208,7 @@
     }
     .nav-tab-icon { font-size: 1.35rem; margin-bottom: 2px; }
 
-    .toast-msg { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 100000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     .toast-msg.show { opacity: 1; }
   </style>
   <script src="bible_1Chronicles.js"></script>
@@ -786,7 +800,7 @@
         chHeader.innerText = '📖 ' + item.book + ' ' + c + '장';
         container.appendChild(chHeader);
 
-        verses.forEach((function(vText, idx) {
+        verses.forEach(function(vText, idx) {
           var vNum = (idx + 1);
           var verseKey = item.book + '_' + c + '_' + vNum;
           var formattedCopyStr = '[' + item.book + ' ' + c + ':' + vNum + '] ' + vText;
@@ -807,87 +821,84 @@
               '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">✅ 저장 완료</button>' +
             '</div>';
 
-          // ISOLATED CLOSURE FOR EACH VERSE ITEM (INCLUDING VERSE 1)
-          (function(cardEl, vKey, copyStr) {
-            var pressTimer = null;
-            var lastTapTime = 0;
+          var pressTimer = null;
+          var lastTapTime = 0;
 
-            cardEl.addEventListener('touchstart', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              var currentTime = new Date().getTime();
-              var tapLength = currentTime - lastTapTime;
+          itemEl.addEventListener('touchstart', function(e) {
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+            var currentTime = new Date().getTime();
+            var tapLength = currentTime - lastTapTime;
 
-              if (tapLength < 450 && tapLength > 0) {
-                if (pressTimer) clearTimeout(pressTimer);
-                openNoteBox(vKey);
-              } else {
-                pressTimer = setTimeout(function() {
-                  copyTextToClipboard(copyStr, '📋 [' + vKey.replace('_', ' ').replace('_', ':') + '] 구절 복사 완료!');
-                }, 500);
-              }
-              lastTapTime = currentTime;
-            }, { passive: true });
-
-            cardEl.addEventListener('touchend', function(e) {
+            if (tapLength < 350 && tapLength > 0) {
               if (pressTimer) clearTimeout(pressTimer);
-              if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note') && !e.target.classList.contains('btn-save-note-inside')) {
-                if (activeOpenNoteKey && activeOpenNoteKey !== vKey) {
-                  autoSaveActiveNote();
-                }
-              }
-            });
-
-            cardEl.addEventListener('touchmove', function() {
-              if (pressTimer) clearTimeout(pressTimer);
-            });
-
-            cardEl.addEventListener('mousedown', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+              openNoteBox(verseKey);
+            } else {
               pressTimer = setTimeout(function() {
-                copyTextToClipboard(copyStr, '📋 [' + vKey.replace('_', ' ').replace('_', ':') + '] 구절 복사 완료!');
+                copyTextToClipboard(formattedCopyStr, '📋 [' + item.book + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
               }, 500);
-            });
+            }
+            lastTapTime = currentTime;
+          }, { passive: true });
 
-            cardEl.addEventListener('mouseup', function(e) {
-              if (pressTimer) clearTimeout(pressTimer);
-            });
+          itemEl.addEventListener('touchend', function(e) {
+            if (pressTimer) clearTimeout(pressTimer);
+            if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note') && !e.target.classList.contains('btn-save-note-inside')) {
+              if (activeOpenNoteKey && activeOpenNoteKey !== verseKey) {
+                autoSaveActiveNote();
+              }
+            }
+          });
 
-            cardEl.addEventListener('dblclick', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              openNoteBox(vKey);
-            });
+          itemEl.addEventListener('touchmove', function() {
+            if (pressTimer) clearTimeout(pressTimer);
+          });
 
-            cardEl.addEventListener('click', function(e) {
-              if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note') && !e.target.classList.contains('btn-save-note-inside')) {
-                if (activeOpenNoteKey && activeOpenNoteKey !== vKey) {
-                  autoSaveActiveNote();
-                }
+          itemEl.addEventListener('mousedown', function(e) {
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+            pressTimer = setTimeout(function() {
+              copyTextToClipboard(formattedCopyStr, '📋 [' + item.book + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
+            }, 500);
+          });
+
+          itemEl.addEventListener('mouseup', function(e) {
+            if (pressTimer) clearTimeout(pressTimer);
+          });
+
+          itemEl.addEventListener('dblclick', function(e) {
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+            openNoteBox(verseKey);
+          });
+
+          itemEl.addEventListener('click', function(e) {
+            if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note') && !e.target.classList.contains('btn-save-note-inside')) {
+              if (activeOpenNoteKey && activeOpenNoteKey !== verseKey) {
+                autoSaveActiveNote();
+              }
+            }
+          });
+
+          var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
+          if (btnCopy) {
+            btnCopy.addEventListener('click', function(ev) {
+              ev.stopPropagation();
+              var noteVal = verseNotes[verseKey] || '';
+              if (noteVal.trim().length > 0) {
+                copyTextToClipboard(noteVal, '📝 작성한 메모가 복사되었습니다!');
               }
             });
+          }
 
-            var btnCopy = cardEl.querySelector('#btncopy_' + vKey);
-            if (btnCopy) {
-              btnCopy.addEventListener('click', function(ev) {
-                ev.stopPropagation();
-                var noteVal = verseNotes[vKey] || '';
-                if (noteVal.trim().length > 0) {
-                  copyTextToClipboard(noteVal, '📝 작성한 메모가 복사되었습니다!');
-                }
-              });
-            }
-
-            var btnSave = cardEl.querySelector('#btnsave_' + vKey);
-            if (btnSave) {
-              btnSave.addEventListener('click', function(ev) {
-                ev.stopPropagation();
-                autoSaveActiveNote();
-                showToast('✅ 묵상 메모가 저장되었습니다!');
-              });
-            }
-          })(itemEl, verseKey, formattedCopyStr);
+          var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
+          if (btnSave) {
+            btnSave.addEventListener('click', function(ev) {
+              ev.stopPropagation();
+              autoSaveActiveNote();
+              showToast('✅ 묵상 메모가 저장되었습니다!');
+            });
+          }
 
           container.appendChild(itemEl);
-        }));
+        });
       }
 
       var key = 'day_' + item.day;
