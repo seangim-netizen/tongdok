@@ -45,12 +45,12 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* REFINED TWO-ROW HEADER WITH LOGO + NAME BELOW */
+    /* REFINED TWO-ROW HEADER WITH ENLARGED LOGO (32px) & VERTICAL CENTER ALIGNMENT */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
-      padding-left: 10px;
-      padding-right: 10px;
+      padding-left: 12px;
+      padding-right: 12px;
       padding-bottom: 8px;
       display: flex;
       flex-direction: column;
@@ -65,6 +65,7 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
+      min-height: 48px;
     }
 
     .header-bottom-row {
@@ -75,27 +76,28 @@
       width: 100%;
     }
 
-    /* MEMBER NAME BELOW LOGO (LARGER & BOLD) */
+    /* ENLARGED LOGO (32px) + MEMBER NAME (1.12rem), ALIGNED VERTICALLY CENTER */
     .header-logo-box {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       justify-content: center;
-      gap: 2px;
+      gap: 3px;
       flex-shrink: 1;
       min-width: 0;
+      height: 100%;
     }
     .app-brand-logo {
-      height: 22px;
+      height: 32px; /* enlarged logo size */
       width: auto;
       object-fit: contain;
       border-radius: 4px;
     }
     .logo-title-large {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 800;
       color: var(--accent-green);
-      line-height: 1.2;
+      line-height: 1.15;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -326,7 +328,7 @@
 </head>
 <body>
 
-  <!-- EXPANDED TWO-ROW HEADER (LOGO TOP, MEMBER NAME BELOW LARGER, ALARM ON ROW 1) -->
+  <!-- EXPANDED TWO-ROW HEADER (ENLARGED LOGO 32px & VERTICALLY CENTERED) -->
   <header class="app-header">
     <!-- ROW 1: LOGO + NAME BELOW (LEFT), ALARM SETUP + FONT + THEME (RIGHT) -->
     <div class="header-top-row">
@@ -336,7 +338,6 @@
       </div>
 
       <div class="header-actions-row">
-        <!-- ADDED ALARM BUTTON TO ROW 1 PER REQUEST -->
         <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
           🔔 <span>알림 설정</span>
         </button>
@@ -462,7 +463,9 @@
     var journals = {};
     var verseNotes = {};
 
+    // SMART RESUME & PAUSE TTS AUDIO ENGINE
     var isTTSSpeaking = false;
+    var isTTSPaused = false;
     var currentTTSIndex = 0;
     var ttsSpeechItems = [];
     var ttsSpeedRates = [0.8, 1.0, 1.2, 1.5];
@@ -579,25 +582,29 @@
       localStorage.setItem(PERMANENT_FONT_KEY, currentFontSize);
     }
 
-    function stopTTSAudio() {
-      isTTSSpeaking = false;
-      ttsSpeechItems = [];
-      currentTTSIndex = 0;
-
+    // PAUSE & PRESERVE CURRENT TTS VERSE INDEX FOR RESUME
+    function stopTTSAudio(isFullReset) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
 
+      isTTSSpeaking = false;
+
+      if (isFullReset) {
+        isTTSPaused = false;
+        currentTTSIndex = 0;
+        ttsSpeechItems = [];
+      } else {
+        isTTSPaused = true;
+      }
+
       var btnText = document.getElementById('ttsBtnText');
       var btnObj = document.getElementById('btnAudioTTSPlay');
-      if (btnText) btnText.innerText = '낭독';
+      if (btnText) btnText.innerText = isTTSPaused ? '재생' : '낭독';
       if (btnObj) {
         btnObj.style.borderColor = 'var(--accent-green)';
         btnObj.style.color = 'var(--accent-green)';
       }
-      document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
-        el.classList.remove('is-reading-speaking');
-      });
     }
 
     function toggleTTSSpeed() {
@@ -621,20 +628,28 @@
         return;
       }
 
-      stopTTSAudio();
+      if (isTTSSpeaking) {
+        stopTTSAudio(false);
+        showToast('⏸️ 낭독을 일시정지했습니다.');
+        return;
+      }
 
-      ttsSpeechItems = [];
-      var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+      // Build speech queue if new day or fully reset
+      if (!isTTSPaused || ttsSpeechItems.length === 0 || currentTTSIndex >= ttsSpeechItems.length) {
+        currentTTSIndex = 0;
+        ttsSpeechItems = [];
+        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
 
-      allReaderElements.forEach(function(el) {
-        if (el.classList.contains('bible-chapter-header')) {
-          var chText = el.innerText.replace('📖 ', '').trim();
-          ttsSpeechItems.push({ element: el, speakText: chText });
-        } else if (el.classList.contains('bible-verse-card')) {
-          var vPureText = el.getAttribute('data-puretext') || el.innerText;
-          ttsSpeechItems.push({ element: el, speakText: vPureText });
-        }
-      });
+        allReaderElements.forEach(function(el) {
+          if (el.classList.contains('bible-chapter-header')) {
+            var chText = el.innerText.replace('📖 ', '').trim();
+            ttsSpeechItems.push({ element: el, speakText: chText });
+          } else if (el.classList.contains('bible-verse-card')) {
+            var vPureText = el.getAttribute('data-puretext') || el.innerText;
+            ttsSpeechItems.push({ element: el, speakText: vPureText });
+          }
+        });
+      }
 
       if (ttsSpeechItems.length === 0) {
         showToast('📢 낭독할 성경 본문이 없습니다.');
@@ -642,7 +657,7 @@
       }
 
       isTTSSpeaking = true;
-      currentTTSIndex = 0;
+      isTTSPaused = false;
 
       var btnText = document.getElementById('ttsBtnText');
       var btnObj = document.getElementById('btnAudioTTSPlay');
@@ -653,14 +668,19 @@
       }
 
       var rate = ttsSpeedRates[currentTTSSpeedIndex];
-      showToast('🔊 성경 본문 낭독 시작 (' + rate.toFixed(1) + '배속)');
+      if (currentTTSIndex > 0) {
+        showToast('▶️ 멈췄던 구절부터 계속 낭독합니다.');
+      } else {
+        showToast('🔊 성경 본문 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
+      }
       speakNextVerseTTS();
     }
 
     function speakNextVerseTTS() {
       if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
-        stopTTSAudio();
-        if (isTTSSpeaking && currentTTSIndex >= ttsSpeechItems.length) {
+        var wasSpeaking = isTTSSpeaking;
+        stopTTSAudio(true);
+        if (wasSpeaking && currentTTSIndex >= ttsSpeechItems.length) {
           showToast('🎉 오늘의 말씀을 모두 낭독했습니다!');
         }
         return;
@@ -670,7 +690,7 @@
       document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
         el.classList.remove('is-reading-speaking');
       });
-      if (itemObj.element) {
+      if (itemObj && itemObj.element) {
         itemObj.element.classList.add('is-reading-speaking');
         itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -696,7 +716,7 @@
     }
 
     function switchBibleVersion() {
-      stopTTSAudio();
+      stopTTSAudio(true);
       if (currentBibleVersion === 'KG') currentBibleVersion = 'KH';
       else if (currentBibleVersion === 'KH') currentBibleVersion = 'SB';
       else currentBibleVersion = 'KG';
@@ -753,7 +773,7 @@
 
     function switchTab(tabName) {
       autoSaveActiveNote();
-      stopTTSAudio();
+      stopTTSAudio(true);
 
       var pages = document.querySelectorAll('.tab-page');
       var btns = document.querySelectorAll('.nav-tab-item');
@@ -782,7 +802,7 @@
 
     function toggleComplete() {
       autoSaveActiveNote();
-      stopTTSAudio();
+      stopTTSAudio(true);
 
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
@@ -925,7 +945,7 @@
 
     function renderBible(item) {
       autoSaveActiveNote();
-      stopTTSAudio();
+      stopTTSAudio(true);
 
       updateReaderTitleHeader();
       renderDailyReadingNotification();
@@ -1104,7 +1124,7 @@
         
         card.addEventListener('click', function() {
           autoSaveActiveNote();
-          stopTTSAudio();
+          stopTTSAudio(true);
           activeDay = item.day;
           renderBible(item);
           renderSchedule();
@@ -1120,12 +1140,7 @@
     if (btnAudioTTS) {
       btnAudioTTS.onclick = function(e) {
         e.preventDefault();
-        if (isTTSSpeaking) {
-          stopTTSAudio();
-          showToast('⏹️ 성경 낭독을 중지했습니다.');
-        } else {
-          startTTSAudio();
-        }
+        startTTSAudio();
       };
     }
 
