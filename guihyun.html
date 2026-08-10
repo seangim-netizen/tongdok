@@ -358,8 +358,8 @@
       </div>
 
       <div style="font-size: 1.1em; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
-        <span>📅 온라인 구약 성경통독클럽 통독읽기표</span>
-        <button id="btnPushNotifySetup" class="tool-btn" style="border-color:var(--accent-gold); color:var(--accent-gold); font-size:0.75rem;">🔔 매일 통독 알림 설정</button>
+        <span>📅 구약통독클럽</span>
+        <button id="btnPushNotifySetup" class="tool-btn" style="border-color:var(--accent-gold); color:var(--accent-gold); font-size:0.75rem;">🔔 알림 설정</button>
       </div>
       <div id="scheduleListContainer"></div>
     </section>
@@ -743,7 +743,7 @@
       container.innerHTML = '';
 
       if (item.books && item.books[0] && item.books[0].book === '개요 강의') {
-        container.innerHTML = '<div style="padding: 20px; color: var(--accent-gold); line-height: 1.8; background: var(--card-bg); border-radius: 8px;">📌 2026 온라인 구약 성경통독클럽 개요 강의일입니다.<br>저녁 8시 ZOOM 개요 강의 참여 준비를 해주세요.</div>';
+        container.innerHTML = '<div style="padding: 20px; color: var(--accent-gold); line-height: 1.8; background: var(--card-bg); border-radius: 8px;">📌 2026 구약통독클럽 개요 강의일입니다.<br>저녁 8시 ZOOM 개요 강의 참여 준비를 해주세요.</div>';
         updateCompleteButtonUI();
         return;
       }
@@ -930,11 +930,11 @@
           return;
         }
         if (Notification.permission === "granted") {
-          showToast("🔔 매일 통독 및 ZOOM 알림이 활성화되어 있습니다!");
+          showToast("🔔 알림 설정이 완료되어 있습니다!");
         } else {
           Notification.requestPermission().then(function (permission) {
             if (permission === "granted") {
-              showToast("🔔 매일 성경통독 푸시 알림 설정이 완료되었습니다!");
+              showToast("🔔 알림 설정이 완료되었습니다!");
             } else {
               alert("알림 권한이 거부되었습니다. 브라우저 설정에서 권한을 변경해주세요.");
             }
