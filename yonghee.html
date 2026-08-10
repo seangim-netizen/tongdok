@@ -575,13 +575,29 @@
           };
         }
 
-        if ("Notification" in window && Notification.permission === "granted") {
-          var notifTitle = item.zoomInfo ? "🔔 Today 저녁 8시 ZOOM 강의일!" : "📖 오늘의 성경통독 시간입니다!";
-          var notifBody = item.passage + " 말씀을 읽으실 시간입니다. 오늘 하루도 말씀과 함께승리하세요!";
-          new Notification(notifTitle, {
-            body: notifBody,
-            icon: "app_logo.png"
-          });
+        // STRICT PUSH NOTIFICATION DATE CHECK:
+        // PUSH NOTIFICATIONS WILL ONLY FIRE ON OR AFTER SEPT 1ST, 2026 AND ONLY ON MATCHING READING DATES!
+        var now = new Date();
+        var startDate = new Date(2026, 8, 1); // 2026-09-01
+        
+        if (now >= startDate) {
+          var currentMonth = (now.getMonth() + 1).toString();
+          if (currentMonth.length < 2) currentMonth = '0' + currentMonth;
+          var currentDateStr = (now.getDate()).toString();
+          if (currentDateStr.length < 2) currentDateStr = '0' + currentDateStr;
+          
+          var todayMatchStr = currentMonth + '/' + currentDateStr; // e.g. "09/01"
+
+          if (item.date && item.date.indexOf(todayMatchStr) !== -1) {
+            if ("Notification" in window && Notification.permission === "granted") {
+              var notifTitle = item.zoomInfo ? "🔔 Today 저녁 8시 ZOOM 강의일!" : "📖 오늘의 성경통독 시간입니다!";
+              var notifBody = item.passage + " 말씀을 읽으실 시간입니다. 오늘 하루도 말씀과 함께승리하세요!";
+              new Notification(notifTitle, {
+                body: notifBody,
+                icon: "app_logo.png"
+              });
+            }
+          }
         }
       } else {
         box.innerHTML = '';
