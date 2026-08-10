@@ -254,7 +254,7 @@
     }
     .nav-tab-icon { font-size: 1.35rem; margin-bottom: 2px; }
 
-    .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 1000000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 99px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 1000000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     .toast-msg.show { opacity: 1; }
   </style>
   <script src="bible_1Chronicles.js"></script>
@@ -457,7 +457,7 @@
     var journals = {};
     var verseNotes = {};
 
-    // SMART RESUME & PAUSE TTS AUDIO ENGINE
+    // IMPERATIVE INSTANT PAUSE & PRECISE RESUME TTS ENGINE
     var isTTSSpeaking = false;
     var isTTSPaused = false;
     var currentTTSIndex = 0;
@@ -576,17 +576,24 @@
       localStorage.setItem(PERMANENT_FONT_KEY, currentFontSize);
     }
 
+    // IMPERATIVE IMMEDIATE PAUSE & STOP METHOD
     function stopTTSAudio(isFullReset) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-
       isTTSSpeaking = false;
+      
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.cancel();
+        } catch(e) {}
+      }
 
       if (isFullReset) {
         isTTSPaused = false;
         currentTTSIndex = 0;
         ttsSpeechItems = [];
+        document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
+          el.classList.remove('is-reading-speaking');
+        });
       } else {
         isTTSPaused = true;
       }
@@ -609,7 +616,7 @@
 
       if (isTTSSpeaking) {
         if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
+          try { window.speechSynthesis.cancel(); } catch(e) {}
         }
         speakNextVerseTTS();
       }
@@ -687,19 +694,23 @@
         itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
 
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+      }
+
       var utterance = new SpeechSynthesisUtterance(itemObj.speakText);
       utterance.lang = 'ko-KR';
       utterance.rate = ttsSpeedRates[currentTTSSpeedIndex];
       utterance.pitch = 1.0;
 
       utterance.onend = function() {
-        if (!isTTSSpeaking) return;
+        if (!isTTSSpeaking) return; // Strict lock preventing uninvited auto-continuation
         currentTTSIndex++;
         speakNextVerseTTS();
       };
 
       utterance.onerror = function() {
-        if (!isTTSSpeaking) return;
+        if (!isTTSSpeaking) return; // Strict lock
         currentTTSIndex++;
         speakNextVerseTTS();
       };
