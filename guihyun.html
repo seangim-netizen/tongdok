@@ -110,6 +110,13 @@
       display: inline-flex; align-items: center; gap: 4px; background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.82em; font-weight: bold; padding: 3px 9px; border-radius: 12px; margin-top: 5px; width: fit-content;
     }
 
+    .bible-chapter-header {
+      font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.2rem; margin-bottom: 0.7rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4rem; user-select: none; transition: background-color 0.2s ease, border-color 0.2s ease; border-radius: 6px; padding-left: 4px;
+    }
+    .bible-chapter-header.is-reading-speaking {
+      background: rgba(245, 158, 11, 0.18) !important; color: var(--accent-gold) !important; border-bottom-color: var(--accent-gold) !important;
+    }
+
     .bible-verse-card {
       background: var(--card-bg); border-radius: 10px; padding: 15px 16px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.72; word-break: keep-all; position: relative; cursor: pointer; user-select: none; touch-action: manipulation; transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
     }
@@ -289,18 +296,17 @@
     </div>
 
     <div class="header-actions-row">
-      <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
-        🔔 <span>알림 설정</span>
-      </button>
-
       <div class="font-size-control" id="headerFontControl">
         <button class="font-btn" id="btnFontDec">가-</button>
         <button class="font-btn" id="btnFontInc">가+</button>
       </div>
 
-      <!-- NEW: BIBLE AUDIO TTS READ BUTTON -->
+      <!-- BIBLE AUDIO TTS READ & SPEED CONTROL BUTTONS -->
       <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
         🔊 <span id="ttsBtnText">낭독</span>
+      </button>
+      <button class="tool-btn" id="btnTTSSpeedToggle" style="border-color: var(--accent-green); color: var(--accent-green);">
+        ⚡ <span id="ttsSpeedLabel">1.0배속</span>
       </button>
 
       <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
@@ -367,8 +373,9 @@
         </div>
       </div>
 
-      <div style="font-size: 1.1em; font-weight: 800; color: var(--accent-green); margin-bottom: 12px;">
-        📅 구약통독클럽
+      <div style="font-size: 1.1em; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
+        <span>📅 구약통독클럽</span>
+        <button id="btnPushNotifySetup" class="tool-btn" style="border-color:var(--accent-gold); color:var(--accent-gold); font-size:0.75rem;">🔔 알림 설정</button>
       </div>
       <div id="scheduleListContainer"></div>
     </section>
@@ -410,7 +417,9 @@
 
     var isTTSSpeaking = false;
     var currentTTSIndex = 0;
-    var verseElementsList = [];
+    var ttsSpeechItems = []; // List of { element: DOMElement, speakText: String }
+    var ttsSpeedRates = [0.8, 1.0, 1.2, 1.5];
+    var currentTTSSpeedIndex = 1; // Default 1.0x
 
     function loadJournals() {
       var dataLoaded = false;
@@ -535,9 +544,24 @@
         btnObj.style.borderColor = 'var(--accent-green)';
         btnObj.style.color = 'var(--accent-green)';
       }
-      document.querySelectorAll('.bible-verse-card').forEach(function(el) {
+      document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
         el.classList.remove('is-reading-speaking');
       });
+    }
+
+    function toggleTTSSpeed() {
+      currentTTSSpeedIndex = (currentTTSSpeedIndex + 1) % ttsSpeedRates.length;
+      var rate = ttsSpeedRates[currentTTSSpeedIndex];
+      var lbl = document.getElementById('ttsSpeedLabel');
+      if (lbl) lbl.innerText = rate.toFixed(1) + '배속';
+      showToast('⚡ 낭독 속도: ' + rate.toFixed(1) + '배속');
+
+      if (isTTSSpeaking) {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        speakNextVerseTTS();
+      }
     }
 
     function startTTSAudio() {
@@ -548,8 +572,23 @@
 
       stopTTSAudio();
 
-      verseElementsList = Array.from(document.querySelectorAll('.bible-verse-card'));
-      if (verseElementsList.length === 0) {
+      ttsSpeechItems = [];
+      var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+
+      allReaderElements.forEach(function(el) {
+        if (el.classList.contains('bible-chapter-header')) {
+          var chText = el.innerText.replace('📖 ', '').trim();
+          ttsSpeechItems.push({ element: el, speakText: chText });
+        } else if (el.classList.contains('bible-verse-card')) {
+          var vNum = el.getAttribute('data-vnum') || '1';
+          var vPureText = el.getAttribute('data-puretext') || el.innerText;
+          // Speak "1절. 하나님이 가라사대..." without repeating book name!
+          var speakText = vNum + '절. ' + vPureText;
+          ttsSpeechItems.push({ element: el, speakText: speakText });
+        }
+      });
+
+      if (ttsSpeechItems.length === 0) {
         showToast('📢 낭독할 성경 본문이 없습니다.');
         return;
       }
@@ -565,31 +604,32 @@
         btnObj.style.color = 'var(--accent-gold)';
       }
 
-      showToast('🔊 성경 본문 낭독을 시작합니다.');
+      var rate = ttsSpeedRates[currentTTSSpeedIndex];
+      showToast('🔊 자연스러운 성경 낭독 시작 (' + rate.toFixed(1) + '배속)');
       speakNextVerseTTS();
     }
 
     function speakNextVerseTTS() {
-      if (!isTTSSpeaking || currentTTSIndex >= verseElementsList.length) {
+      if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
         stopTTSAudio();
-        if (currentTTSIndex >= verseElementsList.length) {
+        if (currentTTSIndex >= ttsSpeechItems.length) {
           showToast('🎉 오늘의 말씀을 모두 낭독했습니다!');
         }
         return;
       }
 
-      var cardEl = verseElementsList[currentTTSIndex];
-      document.querySelectorAll('.bible-verse-card').forEach(function(el) {
+      var itemObj = ttsSpeechItems[currentTTSIndex];
+      document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
         el.classList.remove('is-reading-speaking');
       });
-      cardEl.classList.add('is-reading-speaking');
-      cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (itemObj.element) {
+        itemObj.element.classList.add('is-reading-speaking');
+        itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
 
-      var textToSpeak = cardEl.getAttribute('data-copystr') || cardEl.innerText;
-      
-      var utterance = new SpeechSynthesisUtterance(textToSpeak);
+      var utterance = new SpeechSynthesisUtterance(itemObj.speakText);
       utterance.lang = 'ko-KR';
-      utterance.rate = 0.95; // 정갈하고 품격있는 낭독 속도
+      utterance.rate = ttsSpeedRates[currentTTSSpeedIndex];
       utterance.pitch = 1.0;
 
       utterance.onend = function() {
@@ -678,19 +718,23 @@
       var fontCtrl = document.getElementById('headerFontControl');
       var verBtn = document.getElementById('btnBibleVerToggle');
       var ttsBtn = document.getElementById('btnAudioTTSPlay');
+      var ttsSpeedBtn = document.getElementById('btnTTSSpeedToggle');
 
       if (tabName === 'reader') {
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (verBtn) verBtn.style.display = 'inline-flex';
         if (ttsBtn) ttsBtn.style.display = 'inline-flex';
+        if (ttsSpeedBtn) ttsSpeedBtn.style.display = 'inline-flex';
       } else if (tabName === 'editor') {
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (verBtn) verBtn.style.display = 'none';
         if (ttsBtn) ttsBtn.style.display = 'none';
+        if (ttsSpeedBtn) ttsSpeedBtn.style.display = 'none';
       } else if (tabName === 'schedule') {
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (verBtn) verBtn.style.display = 'none';
         if (ttsBtn) ttsBtn.style.display = 'none';
+        if (ttsSpeedBtn) ttsSpeedBtn.style.display = 'none';
       }
     }
 
@@ -865,7 +909,7 @@
         for (var c = bInfo.start; c <= bInfo.end; c++) {
           var verses = bookData[c.toString()] || [];
           var chHeader = document.createElement('div');
-          chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.2rem; margin-bottom: 0.7rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4rem; user-select: none; pointer-events: none;';
+          chHeader.className = 'bible-chapter-header';
           chHeader.innerText = '📖 ' + bookName + ' ' + c + '장';
           container.appendChild(chHeader);
 
@@ -878,6 +922,8 @@
             var itemEl = document.createElement('div');
             itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
             itemEl.setAttribute('data-vkey', verseKey);
+            itemEl.setAttribute('data-vnum', vNum);
+            itemEl.setAttribute('data-puretext', vText);
             itemEl.setAttribute('data-copystr', formattedCopyStr);
             var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
@@ -1038,6 +1084,14 @@
         } else {
           startTTSAudio();
         }
+      };
+    }
+
+    var btnTTSSpeed = document.getElementById('btnTTSSpeedToggle');
+    if (btnTTSSpeed) {
+      btnTTSSpeed.onclick = function(e) {
+        e.preventDefault();
+        toggleTTSSpeed();
       };
     }
 
