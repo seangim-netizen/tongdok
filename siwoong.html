@@ -262,7 +262,7 @@
       transform: translateX(-50%);
       background: var(--accent-green);
       color: #ffffff;
-      padding: 7px 15px; /* RESTORED SMALL COMPACT PADDING */
+      padding: 7px 15px;
       border-radius: 18px;
       font-weight: bold;
       font-size: 0.82rem;
@@ -475,12 +475,12 @@
     var journals = {};
     var verseNotes = {};
 
-    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE
+    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH 1.1X SPEED OPTION!
     var isTTSSpeaking = false;
     var isTTSPaused = false;
     var currentTTSIndex = 0;
     var ttsSpeechItems = [];
-    var ttsSpeedRates = [0.8, 1.0, 1.2, 1.5];
+    var ttsSpeedRates = [0.8, 1.0, 1.1, 1.2, 1.5]; // 1.1x SPEED INCLUDED!
     var currentTTSSpeedIndex = 1; // Default 1.0x
 
     function loadJournals() {
