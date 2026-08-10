@@ -45,16 +45,15 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* REFINED TWO-ROW HEADER: LOGO+NAME ENLARGED 1.2X ON SCRIPTURE TAB, BUTTONS RIGHT ALIGNED ORIGINAL */
+    /* SINGLE-ROW ULTRA-SLIM HEADER (ALL 6 BUTTONS IN 1 ROW MATCHING EDITOR TAB HEIGHT) */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
-      padding-left: 10px;
-      padding-right: 10px;
+      padding-left: 8px;
+      padding-right: 8px;
       padding-bottom: 5px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
@@ -67,63 +66,56 @@
       justify-content: space-between;
       width: 100%;
       padding-top: 2px;
-      min-height: 44px;
+      min-height: 42px;
     }
 
-    .header-bottom-row {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end; /* RIGHT ALIGNED ORIGINAL */
-      gap: 4px;
-      width: 100%;
-    }
-
-    /* LEFT LOGO & MEMBER NAME (LEFT ALIGNED ORIGINAL) */
+    /* LEFT LOGO & MEMBER NAME */
     .header-logo-box {
       display: flex;
       flex-direction: column;
-      align-items: flex-start; /* LEFT ALIGNED ORIGINAL */
+      align-items: flex-start;
       justify-content: center;
-      gap: 2px;
-      flex-shrink: 1;
-      min-width: 0;
-      height: 100%;
-      transition: all 0.25s ease;
+      gap: 1px;
+      flex-shrink: 0;
+      margin-right: 4px;
     }
 
     .app-brand-logo {
-      height: 28px;
+      height: 24px;
       width: auto;
       object-fit: contain;
       border-radius: 4px;
-      transition: height 0.25s ease;
     }
 
     .logo-title-sub {
-      font-size: 1.42rem; /* 1.2X LARGER ON SCRIPTURE READING TAB */
+      font-size: 1.25rem; /* 1.2X LARGER NAME */
       font-weight: 800;
       color: var(--accent-green);
-      line-height: 1.15;
+      line-height: 1.1;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: font-size 0.25s ease;
     }
 
     .header-actions-row {
-      display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 1;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .header-actions-row::-webkit-scrollbar { display: none; }
 
     .font-size-control {
-      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; height: 28px;
+      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; height: 26px; flex-shrink: 0;
     }
     .font-btn {
-      background: none; border: none; color: var(--text-primary); font-size: 0.78rem; font-weight: bold; padding: 0 6px; height: 100%; cursor: pointer; display: flex; align-items: center;
+      background: none; border: none; color: var(--text-primary); font-size: 0.74rem; font-weight: bold; padding: 0 4px; height: 100%; cursor: pointer; display: flex; align-items: center;
     }
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 7px; height: 28px; font-size: 0.76rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 6px; height: 26px; font-size: 0.74rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; flex-shrink: 0;
     }
 
     .app-container {
@@ -335,16 +327,28 @@
 </head>
 <body>
 
-  <!-- DYNAMIC TWO-ROW HEADER (ONLY LOGO & NAME ENLARGED 1.2X ON SCRIPTURE TAB, BUTTONS RIGHT ALIGNED ORIGINAL) -->
-  <header class="app-header tab-mode-reader" id="mainAppHeader">
-    <!-- ROW 1: LEFT LOGO & NAME, RIGHT ALIGNED BUTTONS ORIGINAL -->
+  <!-- SINGLE-ROW HEADER DESIGN TEST: ALL 6 BUTTONS COMPACTLY FIT IN 1 ROW MATCHING EDITOR TAB HEIGHT -->
+  <header class="app-header" id="mainAppHeader">
     <div class="header-top-row">
       <div class="header-logo-box" id="headerLogoBox">
         <img src="header_logo.png" alt="Login Church" class="app-brand-logo" id="brandLogoImg">
         <div class="logo-title-sub" id="logoTitleText">나정훈 권사</div>
       </div>
 
-      <div class="header-actions-row">
+      <!-- ALL 6 BUTTONS IN A SINGLE SLIM ROW -->
+      <div class="header-actions-row" id="headerActionsRow">
+        <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
+          🔊 <span id="ttsBtnText">낭독</span>
+        </button>
+
+        <button class="tool-btn" id="btnTTSSpeedToggle" style="border-color: var(--accent-green); color: var(--accent-green);">
+          ⚡ <span id="ttsSpeedLabel">1.0배</span>
+        </button>
+
+        <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
+          📖 <span id="bibleVersionLabel">개역</span>
+        </button>
+
         <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
           🔔 <span>알림</span>
         </button>
@@ -358,19 +362,6 @@
           <span id="themeIcon">☀️</span> <span id="themeText">밝게</span>
         </button>
       </div>
-    </div>
-
-    <!-- ROW 2: BIBLE SPECIALIST TOOLS (RIGHT ALIGNED ORIGINAL) -->
-    <div class="header-bottom-row" id="headerSecondRowTools">
-      <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
-        🔊 <span id="ttsBtnText">낭독</span>
-      </button>
-      <button class="tool-btn" id="btnTTSSpeedToggle" style="border-color: var(--accent-green); color: var(--accent-green);">
-        ⚡ <span id="ttsSpeedLabel">1.0배속</span>
-      </button>
-      <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
-        📖 <span id="bibleVersionLabel">개역개정</span>
-      </button>
     </div>
   </header>
 
@@ -617,7 +608,7 @@
       currentTTSSpeedIndex = (currentTTSSpeedIndex + 1) % ttsSpeedRates.length;
       var rate = ttsSpeedRates[currentTTSSpeedIndex];
       var lbl = document.getElementById('ttsSpeedLabel');
-      if (lbl) lbl.innerText = rate.toFixed(1) + '배속';
+      if (lbl) lbl.innerText = rate.toFixed(1) + '배';
       showToast('⚡ 낭독 속도: ' + rate.toFixed(1) + '배속');
 
       if (isTTSSpeaking) {
@@ -735,7 +726,7 @@
 
     function updateBibleVersionUI() {
       var label = document.getElementById('bibleVersionLabel');
-      var name = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+      var name = (currentBibleVersion === 'KG' ? '개역' : (currentBibleVersion === 'KH' ? '한글' : '새번'));
       if (label) label.innerText = name;
       updateReaderTitleHeader();
     }
@@ -776,9 +767,8 @@
       }
     }
 
-    // TAB SWITCHING LOGIC:
-    // 'reader': ONLY Logo & Member Name Enlarged 1.2x (1.42rem), Buttons Left/Right Original!
-    // 'editor' / 'schedule': Logo & Member Name Scaled 0.8x (0.94rem), Compact Header
+    // TAB SWITCHING: IN ALL TABS, HEADER IS Ultra-Slim Single Row!
+    // Shows Bible tools (TTS, Speed, Version) when on 'reader' tab, hides on 'editor' & 'schedule'
     function switchTab(tabName) {
       autoSaveActiveNote();
       stopTTSAudio(true);
@@ -793,32 +783,24 @@
       if (targetPage) targetPage.classList.add('active');
       if (targetBtn) targetBtn.classList.add('active');
 
-      var appHeader = document.getElementById('mainAppHeader');
-      var fontCtrl = document.getElementById('headerFontControl');
-      var secRowTools = document.getElementById('headerSecondRowTools');
+      var btnAudio = document.getElementById('btnAudioTTSPlay');
+      var btnSpeed = document.getElementById('btnTTSSpeedToggle');
+      var btnVer = document.getElementById('btnBibleVerToggle');
       var titleText = document.getElementById('logoTitleText');
       var logoImg = document.getElementById('brandLogoImg');
 
       if (tabName === 'reader') {
-        if (appHeader) appHeader.className = 'app-header tab-mode-reader';
-        if (fontCtrl) fontCtrl.style.display = 'inline-flex';
-        if (secRowTools) secRowTools.style.display = 'flex';
-        if (titleText) {
-          titleText.style.fontSize = '1.42rem'; // Only logo & name enlarged 1.2x on Scripture tab!
-        }
-        if (logoImg) {
-          logoImg.style.height = '28px';
-        }
+        if (btnAudio) btnAudio.style.display = 'inline-flex';
+        if (btnSpeed) btnSpeed.style.display = 'inline-flex';
+        if (btnVer) btnVer.style.display = 'inline-flex';
+        if (titleText) titleText.style.fontSize = '1.25rem'; // 1.2x enlarged name
+        if (logoImg) logoImg.style.height = '24px';
       } else {
-        if (appHeader) appHeader.className = 'app-header tab-mode-compact';
-        if (fontCtrl) fontCtrl.style.display = 'inline-flex';
-        if (secRowTools) secRowTools.style.display = 'none';
-        if (titleText) {
-          titleText.style.fontSize = '0.94rem'; // 0.8x smaller on Editor & Schedule tabs
-        }
-        if (logoImg) {
-          logoImg.style.height = '20px';
-        }
+        if (btnAudio) btnAudio.style.display = 'none';
+        if (btnSpeed) btnSpeed.style.display = 'none';
+        if (btnVer) btnVer.style.display = 'none';
+        if (titleText) titleText.style.fontSize = '0.94rem'; // 0.8x smaller on other tabs
+        if (logoImg) logoImg.style.height = '18px';
       }
     }
 
