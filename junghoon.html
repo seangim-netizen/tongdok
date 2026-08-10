@@ -97,8 +97,9 @@
       background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; text-align: center;
     }
 
+    /* DISABLING 300MS TAP DELAY FOR INSTANT VERSE 1 + ALL VERSE DOUBLE CLICK */
     .bible-verse-card {
-      background: var(--card-bg); border-radius: 10px; padding: 15px 16px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.72; word-break: keep-all; position: relative; cursor: pointer; user-select: none; transition: transform 0.15s ease, background-color 0.2s ease;
+      background: var(--card-bg); border-radius: 10px; padding: 15px 16px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.72; word-break: keep-all; position: relative; cursor: pointer; user-select: none; touch-action: manipulation; transition: transform 0.15s ease, background-color 0.2s ease;
     }
     .bible-verse-card:active { transform: scale(0.985); background: var(--border-color); }
     .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
@@ -152,7 +153,7 @@
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
-    /* 100% GUARANTEED BOTTOM NAV BAR FIXED AT VERY BOTTOM OF DEVICE DISPLAY */
+    /* BOTTOM NAV BAR WITH UNIFIED BACKGROUND COLOR (SAME AS BEZEL AREA) */
     .mobile-bottom-nav {
       position: fixed !important;
       bottom: 0 !important;
@@ -183,14 +184,14 @@
       font-weight: 800;
       cursor: pointer;
       border: none;
-      background: var(--nav-bg);
+      background: var(--nav-bg) !important;
       transition: all 0.2s ease;
       margin: 0;
       padding: 0;
     }
     .nav-tab-item.active {
-      color: var(--accent-green);
-      background: var(--input-bg);
+      color: var(--accent-green) !important;
+      background: var(--nav-bg) !important; /* SAME UNIFIED BACKGROUND AS BOTTOM NAV BAR & BEZEL */
       border-top: 3px solid var(--accent-green);
     }
     .nav-tab-icon { font-size: 1.35rem; margin-bottom: 2px; }
@@ -813,41 +814,52 @@
           var pressTimer = null;
           var lastTapTime = 0;
 
-          // DIRECT BINDING FOR VERSE 1 AND ALL VERSES WITH PROPER TARGET ISOLATION
-          itemEl.onpointerdown = function(e) {
+          // PERFECTED MULTI-EVENT HANDLER FOR VERSE 1 AND ALL VERSES
+          function handleCardPress(e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
             
             var currentTime = new Date().getTime();
             var tapLength = currentTime - lastTapTime;
 
-            if (tapLength < 350 && tapLength > 0) {
-              if (pressTimer) clearTimeout(pressTimer);
+            if (tapLength < 450 && tapLength > 0) {
+              if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
               openNoteBox(verseKey);
             } else {
+              if (pressTimer) clearTimeout(pressTimer);
               pressTimer = setTimeout(function() {
                 copyTextToClipboard(formattedCopyStr, '📋 [' + item.book + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
+                pressTimer = null;
               }, 550);
             }
             lastTapTime = currentTime;
-          };
+          }
 
-          itemEl.onpointerup = function(e) {
-            if (pressTimer) clearTimeout(pressTimer);
+          itemEl.addEventListener('touchstart', handleCardPress, { passive: true });
+          
+          itemEl.addEventListener('touchend', function(e) {
+            if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
             if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note') && !e.target.classList.contains('btn-save-note-inside')) {
               if (activeOpenNoteKey && activeOpenNoteKey !== verseKey) {
                 autoSaveActiveNote();
               }
             }
-          };
+          });
 
-          itemEl.onpointermove = function() {
-            if (pressTimer) clearTimeout(pressTimer);
-          };
+          itemEl.addEventListener('touchmove', function() {
+            if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+          });
 
-          itemEl.ondblclick = function(e) {
+          itemEl.addEventListener('mousedown', handleCardPress);
+
+          itemEl.addEventListener('mouseup', function() {
+            if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+          });
+
+          itemEl.addEventListener('dblclick', function(e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+            if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
             openNoteBox(verseKey);
-          };
+          });
 
           var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
           if (btnCopy) {
