@@ -702,8 +702,8 @@
     var currentTTSIndex = 0;
     var selectedCursorVerseIndex = 0;
     var ttsSpeechItems = [];
-    var ttsSpeedRates = [0.8, 1.0, 1.1, 1.2, 1.5];
-    var currentTTSSpeedIndex = 1;
+    var ttsSpeedRates = [0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]; // ADDED 1.3X AND 1.4X SPEED!
+    var currentTTSSpeedIndex = 2; // Default 1.0x (Index 2 in [0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5])
 
     function loadJournals() {
       var dataLoaded = false;
@@ -1155,12 +1155,10 @@
       }
     }
 
-    // SWITCH BIBLE VERSION & SEAMLESSLY CONTINUE READING THE SAME VERSE IF PLAYING!
     function switchBibleVersion() {
       var wasSpeaking = isTTSSpeaking;
       var savedIndex = currentTTSIndex;
 
-      // Cancel current speech output
       if ('speechSynthesis' in window) {
         try { window.speechSynthesis.cancel(); } catch(e) {}
       }
@@ -1172,14 +1170,11 @@
       localStorage.setItem(PERMANENT_VER_KEY, currentBibleVersion);
       updateBibleVersionUI();
       
-      // Re-render Bible text in new version
       renderBible(scheduleData[activeDay]);
 
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
       
-      // IF PLAYING BEFORE SWITCH -> SEAMLESSLY RESUME READING AT SAME VERSE!
       if (wasSpeaking) {
-        // Re-populate speech items from newly rendered DOM
         ttsSpeechItems = [];
         var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
         allReaderElements.forEach(function(el) {
