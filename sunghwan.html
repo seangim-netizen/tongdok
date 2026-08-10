@@ -45,16 +45,16 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* BEAUTIFUL TWO-ROW HEADER SYSTEM */
+    /* REFINED TWO-ROW HEADER WITH LOGO + NAME BELOW */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
       padding-left: 10px;
       padding-right: 10px;
-      padding-bottom: 6px;
+      padding-bottom: 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
@@ -64,7 +64,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 38px;
       width: 100%;
     }
 
@@ -76,12 +75,34 @@
       width: 100%;
     }
 
-    .header-logo-box { display: flex; align-items: center; gap: 6px; flex-shrink: 1; min-width: 0; overflow: hidden; }
-    .app-brand-logo { height: 28px; width: auto; max-width: 90px; object-fit: contain; flex-shrink: 0; border-radius: 4px; }
-    .logo-title { font-size: 0.98rem; font-weight: 800; color: var(--accent-green); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* MEMBER NAME BELOW LOGO (LARGER & BOLD) */
+    .header-logo-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 2px;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .app-brand-logo {
+      height: 22px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .logo-title-large {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .header-actions-row {
-      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 5px; flex-shrink: 0;
     }
 
     .font-size-control {
@@ -93,7 +114,7 @@
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 9px; height: 30px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 8px; height: 30px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;
     }
 
     .app-container {
@@ -305,16 +326,21 @@
 </head>
 <body>
 
-  <!-- EXPANDED TWO-ROW INTEGRATED HEADER -->
+  <!-- EXPANDED TWO-ROW HEADER (LOGO TOP, MEMBER NAME BELOW LARGER, ALARM ON ROW 1) -->
   <header class="app-header">
-    <!-- ROW 1: BRAND LOGO & MEMBER NAME (LEFT) + FONT & THEME (RIGHT) -->
+    <!-- ROW 1: LOGO + NAME BELOW (LEFT), ALARM SETUP + FONT + THEME (RIGHT) -->
     <div class="header-top-row">
       <div class="header-logo-box">
         <img src="header_logo.png" alt="Login Church" class="app-brand-logo">
-        <div class="logo-title">조성환 권사</div>
+        <div class="logo-title-large">조성환 권사</div>
       </div>
 
       <div class="header-actions-row">
+        <!-- ADDED ALARM BUTTON TO ROW 1 PER REQUEST -->
+        <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
+          🔔 <span>알림 설정</span>
+        </button>
+
         <div class="font-size-control" id="headerFontControl">
           <button class="font-btn" id="btnFontDec">가-</button>
           <button class="font-btn" id="btnFontInc">가+</button>
@@ -395,9 +421,8 @@
         </div>
       </div>
 
-      <div style="font-size: 1.1em; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
-        <span>📅 구약통독클럽</span>
-        <button id="btnPushNotifySetup" class="tool-btn" style="border-color:var(--accent-gold); color:var(--accent-gold); font-size:0.75rem;">🔔 알림 설정</button>
+      <div style="font-size: 1.1em; font-weight: 800; color: var(--accent-green); margin-bottom: 12px;">
+        📅 구약통독클럽
       </div>
       <div id="scheduleListContainer"></div>
     </section>
