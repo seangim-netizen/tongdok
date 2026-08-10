@@ -68,29 +68,28 @@
       min-height: 38px;
     }
 
-    /* LOGO & MEMBER NAME (0.7X SLIM NAME = 0.75rem ACROSS ALL TABS) */
+    /* SINGLE LINE LOGO + MEMBER NAME (1.2X ENLARGED: LOGO 22px & FONT 0.9rem) */
     .header-logo-box {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 1px;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
       flex-shrink: 0;
-      margin-right: 6px;
+      margin-right: 8px;
     }
 
     .app-brand-logo {
-      height: 18px;
+      height: 22px;
       width: auto;
       object-fit: contain;
       border-radius: 3px;
     }
 
     .logo-title-sub {
-      font-size: 0.75rem; /* 0.7X REDUCED MEMBER NAME SIZE ACROSS ALL TABS */
-      font-weight: 700;
+      font-size: 0.9rem;
+      font-weight: 800;
       color: var(--accent-green);
-      line-height: 1.1;
+      line-height: 1;
       white-space: nowrap;
     }
 
@@ -160,7 +159,17 @@
     }
     .bible-verse-card:active { transform: scale(0.985); background: var(--border-color); }
     .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
-    .bible-verse-card.is-reading-speaking { background: rgba(16, 185, 129, 0.18) !important; border-color: var(--accent-green) !important; border-left-width: 6px !important; box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); }
+    .bible-verse-card.selected-cursor-verse {
+      border-color: var(--accent-gold) !important;
+      border-left-width: 6px !important;
+      background: rgba(245, 158, 11, 0.1) !important;
+    }
+    .bible-verse-card.is-reading-speaking {
+      background: rgba(16, 185, 129, 0.18) !important;
+      border-color: var(--accent-green) !important;
+      border-left-width: 6px !important;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+    }
     
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
@@ -277,7 +286,7 @@
     }
     .nav-tab-icon { font-size: 1.35rem; margin-bottom: 2px; }
 
-    /* NEW FLOATING AUDIO PLAYER CONTROL POPUP BAR */
+    /* FLOATING AUDIO PLAYER POPUP BAR */
     .audio-player-popup {
       position: fixed;
       bottom: calc(62px + env(safe-area-inset-bottom, 0px));
@@ -519,7 +528,7 @@
 </head>
 <body>
 
-  <!-- CLEAN SLIM HEADER WITH "낭독 컨트롤러", "개역개정", "가-", "가+", "밝게" BUTTONS -->
+  <!-- CLEAN SLIM HEADER: SINGLE-LINE LOGO + NAME (1.2X ENLARGED) -->
   <header class="app-header" id="mainAppHeader">
     <div class="header-top-row">
       <div class="header-logo-box" id="headerLogoBox">
@@ -560,7 +569,7 @@
 
       <!-- CLEAN 2-LINE FORMATTED GESTURE TIP BOX -->
       <div class="gesture-tip-box" id="readerTipBox">
-        💡 임의 구절 터치: 누른 구절부터 즉시 낭독 시작<br>
+        💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>
         💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모
       </div>
 
@@ -691,9 +700,10 @@
     var isTTSSpeaking = false;
     var isTTSPaused = false;
     var currentTTSIndex = 0;
+    var selectedCursorVerseIndex = 0;
     var ttsSpeechItems = [];
-    var ttsSpeedRates = [0.8, 1.0, 1.1, 1.2, 1.5]; // 0.8~1.5x SPEEDS
-    var currentTTSSpeedIndex = 1; // Default 1.0x
+    var ttsSpeedRates = [0.8, 1.0, 1.1, 1.2, 1.5];
+    var currentTTSSpeedIndex = 1;
 
     function loadJournals() {
       var dataLoaded = false;
@@ -855,8 +865,10 @@
         }
       }
 
-      if (ttsSpeechItems[currentTTSIndex]) {
-        var itemObj = ttsSpeechItems[currentTTSIndex];
+      var activeIdx = isTTSSpeaking ? currentTTSIndex : selectedCursorVerseIndex;
+
+      if (ttsSpeechItems[activeIdx]) {
+        var itemObj = ttsSpeechItems[activeIdx];
         var infoStr = '낭독 준비';
         if (itemObj.element) {
           if (itemObj.element.classList.contains('bible-chapter-header')) {
@@ -864,7 +876,7 @@
           } else {
             var vNum = itemObj.element.getAttribute('data-vnum');
             var itemPassage = (scheduleData[activeDay] || {}).passage || '';
-            infoStr = itemPassage.split(' ')[0] + ' ' + vNum + '절 낭독 중';
+            infoStr = itemPassage.split(' ')[0] + ' ' + vNum + '절' + (isTTSSpeaking ? ' 낭독 중' : ' 선택됨');
           }
         }
         if (pInfo) pInfo.innerText = infoStr;
@@ -898,19 +910,8 @@
       updatePlayerControlsUI();
     }
 
-    // TOUCH ANY VERSE CARD -> IMMEDIATELY JUMP TO THAT VERSE & POP UP CONTROLLER!
-    function speakFromSpecificVerseElement(targetEl) {
-      if (!('speechSynthesis' in window)) {
-        alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
-        return;
-      }
-
-      // Stop current speech & reset pending callbacks
-      isTTSSpeaking = false;
-      if ('speechSynthesis' in window) {
-        try { window.speechSynthesis.cancel(); } catch(e) {}
-      }
-
+    // TOUCH VERSE HANDLER
+    function handleVerseElementTouch(targetEl) {
       if (ttsSpeechItems.length === 0) {
         ttsSpeechItems = [];
         var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
@@ -934,14 +935,33 @@
       }
 
       if (targetIdx !== -1) {
-        currentTTSIndex = targetIdx;
-        isTTSSpeaking = true;
-        isTTSPaused = false;
+        selectedCursorVerseIndex = targetIdx;
 
-        var vNum = targetEl.getAttribute('data-vnum');
-        showToast(vNum ? (vNum + '절부터 낭독합니다.') : '선택한 구절부터 낭독합니다.');
-        updatePlayerControlsUI();
-        speakNextVerseTTS();
+        document.querySelectorAll('.selected-cursor-verse').forEach(function(el) {
+          el.classList.remove('selected-cursor-verse');
+        });
+
+        if (isTTSSpeaking) {
+          isTTSSpeaking = false;
+          if ('speechSynthesis' in window) {
+            try { window.speechSynthesis.cancel(); } catch(e) {}
+          }
+
+          currentTTSIndex = targetIdx;
+          isTTSSpeaking = true;
+          isTTSPaused = false;
+
+          var vNum = targetEl.getAttribute('data-vnum');
+          showToast(vNum ? (vNum + '절부터 낭독합니다.') : '선택한 구절부터 낭독합니다.');
+          updatePlayerControlsUI();
+          speakNextVerseTTS();
+        } 
+        else {
+          targetEl.classList.add('selected-cursor-verse');
+          var vNum2 = targetEl.getAttribute('data-vnum');
+          showToast(vNum2 ? (vNum2 + '절 선택 완료 (낭독 버튼을 누르면 이 구절부터 낭독합니다)') : '구절 선택 완료');
+          updatePlayerControlsUI();
+        }
       }
     }
 
@@ -975,6 +995,7 @@
         currentTTSIndex = 0;
       }
 
+      selectedCursorVerseIndex = currentTTSIndex;
       isTTSSpeaking = true;
       isTTSPaused = false;
       showToast('이전 구절로 이동하여 낭독합니다.');
@@ -1010,6 +1031,7 @@
         }
       }
 
+      selectedCursorVerseIndex = currentTTSIndex;
       isTTSSpeaking = true;
       isTTSPaused = false;
       showToast('다음 구절로 이동하여 낭독합니다.');
@@ -1044,8 +1066,7 @@
         return;
       }
 
-      if (!isTTSPaused || ttsSpeechItems.length === 0 || currentTTSIndex >= ttsSpeechItems.length) {
-        currentTTSIndex = 0;
+      if (ttsSpeechItems.length === 0) {
         ttsSpeechItems = [];
         var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
 
@@ -1065,12 +1086,16 @@
         return;
       }
 
+      if (!isTTSPaused) {
+        currentTTSIndex = selectedCursorVerseIndex;
+      }
+
       isTTSSpeaking = true;
       isTTSPaused = false;
 
       var rate = ttsSpeedRates[currentTTSSpeedIndex];
       if (currentTTSIndex > 0) {
-        showToast('멈췄던 구절부터 계속 낭독합니다.');
+        showToast('선택하신 구절부터 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
       } else {
         showToast('성경 본문 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
       }
@@ -1090,8 +1115,9 @@
 
       var itemObj = ttsSpeechItems[currentTTSIndex];
 
-      document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
+      document.querySelectorAll('.is-reading-speaking, .selected-cursor-verse').forEach(function(el) {
         el.classList.remove('is-reading-speaking');
+        el.classList.remove('selected-cursor-verse');
       });
 
       if (itemObj && itemObj.element) {
@@ -1112,6 +1138,7 @@
         if (!isTTSSpeaking || hasStepEnded) return;
         hasStepEnded = true;
         currentTTSIndex++;
+        selectedCursorVerseIndex = currentTTSIndex;
         speakNextVerseTTS();
       };
 
@@ -1119,6 +1146,7 @@
         if (!isTTSSpeaking || hasStepEnded) return;
         hasStepEnded = true;
         currentTTSIndex++;
+        selectedCursorVerseIndex = currentTTSIndex;
         speakNextVerseTTS();
       };
 
@@ -1127,17 +1155,59 @@
       }
     }
 
+    // SWITCH BIBLE VERSION & SEAMLESSLY CONTINUE READING THE SAME VERSE IF PLAYING!
     function switchBibleVersion() {
-      stopTTSAudio(true);
+      var wasSpeaking = isTTSSpeaking;
+      var savedIndex = currentTTSIndex;
+
+      // Cancel current speech output
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+      }
+      isTTSSpeaking = false;
+
       if (currentBibleVersion === 'KG') currentBibleVersion = 'KH';
       else if (currentBibleVersion === 'KH') currentBibleVersion = 'SB';
       else currentBibleVersion = 'KG';
       localStorage.setItem(PERMANENT_VER_KEY, currentBibleVersion);
       updateBibleVersionUI();
-      renderBible(scheduleData[activeDay]);
       
+      // Re-render Bible text in new version
+      renderBible(scheduleData[activeDay]);
+
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      showToast(verName + ' 전환');
+      
+      // IF PLAYING BEFORE SWITCH -> SEAMLESSLY RESUME READING AT SAME VERSE!
+      if (wasSpeaking) {
+        // Re-populate speech items from newly rendered DOM
+        ttsSpeechItems = [];
+        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+        allReaderElements.forEach(function(el) {
+          if (el.classList.contains('bible-chapter-header')) {
+            var chText = el.innerText.replace('📖 ', '').trim();
+            ttsSpeechItems.push({ element: el, speakText: chText });
+          } else if (el.classList.contains('bible-verse-card')) {
+            var vPureText = el.getAttribute('data-puretext') || el.innerText;
+            ttsSpeechItems.push({ element: el, speakText: vPureText });
+          }
+        });
+
+        if (savedIndex < ttsSpeechItems.length) {
+          currentTTSIndex = savedIndex;
+        } else {
+          currentTTSIndex = 0;
+        }
+
+        selectedCursorVerseIndex = currentTTSIndex;
+        isTTSSpeaking = true;
+        isTTSPaused = false;
+        
+        showToast(verName + ' 전환: 읽던 구절부터 이어서 낭독합니다.');
+        updatePlayerControlsUI();
+        speakNextVerseTTS();
+      } else {
+        showToast(verName + ' 전환');
+      }
     }
 
     function updateBibleVersionUI() {
@@ -1156,11 +1226,11 @@
       }
       if (tip) {
         if (item.zoomInfo) {
-          tip.innerHTML = '💡 임의 구절 터치: 누른 구절부터 즉시 낭독 시작<br>' +
+          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
             '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
             '<span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
         } else {
-          tip.innerHTML = '💡 임의 구절 터치: 누른 구절부터 즉시 낭독 시작<br>' +
+          tip.innerHTML = '💡 평상시 구절 터치: 시작 구절 지정 (낭독버튼 누르면 재생)<br>' +
             '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모';
         }
       }
@@ -1354,7 +1424,7 @@
 
     function renderBible(item) {
       autoSaveActiveNote();
-      stopTTSAudio(true);
+      selectedCursorVerseIndex = 0;
 
       updateReaderTitleHeader();
       renderDailyReadingNotification();
@@ -1434,7 +1504,6 @@
                 return;
               }
 
-              // DOUBLE TAP -> OPEN NOTE BOX | SINGLE TAP -> IMMEDIATELY READ FROM THIS TOUCHED VERSE!
               var currentTime = new Date().getTime();
               var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
               var tapLength = currentTime - lastTapTime;
@@ -1444,7 +1513,7 @@
                 openNoteBox(verseKey);
               } else {
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
-                speakFromSpecificVerseElement(itemEl);
+                handleVerseElementTouch(itemEl);
               }
             });
 
