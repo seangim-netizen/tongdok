@@ -49,8 +49,8 @@
       height: calc(52px + env(safe-area-inset-top, 0px));
       padding-top: env(safe-area-inset-top, 0px);
       background: var(--nav-bg);
-      padding-left: 8px;
-      padding-right: 8px;
+      padding-left: 6px;
+      padding-right: 6px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -60,24 +60,24 @@
       white-space: nowrap;
       overflow: hidden;
     }
-    .header-logo-box { display: flex; align-items: center; gap: 6px; flex-shrink: 1; min-width: 0; overflow: hidden; }
-    .app-brand-logo { height: 28px; width: auto; max-width: 90px; object-fit: contain; flex-shrink: 0; border-radius: 4px; }
-    .logo-title { font-size: 0.92rem; font-weight: 800; color: var(--accent-green); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .header-logo-box { display: flex; align-items: center; gap: 4px; flex-shrink: 1; min-width: 0; overflow: hidden; }
+    .app-brand-logo { height: 26px; width: auto; max-width: 80px; object-fit: contain; flex-shrink: 0; border-radius: 4px; }
+    .logo-title { font-size: 0.9rem; font-weight: 800; color: var(--accent-green); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .header-actions-row {
-      display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 3px; flex-shrink: 0;
     }
 
     .font-size-control {
       display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; height: 30px;
     }
     .font-btn {
-      background: none; border: none; color: var(--text-primary); font-size: 0.8rem; font-weight: bold; padding: 0 7px; height: 100%; cursor: pointer; display: flex; align-items: center;
+      background: none; border: none; color: var(--text-primary); font-size: 0.78rem; font-weight: bold; padding: 0 6px; height: 100%; cursor: pointer; display: flex; align-items: center;
     }
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 7px; height: 30px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 6px; height: 30px; font-size: 0.76rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
     }
 
     .app-container {
@@ -111,10 +111,11 @@
     }
 
     .bible-verse-card {
-      background: var(--card-bg); border-radius: 10px; padding: 15px 16px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.72; word-break: keep-all; position: relative; cursor: pointer; user-select: none; touch-action: manipulation; transition: transform 0.15s ease, background-color 0.2s ease;
+      background: var(--card-bg); border-radius: 10px; padding: 15px 16px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.72; word-break: keep-all; position: relative; cursor: pointer; user-select: none; touch-action: manipulation; transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
     }
     .bible-verse-card:active { transform: scale(0.985); background: var(--border-color); }
     .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
+    .bible-verse-card.is-reading-speaking { background: rgba(16, 185, 129, 0.18) !important; border-color: var(--accent-green) !important; border-left-width: 6px !important; box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); }
     
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
@@ -288,7 +289,6 @@
     </div>
 
     <div class="header-actions-row">
-      <!-- PLACED ALARM SETUP BUTTON RIGHT TO THE LEFT OF FONT SIZE CONTROL -->
       <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
         🔔 <span>알림 설정</span>
       </button>
@@ -297,6 +297,11 @@
         <button class="font-btn" id="btnFontDec">가-</button>
         <button class="font-btn" id="btnFontInc">가+</button>
       </div>
+
+      <!-- NEW: BIBLE AUDIO TTS READ BUTTON -->
+      <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
+        🔊 <span id="ttsBtnText">낭독</span>
+      </button>
 
       <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
         📖 <span id="bibleVersionLabel">개역개정</span>
@@ -402,6 +407,10 @@
     var activeDay = 1;
     var journals = {};
     var verseNotes = {};
+
+    var isTTSSpeaking = false;
+    var currentTTSIndex = 0;
+    var verseElementsList = [];
 
     function loadJournals() {
       var dataLoaded = false;
@@ -514,7 +523,90 @@
       localStorage.setItem(PERMANENT_FONT_KEY, currentFontSize);
     }
 
+    function stopTTSAudio() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      isTTSSpeaking = false;
+      var btnText = document.getElementById('ttsBtnText');
+      var btnObj = document.getElementById('btnAudioTTSPlay');
+      if (btnText) btnText.innerText = '낭독';
+      if (btnObj) {
+        btnObj.style.borderColor = 'var(--accent-green)';
+        btnObj.style.color = 'var(--accent-green)';
+      }
+      document.querySelectorAll('.bible-verse-card').forEach(function(el) {
+        el.classList.remove('is-reading-speaking');
+      });
+    }
+
+    function startTTSAudio() {
+      if (!('speechSynthesis' in window)) {
+        alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
+        return;
+      }
+
+      stopTTSAudio();
+
+      verseElementsList = Array.from(document.querySelectorAll('.bible-verse-card'));
+      if (verseElementsList.length === 0) {
+        showToast('📢 낭독할 성경 본문이 없습니다.');
+        return;
+      }
+
+      isTTSSpeaking = true;
+      currentTTSIndex = 0;
+
+      var btnText = document.getElementById('ttsBtnText');
+      var btnObj = document.getElementById('btnAudioTTSPlay');
+      if (btnText) btnText.innerText = '중지';
+      if (btnObj) {
+        btnObj.style.borderColor = 'var(--accent-gold)';
+        btnObj.style.color = 'var(--accent-gold)';
+      }
+
+      showToast('🔊 성경 본문 낭독을 시작합니다.');
+      speakNextVerseTTS();
+    }
+
+    function speakNextVerseTTS() {
+      if (!isTTSSpeaking || currentTTSIndex >= verseElementsList.length) {
+        stopTTSAudio();
+        if (currentTTSIndex >= verseElementsList.length) {
+          showToast('🎉 오늘의 말씀을 모두 낭독했습니다!');
+        }
+        return;
+      }
+
+      var cardEl = verseElementsList[currentTTSIndex];
+      document.querySelectorAll('.bible-verse-card').forEach(function(el) {
+        el.classList.remove('is-reading-speaking');
+      });
+      cardEl.classList.add('is-reading-speaking');
+      cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      var textToSpeak = cardEl.getAttribute('data-copystr') || cardEl.innerText;
+      
+      var utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = 'ko-KR';
+      utterance.rate = 0.95; // 정갈하고 품격있는 낭독 속도
+      utterance.pitch = 1.0;
+
+      utterance.onend = function() {
+        currentTTSIndex++;
+        speakNextVerseTTS();
+      };
+
+      utterance.onerror = function() {
+        currentTTSIndex++;
+        speakNextVerseTTS();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
     function switchBibleVersion() {
+      stopTTSAudio();
       if (currentBibleVersion === 'KG') currentBibleVersion = 'KH';
       else if (currentBibleVersion === 'KH') currentBibleVersion = 'SB';
       else currentBibleVersion = 'KG';
@@ -571,6 +663,8 @@
 
     function switchTab(tabName) {
       autoSaveActiveNote();
+      stopTTSAudio();
+
       var pages = document.querySelectorAll('.tab-page');
       var btns = document.querySelectorAll('.nav-tab-item');
       for (var i = 0; i < pages.length; i++) { pages[i].classList.remove('active'); }
@@ -583,21 +677,27 @@
 
       var fontCtrl = document.getElementById('headerFontControl');
       var verBtn = document.getElementById('btnBibleVerToggle');
+      var ttsBtn = document.getElementById('btnAudioTTSPlay');
 
       if (tabName === 'reader') {
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (verBtn) verBtn.style.display = 'inline-flex';
+        if (ttsBtn) ttsBtn.style.display = 'inline-flex';
       } else if (tabName === 'editor') {
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (verBtn) verBtn.style.display = 'none';
+        if (ttsBtn) ttsBtn.style.display = 'none';
       } else if (tabName === 'schedule') {
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (verBtn) verBtn.style.display = 'none';
+        if (ttsBtn) ttsBtn.style.display = 'none';
       }
     }
 
     function toggleComplete() {
       autoSaveActiveNote();
+      stopTTSAudio();
+
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
       var isNowDone = !journals[key].completed;
@@ -739,6 +839,8 @@
 
     function renderBible(item) {
       autoSaveActiveNote();
+      stopTTSAudio();
+
       updateReaderTitleHeader();
       renderDailyReadingNotification();
 
@@ -914,6 +1016,7 @@
         
         card.addEventListener('click', function() {
           autoSaveActiveNote();
+          stopTTSAudio();
           activeDay = item.day;
           renderBible(item);
           renderSchedule();
@@ -923,6 +1026,19 @@
         });
         container.appendChild(card);
       });
+    }
+
+    var btnAudioTTS = document.getElementById('btnAudioTTSPlay');
+    if (btnAudioTTS) {
+      btnAudioTTS.onclick = function(e) {
+        e.preventDefault();
+        if (isTTSSpeaking) {
+          stopTTSAudio();
+          showToast('⏹️ 성경 낭독을 중지했습니다.');
+        } else {
+          startTTSAudio();
+        }
+      };
     }
 
     var btnPush = document.getElementById('btnPushNotifySetup');
