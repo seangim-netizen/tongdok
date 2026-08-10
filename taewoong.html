@@ -42,7 +42,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     
     html, body {
-      position: fixed; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
+      width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
     .app-header {
@@ -81,18 +81,15 @@
     }
 
     .app-container {
-      position: absolute;
-      top: calc(52px + env(safe-area-inset-top, 0px));
-      bottom: calc(58px + env(safe-area-inset-bottom, 0px));
-      left: 0;
-      right: 0;
-      width: 100%;
+      flex: 1;
+      position: relative;
       overflow: hidden;
+      width: 100%;
       background-color: var(--bg-color);
     }
     
     .tab-page {
-      position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: 25px; overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color);
+      position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 12px; padding-bottom: calc(85px + env(safe-area-inset-bottom, 20px)); overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: var(--bg-color);
     }
     .tab-page.active { display: flex !important; }
 
@@ -106,7 +103,7 @@
     .bible-verse-card:active { transform: scale(0.985); background: var(--border-color); }
     .bible-verse-card.has-note-card { border-left-color: var(--accent-gold); }
     
-    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; }
+    .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
     .note-indicator {
       font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap;
@@ -133,7 +130,7 @@
     }
     .btn-save-note-inside:active { opacity: 0.8; }
 
-    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; margin-bottom: 25px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
+    .complete-card { background: var(--card-bg); border: 2px solid var(--accent-green); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; margin-bottom: 35px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2); }
     .btn-complete { width: 100%; padding: 16px; font-size: 1.15rem; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
@@ -155,33 +152,23 @@
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
-    /* STABLE PERFECT BOTTOM NAVIGATION BAR */
+    /* 100% GUARANTEED BOTTOM NAV BAR FIXED AT VERY BOTTOM OF DEVICE DISPLAY */
     .mobile-bottom-nav {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: calc(58px + env(safe-area-inset-bottom, 0px));
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      background: var(--nav-bg);
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+      min-height: 58px !important;
+      padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+      background: var(--nav-bg) !important;
       border-top: 1px solid var(--border-color);
       display: flex;
-      align-items: stretch;
+      align-items: center;
       justify-content: space-around;
-      z-index: 9999;
+      z-index: 999999 !important;
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    /* SAFARI & PWA STANDALONE SPECIFIC FULL BOTTOM BEZEL FILL */
-    @media all and (display-mode: standalone) {
-      .app-container {
-        bottom: calc(58px + env(safe-area-inset-bottom, 0px));
-      }
-      .mobile-bottom-nav {
-        height: calc(64px + env(safe-area-inset-bottom, 0px));
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-      }
     }
 
     .nav-tab-item {
@@ -208,7 +195,7 @@
     }
     .nav-tab-icon { font-size: 1.35rem; margin-bottom: 2px; }
 
-    .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .toast-msg { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 0.88rem; z-index: 1000000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
     .toast-msg.show { opacity: 1; }
   </style>
   <script src="bible_1Chronicles.js"></script>
@@ -796,7 +783,7 @@
       for (var c = item.start; c <= item.end; c++) {
         var verses = bookData[c.toString()] || [];
         var chHeader = document.createElement('div');
-        chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.2rem; margin-bottom: 0.7rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4rem; pointer-events: none;';
+        chHeader.style.cssText = 'font-size: 1.15rem; font-weight: 800; color: var(--accent-green); margin-top: 1.2rem; margin-bottom: 0.7rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.4rem; user-select: none; pointer-events: none;';
         chHeader.innerText = '📖 ' + item.book + ' ' + c + '장';
         container.appendChild(chHeader);
 
@@ -808,6 +795,8 @@
 
           var itemEl = document.createElement('div');
           itemEl.className = 'bible-verse-card' + (savedNote ? ' has-note-card' : '');
+          itemEl.setAttribute('data-vkey', verseKey);
+          itemEl.setAttribute('data-copystr', formattedCopyStr);
           var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
           itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
@@ -824,8 +813,10 @@
           var pressTimer = null;
           var lastTapTime = 0;
 
-          itemEl.addEventListener('touchstart', function(e) {
+          // DIRECT BINDING FOR VERSE 1 AND ALL VERSES WITH PROPER TARGET ISOLATION
+          itemEl.onpointerdown = function(e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+            
             var currentTime = new Date().getTime();
             var tapLength = currentTime - lastTapTime;
 
@@ -835,66 +826,47 @@
             } else {
               pressTimer = setTimeout(function() {
                 copyTextToClipboard(formattedCopyStr, '📋 [' + item.book + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
-              }, 500);
+              }, 550);
             }
             lastTapTime = currentTime;
-          }, { passive: true });
+          };
 
-          itemEl.addEventListener('touchend', function(e) {
+          itemEl.onpointerup = function(e) {
             if (pressTimer) clearTimeout(pressTimer);
             if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note') && !e.target.classList.contains('btn-save-note-inside')) {
               if (activeOpenNoteKey && activeOpenNoteKey !== verseKey) {
                 autoSaveActiveNote();
               }
             }
-          });
+          };
 
-          itemEl.addEventListener('touchmove', function() {
+          itemEl.onpointermove = function() {
             if (pressTimer) clearTimeout(pressTimer);
-          });
+          };
 
-          itemEl.addEventListener('mousedown', function(e) {
-            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-            pressTimer = setTimeout(function() {
-              copyTextToClipboard(formattedCopyStr, '📋 [' + item.book + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
-            }, 500);
-          });
-
-          itemEl.addEventListener('mouseup', function(e) {
-            if (pressTimer) clearTimeout(pressTimer);
-          });
-
-          itemEl.addEventListener('dblclick', function(e) {
+          itemEl.ondblclick = function(e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
             openNoteBox(verseKey);
-          });
-
-          itemEl.addEventListener('click', function(e) {
-            if (e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('btn-copy-note') && !e.target.classList.contains('btn-save-note-inside')) {
-              if (activeOpenNoteKey && activeOpenNoteKey !== verseKey) {
-                autoSaveActiveNote();
-              }
-            }
-          });
+          };
 
           var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
           if (btnCopy) {
-            btnCopy.addEventListener('click', function(ev) {
+            btnCopy.onclick = function(ev) {
               ev.stopPropagation();
               var noteVal = verseNotes[verseKey] || '';
               if (noteVal.trim().length > 0) {
                 copyTextToClipboard(noteVal, '📝 작성한 메모가 복사되었습니다!');
               }
-            });
+            };
           }
 
           var btnSave = itemEl.querySelector('#btnsave_' + verseKey);
           if (btnSave) {
-            btnSave.addEventListener('click', function(ev) {
+            btnSave.onclick = function(ev) {
               ev.stopPropagation();
               autoSaveActiveNote();
               showToast('✅ 묵상 메모가 저장되었습니다!');
-            });
+            };
           }
 
           container.appendChild(itemEl);
