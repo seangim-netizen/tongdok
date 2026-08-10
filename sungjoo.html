@@ -97,6 +97,15 @@
       background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; text-align: center;
     }
 
+    .daily-reading-banner {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(16, 185, 129, 0.05)); border: 1px solid var(--accent-green); color: var(--accent-green); padding: 12px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+    }
+
+    .zoom-lecture-banner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); border: 2px solid var(--accent-gold); color: var(--accent-gold); padding: 12px 14px; border-radius: 10px; font-size: 0.9rem; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15); animation: pulseNotice 2s infinite ease-in-out;
+    }
+    @keyframes pulseNotice { 0% { border-color: var(--accent-gold); } 50% { border-color: #fbbf24; } 100% { border-color: var(--accent-gold); } }
+
     .zoom-lecture-badge {
       display: inline-flex; align-items: center; gap: 4px; background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.82em; font-weight: bold; padding: 3px 9px; border-radius: 12px; margin-top: 5px; width: fit-content;
     }
@@ -296,6 +305,8 @@
   <div class="app-container">
     <!-- TAB 1: 성경읽기 -->
     <section id="tab-reader" class="tab-page active">
+      <div id="dailyReadingNotificationBox"></div>
+
       <div style="font-size: 1.05rem; font-weight: 800; color: var(--accent-green); margin-bottom: 10px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
         <span id="readerTitleLabel">📖 출애굽기 1장</span>
         <span id="readingStatusBadge" style="font-size: 0.82rem; padding: 3px 9px; border-radius: 12px; background: var(--border-color); color: var(--text-secondary); font-weight: bold;">미완료</span>
@@ -346,8 +357,9 @@
         </div>
       </div>
 
-      <div style="font-size: 1.1em; font-weight: 800; color: var(--accent-green); margin-bottom: 12px;">
-        📅 온라인 구약 성경통독클럽 통독읽기표
+      <div style="font-size: 1.1em; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
+        <span>📅 온라인 구약 성경통독클럽 통독읽기표</span>
+        <button id="btnPushNotifySetup" class="tool-btn" style="border-color:var(--accent-gold); color:var(--accent-gold); font-size:0.75rem;">🔔 매일 통독 알림 설정</button>
       </div>
       <div id="scheduleListContainer"></div>
     </section>
@@ -438,6 +450,52 @@
         applyFontSize();
       } else {
         applyFontSize();
+      }
+
+      renderDailyReadingNotification();
+    }
+
+    function renderDailyReadingNotification() {
+      var item = scheduleData[activeDay];
+      var box = document.getElementById('dailyReadingNotificationBox');
+      if (!box) return;
+
+      if (item) {
+        if (item.zoomInfo) {
+          box.innerHTML = '<div class="zoom-lecture-banner">' +
+            '<div>' +
+              '🔔 <strong>[오전 알림] Today 저녁 8시 ZOOM 강의일!</strong><br>' +
+              '<span style="font-size:0.86rem; color:var(--text-primary); font-weight:normal;">' + item.zoomInfo + ' | 오늘 분량: ' + item.passage + '</span>' +
+            '</div>' +
+            '<button id="btnCloseNotice" style="background:none; border:none; color:var(--accent-gold); font-size:1.2rem; font-weight:bold; cursor:pointer;">✕</button>' +
+          '</div>';
+        } else {
+          box.innerHTML = '<div class="daily-reading-banner">' +
+            '<div>' +
+              '📖 <strong>[오늘의 성경통독 알림]</strong><br>' +
+              '<span style="font-size:0.86rem; color:var(--text-primary); font-weight:normal;">Day ' + item.day + ' (' + item.date + ') - ' + item.passage + '</span>' +
+            '</div>' +
+            '<button id="btnCloseNotice" style="background:none; border:none; color:var(--accent-green); font-size:1.2rem; font-weight:bold; cursor:pointer;">✕</button>' +
+          '</div>';
+        }
+
+        var btnClose = document.getElementById('btnCloseNotice');
+        if (btnClose) {
+          btnClose.onclick = function() {
+            box.innerHTML = '';
+          };
+        }
+
+        if ("Notification" in window && Notification.permission === "granted") {
+          var notifTitle = item.zoomInfo ? "🔔 Today 저녁 8시 ZOOM 강의일!" : "📖 오늘의 성경통독 시간입니다!";
+          var notifBody = item.passage + " 말씀을 읽으실 시간입니다. 오늘 하루도 말씀과 함께승리하세요!";
+          new Notification(notifTitle, {
+            body: notifBody,
+            icon: "app_logo.png"
+          });
+        }
+      } else {
+        box.innerHTML = '';
       }
     }
 
@@ -678,6 +736,8 @@
     function renderBible(item) {
       autoSaveActiveNote();
       updateReaderTitleHeader();
+      renderDailyReadingNotification();
+
       var container = document.getElementById('bibleTextContainer');
       if (!container) return;
       container.innerHTML = '';
@@ -859,6 +919,28 @@
         });
         container.appendChild(card);
       });
+    }
+
+    var btnPush = document.getElementById('btnPushNotifySetup');
+    if (btnPush) {
+      btnPush.onclick = function(e) {
+        e.preventDefault();
+        if (!("Notification" in window)) {
+          alert("이 브라우저는 웹 알림을 지원하지 않습니다.");
+          return;
+        }
+        if (Notification.permission === "granted") {
+          showToast("🔔 매일 통독 및 ZOOM 알림이 활성화되어 있습니다!");
+        } else {
+          Notification.requestPermission().then(function (permission) {
+            if (permission === "granted") {
+              showToast("🔔 매일 성경통독 푸시 알림 설정이 완료되었습니다!");
+            } else {
+              alert("알림 권한이 거부되었습니다. 브라우저 설정에서 권한을 변경해주세요.");
+            }
+          });
+        }
+      };
     }
 
     var bFontInc = document.getElementById('btnFontInc');
