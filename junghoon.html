@@ -45,16 +45,16 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* REFINED COMPACT TWO-ROW HEADER (LOGO + NAME CENTERED BETWEEN BUTTONS) */
+    /* VERY SLIM & COMPACT TWO-ROW HEADER (ORIGINAL LEFT LOGO + NAME BELOW) */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
-      padding-left: 8px;
-      padding-right: 8px;
-      padding-bottom: 4px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-bottom: 3px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
@@ -65,67 +65,60 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      min-height: 42px;
-      position: relative;
-    }
-
-    .header-left-box {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      justify-content: flex-start;
-    }
-
-    /* LOGO + MEMBER NAME CENTERED IN ROW 1 */
-    .header-logo-center-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1px;
-      flex-shrink: 0;
-      text-align: center;
-    }
-    .app-brand-logo {
-      height: 26px;
-      width: auto;
-      object-fit: contain;
-      border-radius: 4px;
-    }
-    .logo-title-large {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--accent-green);
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-
-    .header-right-box {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 4px;
-      flex: 1;
+      padding-top: 2px;
     }
 
     .header-bottom-row {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 4px;
+      gap: 3px;
       width: 100%;
     }
 
+    /* LEFT LOGO & MEMBER NAME (LOWERED SLIGHTLY FOR STABILITY) */
+    .header-logo-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 1px;
+      flex-shrink: 1;
+      min-width: 0;
+      margin-top: 1px;
+    }
+
+    .app-brand-logo {
+      height: 20px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 3px;
+    }
+
+    .logo-title-sub {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions-row {
+      display: flex; align-items: center; gap: 3px; flex-shrink: 0;
+    }
+
     .font-size-control {
-      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; height: 28px;
+      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; height: 26px;
     }
     .font-btn {
-      background: none; border: none; color: var(--text-primary); font-size: 0.78rem; font-weight: bold; padding: 0 6px; height: 100%; cursor: pointer; display: flex; align-items: center;
+      background: none; border: none; color: var(--text-primary); font-size: 0.75rem; font-weight: bold; padding: 0 5px; height: 100%; cursor: pointer; display: flex; align-items: center;
     }
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 7px; height: 28px; font-size: 0.76rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 6px; height: 26px; font-size: 0.74rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
     }
 
     .app-container {
@@ -337,25 +330,20 @@
 </head>
 <body>
 
-  <!-- REFINED COMPACT TWO-ROW HEADER (LOGO + NAME CENTERED BETWEEN BUTTONS) -->
+  <!-- VERY SLIM & COMPACT TWO-ROW HEADER (ORIGINAL LEFT LOGO + NAME BELOW) -->
   <header class="app-header">
-    <!-- ROW 1: LEFT (ALARM) / CENTER (LOGO + NAME) / RIGHT (FONT + THEME) -->
+    <!-- ROW 1: LEFT LOGO & NAME (LOWERED SLIGHTLY), RIGHT BUTTONS (ALARM, FONT, THEME) -->
     <div class="header-top-row">
-      <!-- LEFT BUTTON: ALARM -->
-      <div class="header-left-box">
+      <div class="header-logo-box">
+        <img src="header_logo.png" alt="Login Church" class="app-brand-logo">
+        <div class="logo-title-sub">나정훈 권사</div>
+      </div>
+
+      <div class="header-actions-row">
         <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
           🔔 <span>알림</span>
         </button>
-      </div>
 
-      <!-- CENTER BOX: LOGO & MEMBER NAME -->
-      <div class="header-logo-center-box">
-        <img src="header_logo.png" alt="Login Church" class="app-brand-logo">
-        <div class="logo-title-large">나정훈 권사</div>
-      </div>
-
-      <!-- RIGHT BUTTONS: FONT & THEME -->
-      <div class="header-right-box">
         <div class="font-size-control" id="headerFontControl">
           <button class="font-btn" id="btnFontDec">가-</button>
           <button class="font-btn" id="btnFontInc">가+</button>
