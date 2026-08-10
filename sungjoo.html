@@ -45,19 +45,20 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* REFINED COMPACT TWO-ROW HEADER WITH 1.2X LARGER MEMBER NAME (1.18rem) & VERTICALLY CENTERED LOGO BOX */
+    /* DYNAMIC HEADER SYSTEM */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
       padding-left: 10px;
       padding-right: 10px;
-      padding-bottom: 5px;
+      padding-bottom: 6px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
+      transition: all 0.25s ease;
     }
 
     .header-top-row {
@@ -72,38 +73,42 @@
     .header-bottom-row {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 4px;
+      justify-content: center; /* CENTERED IN SCRIPTURE READING TAB */
+      gap: 6px;
       width: 100%;
     }
 
-    /* LEFT LOGO & 1.2X LARGER MEMBER NAME (VERTICALLY CENTERED) */
+    /* HEADER LOGO & MEMBER NAME (DYNAMIC SCALING & CENTER ALIGNMENT) */
     .header-logo-box {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center; /* CENTER ALIGNED IN LINE */
       justify-content: center;
       gap: 2px;
       flex-shrink: 1;
       min-width: 0;
       height: 100%;
+      transition: all 0.25s ease;
     }
 
     .app-brand-logo {
-      height: 25px; /* 1.2x larger logo */
+      height: 28px;
       width: auto;
       object-fit: contain;
       border-radius: 4px;
+      transition: height 0.25s ease;
     }
 
     .logo-title-sub {
-      font-size: 1.18rem; /* 1.2x larger member name! */
+      font-size: 1.42rem; /* 1.2x LARGER FOR SCRIPTURE TAB DEFAULT */
       font-weight: 800;
       color: var(--accent-green);
       line-height: 1.15;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: center;
+      transition: font-size 0.25s ease;
     }
 
     .header-actions-row {
@@ -119,7 +124,14 @@
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 7px; height: 28px; font-size: 0.76rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 8px; height: 28px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; transition: all 0.2s ease;
+    }
+
+    /* SCRIPTURE TAB ENLARGED BUTTONS (1.2X) */
+    .app-header.tab-mode-reader .tool-btn {
+      height: 32px;
+      font-size: 0.86rem;
+      padding: 0 10px;
     }
 
     .app-container {
@@ -331,13 +343,13 @@
 </head>
 <body>
 
-  <!-- REFINED COMPACT TWO-ROW HEADER WITH 1.2X LARGER MEMBER NAME (1.18rem) & VERTICALLY CENTERED LOGO BOX -->
-  <header class="app-header">
-    <!-- ROW 1: LEFT LOGO & 1.2X LARGER NAME (CENTERED VERTICALLY), RIGHT BUTTONS (ALARM, FONT, THEME) -->
+  <!-- DYNAMIC TWO-ROW HEADER (SCALES 1.2X ON SCRIPTURE TAB, 0.8X ON EDITOR/SCHEDULE TABS) -->
+  <header class="app-header tab-mode-reader" id="mainAppHeader">
+    <!-- ROW 1: LEFT LOGO & NAME (CENTERED IN LINE), RIGHT ACTIONS -->
     <div class="header-top-row">
-      <div class="header-logo-box">
-        <img src="header_logo.png" alt="Login Church" class="app-brand-logo">
-        <div class="logo-title-sub">장성주 집사</div>
+      <div class="header-logo-box" id="headerLogoBox">
+        <img src="header_logo.png" alt="Login Church" class="app-brand-logo" id="brandLogoImg">
+        <div class="logo-title-sub" id="logoTitleText">장성주 집사</div>
       </div>
 
       <div class="header-actions-row">
@@ -356,7 +368,7 @@
       </div>
     </div>
 
-    <!-- ROW 2: BIBLE SPECIALIST TOOLS (낭독, 배속, 번역본) -->
+    <!-- ROW 2: BIBLE SPECIALIST TOOLS (CENTER ALIGNED) -->
     <div class="header-bottom-row" id="headerSecondRowTools">
       <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
         🔊 <span id="ttsBtnText">낭독</span>
@@ -772,6 +784,9 @@
       }
     }
 
+    // DYNAMIC TAB SWITCHING WITH SPECIFIC HEADER SIZES:
+    // 'reader': 1.2x Enlarged Member Name & Center Aligned
+    // 'editor' / 'schedule': 0.8x Compact & Small Header
     function switchTab(tabName) {
       autoSaveActiveNote();
       stopTTSAudio(true);
@@ -786,18 +801,32 @@
       if (targetPage) targetPage.classList.add('active');
       if (targetBtn) targetBtn.classList.add('active');
 
+      var appHeader = document.getElementById('mainAppHeader');
       var fontCtrl = document.getElementById('headerFontControl');
       var secRowTools = document.getElementById('headerSecondRowTools');
+      var titleText = document.getElementById('logoTitleText');
+      var logoImg = document.getElementById('brandLogoImg');
 
       if (tabName === 'reader') {
+        if (appHeader) appHeader.className = 'app-header tab-mode-reader';
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (secRowTools) secRowTools.style.display = 'flex';
-      } else if (tabName === 'editor') {
+        if (titleText) {
+          titleText.style.fontSize = '1.42rem'; // 1.2x Larger for Scripture Tab
+        }
+        if (logoImg) {
+          logoImg.style.height = '28px';
+        }
+      } else {
+        if (appHeader) appHeader.className = 'app-header tab-mode-compact';
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (secRowTools) secRowTools.style.display = 'none';
-      } else if (tabName === 'schedule') {
-        if (fontCtrl) fontCtrl.style.display = 'inline-flex';
-        if (secRowTools) secRowTools.style.display = 'none';
+        if (titleText) {
+          titleText.style.fontSize = '0.94rem'; // 0.8x Smaller for Editor & Schedule Tabs
+        }
+        if (logoImg) {
+          logoImg.style.height = '20px';
+        }
       }
     }
 
