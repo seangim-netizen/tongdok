@@ -345,7 +345,7 @@
 </head>
 <body>
 
-  <!-- CLEAN SLIM HEADER: ALARM REMOVED FROM SCRIPTURE/JOURNAL TABS, EMOJIS REMOVED FROM TTS/SPEED/VER BUTTONS, FULL VERSION NAME -->
+  <!-- CLEAN SLIM HEADER: WITH "낭독", "이전", "1.0배속", "개역개정", "가-", "가+", "밝게/어둡게" BUTTONS -->
   <header class="app-header" id="mainAppHeader">
     <div class="header-top-row">
       <div class="header-logo-box" id="headerLogoBox">
@@ -353,10 +353,14 @@
         <div class="logo-title-sub" id="logoTitleText">이은우 장로</div>
       </div>
 
-      <!-- HEADER BUTTONS WITHOUT EMOJIS & ALARM REMOVED FROM SCRIPTURE/JOURNAL TABS -->
+      <!-- HEADER ACTIONS ROW WITH "이전" (PREV VERSE) BUTTON FOR TTS AUDIO -->
       <div class="header-actions-row" id="headerActionsRow">
         <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
           <span id="ttsBtnText">낭독</span>
+        </button>
+
+        <button class="tool-btn" id="btnAudioTTSPrev" style="border-color: var(--accent-green); color: var(--accent-green);">
+          <span>이전</span>
         </button>
 
         <button class="tool-btn" id="btnTTSSpeedToggle" style="border-color: var(--accent-green); color: var(--accent-green);">
@@ -390,7 +394,7 @@
       </div>
 
       <div class="gesture-tip-box" id="readerTipBox">
-        💡 길게 누르면 [복사] | 더블클릭은 [메모작성]
+        💡 클릭: 해당 구절부터 낭독 | 길게 누름: 복사 | 더블클릭: 메모
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -475,7 +479,7 @@
     var journals = {};
     var verseNotes = {};
 
-    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH 1.1X SPEED OPTION!
+    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH "TAP VERSE TO READ" & 1.1X SPEED OPTION!
     var isTTSSpeaking = false;
     var isTTSPaused = false;
     var currentTTSIndex = 0;
@@ -625,6 +629,90 @@
       }
     }
 
+    // TAP ANY VERSE TO JUMP & READ FROM THAT SPECIFIC VERSE!
+    function speakFromSpecificVerseElement(targetEl) {
+      if (!('speechSynthesis' in window)) {
+        alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
+        return;
+      }
+
+      if (ttsSpeechItems.length === 0) {
+        ttsSpeechItems = [];
+        var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+        allReaderElements.forEach(function(el) {
+          if (el.classList.contains('bible-chapter-header')) {
+            var chText = el.innerText.replace('📖 ', '').trim();
+            ttsSpeechItems.push({ element: el, speakText: chText });
+          } else if (el.classList.contains('bible-verse-card')) {
+            var vPureText = el.getAttribute('data-puretext') || el.innerText;
+            ttsSpeechItems.push({ element: el, speakText: vPureText });
+          }
+        });
+      }
+
+      var targetIdx = -1;
+      for (var i = 0; i < ttsSpeechItems.length; i++) {
+        if (ttsSpeechItems[i].element === targetEl) {
+          targetIdx = i;
+          break;
+        }
+      }
+
+      if (targetIdx !== -1) {
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch(e) {}
+        }
+
+        currentTTSIndex = targetIdx;
+        isTTSSpeaking = true;
+        isTTSPaused = false;
+
+        var btnText = document.getElementById('ttsBtnText');
+        var btnObj = document.getElementById('btnAudioTTSPlay');
+        if (btnText) btnText.innerText = '중지';
+        if (btnObj) {
+          btnObj.style.borderColor = 'var(--accent-gold)';
+          btnObj.style.color = 'var(--accent-gold)';
+        }
+
+        var vNum = targetEl.getAttribute('data-vnum');
+        showToast(vNum ? (vNum + '절부터 낭독합니다.') : '선택한 구절부터 낭독합니다.');
+        speakNextVerseTTS();
+      }
+    }
+
+    // GO TO PREVIOUS VERSE IN TTS PLAYBACK
+    function speakPrevVerseTTS() {
+      if (!isTTSSpeaking && !isTTSPaused) {
+        showToast('현재 낭독 중이 아닙니다.');
+        return;
+      }
+
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+      }
+
+      if (currentTTSIndex > 0) {
+        currentTTSIndex--; // Jump back 1 verse!
+      } else {
+        currentTTSIndex = 0;
+      }
+
+      isTTSSpeaking = true;
+      isTTSPaused = false;
+
+      var btnText = document.getElementById('ttsBtnText');
+      var btnObj = document.getElementById('btnAudioTTSPlay');
+      if (btnText) btnText.innerText = '중지';
+      if (btnObj) {
+        btnObj.style.borderColor = 'var(--accent-gold)';
+        btnObj.style.color = 'var(--accent-gold)';
+      }
+
+      showToast('이전 구절로 이동하여 낭독합니다.');
+      speakNextVerseTTS();
+    }
+
     function toggleTTSSpeed() {
       currentTTSSpeedIndex = (currentTTSSpeedIndex + 1) % ttsSpeedRates.length;
       var rate = ttsSpeedRates[currentTTSSpeedIndex];
@@ -770,9 +858,9 @@
       }
       if (tip) {
         if (item.zoomInfo) {
-          tip.innerHTML = '💡 길게 누르면 [복사] | 더블클릭은 [메모작성]<br><span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
+          tip.innerHTML = '💡 클릭: 해당 구절부터 낭독 | 길게 누름: 복사 | 더블클릭: 메모<br><span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
         } else {
-          tip.innerHTML = '💡 길게 누르면 [복사] | 더블클릭은 [메모작성]';
+          tip.innerHTML = '💡 클릭: 해당 구절부터 낭독 | 길게 누름: 복사 | 더블클릭: 메모';
         }
       }
     }
@@ -795,7 +883,7 @@
     }
 
     // TAB SWITCHING LOGIC:
-    // Shows Bible tools (TTS, Speed, Version) on 'reader' tab, hides on 'editor' & 'schedule'
+    // Shows Bible tools (TTS, Prev, Speed, Version) on 'reader' tab, hides on 'editor' & 'schedule'
     // Member Name font size stays 0.7x (0.75rem) across all tabs!
     function switchTab(tabName) {
       autoSaveActiveNote();
@@ -812,15 +900,18 @@
       if (targetBtn) targetBtn.classList.add('active');
 
       var btnAudio = document.getElementById('btnAudioTTSPlay');
+      var btnPrev = document.getElementById('btnAudioTTSPrev');
       var btnSpeed = document.getElementById('btnTTSSpeedToggle');
       var btnVer = document.getElementById('btnBibleVerToggle');
 
       if (tabName === 'reader') {
         if (btnAudio) btnAudio.style.display = 'inline-flex';
+        if (btnPrev) btnPrev.style.display = 'inline-flex';
         if (btnSpeed) btnSpeed.style.display = 'inline-flex';
         if (btnVer) btnVer.style.display = 'inline-flex';
       } else {
         if (btnAudio) btnAudio.style.display = 'none';
+        if (btnPrev) btnPrev.style.display = 'none';
         if (btnSpeed) btnSpeed.style.display = 'none';
         if (btnVer) btnVer.style.display = 'none';
       }
@@ -1013,7 +1104,7 @@
             itemEl.setAttribute('data-vnum', vNum);
             itemEl.setAttribute('data-puretext', vText);
             itemEl.setAttribute('data-copystr', formattedCopyStr);
-            itemEl.setAttribute('data-lasttap', '0'); // Explicit per-card tap tracker
+            itemEl.setAttribute('data-lasttap', '0');
             var displayIndStyle = (savedNote.trim().length > 0) ? 'display: flex;' : 'display: none;';
 
             itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
@@ -1028,38 +1119,53 @@
               '</div>';
 
             var pressTimer = null;
+            var isLongPressExecuted = false;
 
-            function handleCardPress(e) {
+            itemEl.addEventListener('touchstart', function(e) {
               if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
               
+              isLongPressExecuted = false;
+
+              // Long Press Detection (550ms) -> Copy Verse
+              if (pressTimer) clearTimeout(pressTimer);
+              pressTimer = setTimeout(function() {
+                isLongPressExecuted = true;
+                copyTextToClipboard(formattedCopyStr, '[' + bookName + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
+                pressTimer = null;
+              }, 550);
+            }, { passive: true });
+
+            itemEl.addEventListener('touchend', function(e) {
+              if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
+
+              if (isLongPressExecuted) {
+                return;
+              }
+
+              // Double Tap -> Open Note Box | Single Tap -> Jump & Read from Touched Verse!
               var currentTime = new Date().getTime();
               var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
               var tapLength = currentTime - lastTapTime;
 
-              // STRICT DOUBLE TAP CONDITION (Must be between 40ms and 450ms from previous tap on SAME CARD)
               if (lastTapTime > 0 && tapLength < 450 && tapLength > 40) {
-                if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
                 itemEl.setAttribute('data-lasttap', '0');
                 openNoteBox(verseKey);
               } else {
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
-                if (pressTimer) clearTimeout(pressTimer);
-                pressTimer = setTimeout(function() {
-                  copyTextToClipboard(formattedCopyStr, '[' + bookName + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
-                  pressTimer = null;
-                }, 550);
+                // Single Tap -> Instantly start / jump TTS reading from touched verse!
+                speakFromSpecificVerseElement(itemEl);
               }
-            }
+            });
 
-            itemEl.addEventListener('touchstart', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              handleCardPress(e);
-            }, { passive: true });
+            itemEl.addEventListener('touchmove', function() {
+              if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+            });
 
-            itemEl.addEventListener('click', function(e) {
-              if (e.pointerType === 'touch') return; // Avoid touch-synthesized click duplication
+            // PC Mouse Double Click -> Open Note Box
+            itemEl.addEventListener('dblclick', function(e) {
               if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              handleCardPress(e);
+              openNoteBox(verseKey);
             });
 
             var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
@@ -1154,6 +1260,14 @@
       btnAudioTTS.onclick = function(e) {
         e.preventDefault();
         startTTSAudio();
+      };
+    }
+
+    var btnAudioPrev = document.getElementById('btnAudioTTSPrev');
+    if (btnAudioPrev) {
+      btnAudioPrev.onclick = function(e) {
+        e.preventDefault();
+        speakPrevVerseTTS();
       };
     }
 
