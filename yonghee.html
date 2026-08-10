@@ -479,13 +479,16 @@
     var journals = {};
     var verseNotes = {};
 
-    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH "TAP VERSE TO READ" & 1.1X SPEED OPTION!
+    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH SMART PREV & INSTANT TOUCH JUMP!
     var isTTSSpeaking = false;
     var isTTSPaused = false;
     var currentTTSIndex = 0;
     var ttsSpeechItems = [];
     var ttsSpeedRates = [0.8, 1.0, 1.1, 1.2, 1.5]; // 1.1x SPEED INCLUDED!
     var currentTTSSpeedIndex = 1; // Default 1.0x
+
+    var prevBtnClickTimer = null;
+    var prevBtnClickCount = 0;
 
     function loadJournals() {
       var dataLoaded = false;
@@ -629,11 +632,16 @@
       }
     }
 
-    // TAP ANY VERSE TO JUMP & READ FROM THAT SPECIFIC VERSE!
+    // TAP ANY VERSE TO IMMEDIATELY STOP & READ FROM THAT SPECIFIC VERSE!
     function speakFromSpecificVerseElement(targetEl) {
       if (!('speechSynthesis' in window)) {
         alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
         return;
+      }
+
+      // Stop current speech instantly
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
       }
 
       if (ttsSpeechItems.length === 0) {
@@ -659,10 +667,6 @@
       }
 
       if (targetIdx !== -1) {
-        if ('speechSynthesis' in window) {
-          try { window.speechSynthesis.cancel(); } catch(e) {}
-        }
-
         currentTTSIndex = targetIdx;
         isTTSSpeaking = true;
         isTTSPaused = false;
@@ -681,36 +685,45 @@
       }
     }
 
-    // GO TO PREVIOUS VERSE IN TTS PLAYBACK
-    function speakPrevVerseTTS() {
+    // SMART [이전] BUTTON HANDLER:
+    // 1 Press  -> Repeats current verse from the beginning.
+    // 2 Presses (within 350ms) -> Jumps to the previous verse.
+    function handlePrevButtonClick() {
       if (!isTTSSpeaking && !isTTSPaused) {
         showToast('현재 낭독 중이 아닙니다.');
         return;
       }
 
-      if ('speechSynthesis' in window) {
-        try { window.speechSynthesis.cancel(); } catch(e) {}
+      prevBtnClickCount++;
+
+      if (prevBtnClickTimer) {
+        clearTimeout(prevBtnClickTimer);
       }
 
-      if (currentTTSIndex > 0) {
-        currentTTSIndex--; // Jump back 1 verse!
-      } else {
-        currentTTSIndex = 0;
-      }
-
-      isTTSSpeaking = true;
-      isTTSPaused = false;
-
-      var btnText = document.getElementById('ttsBtnText');
-      var btnObj = document.getElementById('btnAudioTTSPlay');
-      if (btnText) btnText.innerText = '중지';
-      if (btnObj) {
-        btnObj.style.borderColor = 'var(--accent-gold)';
-        btnObj.style.color = 'var(--accent-gold)';
-      }
-
-      showToast('이전 구절로 이동하여 낭독합니다.');
-      speakNextVerseTTS();
+      prevBtnClickTimer = setTimeout(function() {
+        if (prevBtnClickCount === 1) {
+          // Repeat current verse from start
+          if ('speechSynthesis' in window) {
+            try { window.speechSynthesis.cancel(); } catch(e) {}
+          }
+          showToast('현재 구절을 처음부터 다시 낭독합니다.');
+          speakNextVerseTTS();
+        } else if (prevBtnClickCount >= 2) {
+          // Jump to previous verse
+          if ('speechSynthesis' in window) {
+            try { window.speechSynthesis.cancel(); } catch(e) {}
+          }
+          if (currentTTSIndex > 0) {
+            currentTTSIndex--;
+          } else {
+            currentTTSIndex = 0;
+          }
+          showToast('이전 구절로 이동하여 낭독합니다.');
+          speakNextVerseTTS();
+        }
+        prevBtnClickCount = 0;
+        prevBtnClickTimer = null;
+      }, 350);
     }
 
     function toggleTTSSpeed() {
@@ -781,7 +794,7 @@
       speakNextVerseTTS();
     }
 
-    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH DEBOUNCE GUARD!
+    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH SYNCHRONOUS HIGHLIGHT & SMOOTH SCROLL!
     function speakNextVerseTTS() {
       if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
         var wasSpeaking = isTTSSpeaking;
@@ -793,10 +806,13 @@
       }
 
       var itemObj = ttsSpeechItems[currentTTSIndex];
+
+      // Remove existing highlights
       document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
         el.classList.remove('is-reading-speaking');
       });
 
+      // Apply highlight and smooth scroll immediately to current spoken verse!
       if (itemObj && itemObj.element) {
         itemObj.element.classList.add('is-reading-speaking');
         itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1143,7 +1159,7 @@
                 return;
               }
 
-              // Double Tap -> Open Note Box | Single Tap -> Jump & Read from Touched Verse!
+              // Double Tap -> Open Note Box | Single Tap -> Instantly STOP & Read from Touched Verse!
               var currentTime = new Date().getTime();
               var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
               var tapLength = currentTime - lastTapTime;
@@ -1153,7 +1169,7 @@
                 openNoteBox(verseKey);
               } else {
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
-                // Single Tap -> Instantly start / jump TTS reading from touched verse!
+                // Single Tap -> Instantly STOP current speech and jump to touched verse!
                 speakFromSpecificVerseElement(itemEl);
               }
             });
@@ -1267,7 +1283,7 @@
     if (btnAudioPrev) {
       btnAudioPrev.onclick = function(e) {
         e.preventDefault();
-        speakPrevVerseTTS();
+        handlePrevButtonClick();
       };
     }
 
