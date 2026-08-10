@@ -45,7 +45,7 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* PERFECT UNIFIED ULTRA-SLIM SINGLE-ROW HEADER (EXACTLY MATCHING EDITOR TAB HEIGHT) */
+    /* ULTRA-SLIM SINGLE-ROW HEADER */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
@@ -68,7 +68,7 @@
       min-height: 38px;
     }
 
-    /* LOGO & MEMBER NAME (COMPACTLY MATCHING EDITOR TAB SIZING) */
+    /* LOGO & MEMBER NAME (0.7X SLIM NAME = 0.75rem ACROSS ALL TABS) */
     .header-logo-box {
       display: flex;
       flex-direction: column;
@@ -80,15 +80,15 @@
     }
 
     .app-brand-logo {
-      height: 18px; /* EXACTLY MATCHING EDITOR TAB LOGO HEIGHT */
+      height: 18px;
       width: auto;
       object-fit: contain;
       border-radius: 3px;
     }
 
     .logo-title-sub {
-      font-size: 0.94rem; /* EXACTLY MATCHING EDITOR TAB MEMBER NAME FONT SIZE */
-      font-weight: 800;
+      font-size: 0.75rem; /* 0.7X REDUCED MEMBER NAME SIZE ACROSS ALL TABS */
+      font-weight: 700;
       color: var(--accent-green);
       line-height: 1.1;
       white-space: nowrap;
@@ -113,8 +113,9 @@
     }
     .font-btn:active { background: var(--border-color); }
 
+    /* NO EMOJIS, CLEAN SLIM BUTTONS */
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 6px; height: 25px; font-size: 0.74rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; flex-shrink: 0;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 6px; height: 25px; font-size: 0.74rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0px; white-space: nowrap; flex-shrink: 0;
     }
 
     .app-container {
@@ -326,7 +327,7 @@
 </head>
 <body>
 
-  <!-- UNIFIED SINGLE-ROW HEADER MATCHING EDITOR TAB SIZING EXACTLY -->
+  <!-- CLEAN SLIM HEADER: ALARM REMOVED FROM SCRIPTURE/JOURNAL TABS, EMOJIS REMOVED FROM TTS/SPEED/VER BUTTONS, FULL VERSION NAME -->
   <header class="app-header" id="mainAppHeader">
     <div class="header-top-row">
       <div class="header-logo-box" id="headerLogoBox">
@@ -334,22 +335,18 @@
         <div class="logo-title-sub" id="logoTitleText">김경면 권사</div>
       </div>
 
-      <!-- ALL 6 BUTTONS IN SINGLE SLIM ROW MATCHING EDITOR ROW HEIGHT -->
+      <!-- HEADER BUTTONS WITHOUT EMOJIS & ALARM REMOVED FROM SCRIPTURE/JOURNAL TABS -->
       <div class="header-actions-row" id="headerActionsRow">
         <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
-          🔊 <span id="ttsBtnText">낭독</span>
+          <span id="ttsBtnText">낭독</span>
         </button>
 
         <button class="tool-btn" id="btnTTSSpeedToggle" style="border-color: var(--accent-green); color: var(--accent-green);">
-          ⚡ <span id="ttsSpeedLabel">1.0배</span>
+          <span id="ttsSpeedLabel">1.0배속</span>
         </button>
 
         <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
-          📖 <span id="bibleVersionLabel">개역</span>
-        </button>
-
-        <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
-          🔔 <span>알림</span>
+          <span id="bibleVersionLabel">개역개정</span>
         </button>
 
         <div class="font-size-control" id="headerFontControl">
@@ -358,7 +355,7 @@
         </div>
 
         <button class="tool-btn" id="btnThemeToggle">
-          <span id="themeIcon">☀️</span> <span id="themeText">밝게</span>
+          <span id="themeText">밝게</span>
         </button>
       </div>
     </div>
@@ -607,8 +604,8 @@
       currentTTSSpeedIndex = (currentTTSSpeedIndex + 1) % ttsSpeedRates.length;
       var rate = ttsSpeedRates[currentTTSSpeedIndex];
       var lbl = document.getElementById('ttsSpeedLabel');
-      if (lbl) lbl.innerText = rate.toFixed(1) + '배';
-      showToast('⚡ 낭독 속도: ' + rate.toFixed(1) + '배속');
+      if (lbl) lbl.innerText = rate.toFixed(1) + '배속';
+      showToast('낭독 속도: ' + rate.toFixed(1) + '배속');
 
       if (isTTSSpeaking) {
         if ('speechSynthesis' in window) {
@@ -626,7 +623,7 @@
 
       if (isTTSSpeaking) {
         stopTTSAudio(false);
-        showToast('⏸️ 낭독을 일시정지했습니다.');
+        showToast('낭독을 일시정지했습니다.');
         return;
       }
 
@@ -647,7 +644,7 @@
       }
 
       if (ttsSpeechItems.length === 0) {
-        showToast('📢 낭독할 성경 본문이 없습니다.');
+        showToast('낭독할 성경 본문이 없습니다.');
         return;
       }
 
@@ -664,9 +661,9 @@
 
       var rate = ttsSpeedRates[currentTTSSpeedIndex];
       if (currentTTSIndex > 0) {
-        showToast('▶️ 멈췄던 구절부터 계속 낭독합니다.');
+        showToast('멈췄던 구절부터 계속 낭독합니다.');
       } else {
-        showToast('🔊 성경 본문 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
+        showToast('성경 본문 낭독을 시작합니다 (' + rate.toFixed(1) + '배속)');
       }
       speakNextVerseTTS();
     }
@@ -676,7 +673,7 @@
         var wasSpeaking = isTTSSpeaking;
         stopTTSAudio(true);
         if (wasSpeaking && currentTTSIndex >= ttsSpeechItems.length) {
-          showToast('🎉 오늘의 말씀을 모두 낭독했습니다!');
+          showToast('오늘의 말씀을 모두 낭독했습니다!');
         }
         return;
       }
@@ -720,12 +717,13 @@
       renderBible(scheduleData[activeDay]);
       
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
-      showToast('📖 ' + verName + ' 전환');
+      showToast(verName + ' 전환');
     }
 
+    // FULL BIBLE VERSION TEXT: "개역개정", "개역한글", "새번역"
     function updateBibleVersionUI() {
       var label = document.getElementById('bibleVersionLabel');
-      var name = (currentBibleVersion === 'KG' ? '개역' : (currentBibleVersion === 'KH' ? '한글' : '새번'));
+      var name = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
       if (label) label.innerText = name;
       updateReaderTitleHeader();
     }
@@ -755,20 +753,17 @@
     }
 
     function updateThemeUI(theme) {
-      var icon = document.getElementById('themeIcon');
       var text = document.getElementById('themeText');
       if (theme === 'light') {
-        if (icon) icon.innerText = '🌙';
         if (text) text.innerText = '어둡게';
       } else {
-        if (icon) icon.innerText = '☀️';
         if (text) text.innerText = '밝게';
       }
     }
 
     // TAB SWITCHING LOGIC:
-    // Shows Bible tools (TTS, Speed, Version) when on 'reader' tab, hides on 'editor' & 'schedule'
-    // Logo & Member Name and Header height are ALWAYS EXACTLY UNIFIED & MATCHING!
+    // Shows Bible tools (TTS, Speed, Version) on 'reader' tab, hides on 'editor' & 'schedule'
+    // Member Name font size stays 0.7x (0.75rem) across all tabs!
     function switchTab(tabName) {
       autoSaveActiveNote();
       stopTTSAudio(true);
@@ -872,7 +867,7 @@
     function copyTextToClipboard(text, msg) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text);
-        showToast(msg || '📋 복사되었습니다!');
+        showToast(msg || '복사되었습니다!');
       } else {
         var ta = document.createElement('textarea');
         ta.value = text;
@@ -880,7 +875,7 @@
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        showToast(msg || '📋 복사되었습니다!');
+        showToast(msg || '복사되었습니다!');
       }
     }
 
@@ -990,12 +985,12 @@
             itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
               '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
                 '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
-                '<button class="btn-copy-note" id="btncopy_' + verseKey + '">📋 메모 복사</button>' +
+                '<button class="btn-copy-note" id="btncopy_' + verseKey + '">메모 복사</button>' +
               '</div>' +
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
                 '<div class="memo-guide-text">💡 다른 구절 터치 시 자동 저장됩니다.</div>' +
                 '<textarea class="verse-note-textarea" id="ta_note_' + verseKey + '" placeholder="이 구절에 대한 묵상 메모를 작성하세요...">' + savedNote + '</textarea>' +
-                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">✅ 저장 완료</button>' +
+                '<button class="btn-save-note-inside" id="btnsave_' + verseKey + '">저장 완료</button>' +
               '</div>';
 
             var pressTimer = null;
@@ -1013,7 +1008,7 @@
               } else {
                 if (pressTimer) clearTimeout(pressTimer);
                 pressTimer = setTimeout(function() {
-                  copyTextToClipboard(formattedCopyStr, '📋 [' + bookName + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
+                  copyTextToClipboard(formattedCopyStr, '[' + bookName + ' ' + c + ':' + vNum + '] 구절 복사 완료!');
                   pressTimer = null;
                 }, 550);
               }
@@ -1053,7 +1048,7 @@
                 ev.stopPropagation();
                 var noteVal = verseNotes[verseKey] || '';
                 if (noteVal.trim().length > 0) {
-                  copyTextToClipboard(noteVal, '📝 작성한 메모가 복사되었습니다!');
+                  copyTextToClipboard(noteVal, '작성한 메모가 복사되었습니다!');
                 }
               };
             }
@@ -1063,7 +1058,7 @@
               btnSave.onclick = function(ev) {
                 ev.stopPropagation();
                 autoSaveActiveNote();
-                showToast('✅ 묵상 메모가 저장되었습니다!');
+                showToast('묵상 메모가 저장되었습니다!');
               };
             }
 
@@ -1150,28 +1145,6 @@
       };
     }
 
-    var btnPush = document.getElementById('btnPushNotifySetup');
-    if (btnPush) {
-      btnPush.onclick = function(e) {
-        e.preventDefault();
-        if (!("Notification" in window)) {
-          alert("이 브라우저는 웹 알림을 지원하지 않습니다.");
-          return;
-        }
-        if (Notification.permission === "granted") {
-          showToast("🔔 알림 설정이 완료되어 있습니다!");
-        } else {
-          Notification.requestPermission().then(function (permission) {
-            if (permission === "granted") {
-              showToast("🔔 알림 설정이 완료되었습니다!");
-            } else {
-              alert("알림 권한이 거부되었습니다. 브라우저 설정에서 권한을 변경해주세요.");
-            }
-          });
-        }
-      };
-    }
-
     var bFontInc = document.getElementById('btnFontInc');
     if (bFontInc) {
       bFontInc.onclick = function(e) {
@@ -1179,7 +1152,7 @@
         if (currentFontSize < 1.6) {
           currentFontSize += 0.1;
           applyFontSize();
-          showToast('🔍 글자 크기 확대');
+          showToast('글자 크기 확대');
         }
       };
     }
@@ -1191,7 +1164,7 @@
         if (currentFontSize > 0.85) {
           currentFontSize -= 0.1;
           applyFontSize();
-          showToast('🔍 글자 크기 축소');
+          showToast('글자 크기 축소');
         }
       };
     }
