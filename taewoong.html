@@ -45,16 +45,16 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* DYNAMIC HEADER SYSTEM */
+    /* REFINED TWO-ROW HEADER: LOGO+NAME ENLARGED 1.2X ON SCRIPTURE TAB, BUTTONS RIGHT ALIGNED ORIGINAL */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
       padding-left: 10px;
       padding-right: 10px;
-      padding-bottom: 6px;
+      padding-bottom: 5px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
@@ -73,16 +73,16 @@
     .header-bottom-row {
       display: flex;
       align-items: center;
-      justify-content: center; /* CENTERED IN SCRIPTURE READING TAB */
-      gap: 6px;
+      justify-content: flex-end; /* RIGHT ALIGNED ORIGINAL */
+      gap: 4px;
       width: 100%;
     }
 
-    /* HEADER LOGO & MEMBER NAME (DYNAMIC SCALING & CENTER ALIGNMENT) */
+    /* LEFT LOGO & MEMBER NAME (LEFT ALIGNED ORIGINAL) */
     .header-logo-box {
       display: flex;
       flex-direction: column;
-      align-items: center; /* CENTER ALIGNED IN LINE */
+      align-items: flex-start; /* LEFT ALIGNED ORIGINAL */
       justify-content: center;
       gap: 2px;
       flex-shrink: 1;
@@ -100,14 +100,13 @@
     }
 
     .logo-title-sub {
-      font-size: 1.42rem; /* 1.2x LARGER FOR SCRIPTURE TAB DEFAULT */
+      font-size: 1.42rem; /* 1.2X LARGER ON SCRIPTURE READING TAB */
       font-weight: 800;
       color: var(--accent-green);
       line-height: 1.15;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: center;
       transition: font-size 0.25s ease;
     }
 
@@ -124,14 +123,7 @@
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 8px; height: 28px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; transition: all 0.2s ease;
-    }
-
-    /* SCRIPTURE TAB ENLARGED BUTTONS (1.2X) */
-    .app-header.tab-mode-reader .tool-btn {
-      height: 32px;
-      font-size: 0.86rem;
-      padding: 0 10px;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 14px; padding: 0 7px; height: 28px; font-size: 0.76rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
     }
 
     .app-container {
@@ -343,9 +335,9 @@
 </head>
 <body>
 
-  <!-- DYNAMIC TWO-ROW HEADER (SCALES 1.2X ON SCRIPTURE TAB, 0.8X ON EDITOR/SCHEDULE TABS) -->
+  <!-- DYNAMIC TWO-ROW HEADER (ONLY LOGO & NAME ENLARGED 1.2X ON SCRIPTURE TAB, BUTTONS RIGHT ALIGNED ORIGINAL) -->
   <header class="app-header tab-mode-reader" id="mainAppHeader">
-    <!-- ROW 1: LEFT LOGO & NAME (CENTERED IN LINE), RIGHT ACTIONS -->
+    <!-- ROW 1: LEFT LOGO & NAME, RIGHT ALIGNED BUTTONS ORIGINAL -->
     <div class="header-top-row">
       <div class="header-logo-box" id="headerLogoBox">
         <img src="header_logo.png" alt="Login Church" class="app-brand-logo" id="brandLogoImg">
@@ -368,7 +360,7 @@
       </div>
     </div>
 
-    <!-- ROW 2: BIBLE SPECIALIST TOOLS (CENTER ALIGNED) -->
+    <!-- ROW 2: BIBLE SPECIALIST TOOLS (RIGHT ALIGNED ORIGINAL) -->
     <div class="header-bottom-row" id="headerSecondRowTools">
       <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
         🔊 <span id="ttsBtnText">낭독</span>
@@ -784,9 +776,9 @@
       }
     }
 
-    // DYNAMIC TAB SWITCHING WITH SPECIFIC HEADER SIZES:
-    // 'reader': 1.2x Enlarged Member Name & Center Aligned
-    // 'editor' / 'schedule': 0.8x Compact & Small Header
+    // TAB SWITCHING LOGIC:
+    // 'reader': ONLY Logo & Member Name Enlarged 1.2x (1.42rem), Buttons Left/Right Original!
+    // 'editor' / 'schedule': Logo & Member Name Scaled 0.8x (0.94rem), Compact Header
     function switchTab(tabName) {
       autoSaveActiveNote();
       stopTTSAudio(true);
@@ -812,7 +804,7 @@
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (secRowTools) secRowTools.style.display = 'flex';
         if (titleText) {
-          titleText.style.fontSize = '1.42rem'; // 1.2x Larger for Scripture Tab
+          titleText.style.fontSize = '1.42rem'; // Only logo & name enlarged 1.2x on Scripture tab!
         }
         if (logoImg) {
           logoImg.style.height = '28px';
@@ -822,7 +814,7 @@
         if (fontCtrl) fontCtrl.style.display = 'inline-flex';
         if (secRowTools) secRowTools.style.display = 'none';
         if (titleText) {
-          titleText.style.fontSize = '0.94rem'; // 0.8x Smaller for Editor & Schedule Tabs
+          titleText.style.fontSize = '0.94rem'; // 0.8x smaller on Editor & Schedule tabs
         }
         if (logoImg) {
           logoImg.style.height = '20px';
