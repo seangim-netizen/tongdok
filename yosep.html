@@ -132,8 +132,9 @@
     }
     .tab-page.active { display: flex !important; }
 
+    /* CLEAN 2-LINE FORMATTED GESTURE TIP BOX */
     .gesture-tip-box {
-      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; text-align: center;
+      background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 9px 12px; border-radius: 9px; font-size: 0.84rem; font-weight: bold; margin-bottom: 10px; text-align: center; line-height: 1.5;
     }
 
     .daily-reading-banner {
@@ -198,6 +199,30 @@
     .journal-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
     .journal-box-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-green); margin-bottom: 8px; }
     textarea { width: 100%; min-height: 150px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: var(--verse-font-size); resize: vertical; outline: none; line-height: 1.6; }
+
+    /* HOME SCREEN APP INSTALL GUIDE BUTTON IN TAB-SCHEDULE */
+    .btn-install-guide {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+      transition: all 0.2s ease;
+    }
+    .btn-install-guide:active {
+      background: rgba(245, 158, 11, 0.25);
+      transform: scale(0.98);
+    }
 
     .progress-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); font-size: var(--verse-font-size); }
     .progress-bar-bg { background: var(--input-bg); height: 10px; border-radius: 5px; overflow: hidden; margin: 8px 0; }
@@ -275,6 +300,75 @@
       white-space: nowrap;
     }
     .toast-msg.show { opacity: 1; }
+
+    /* INSTALL GUIDE MODAL DIALOG */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 2000000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 2px solid var(--accent-gold);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 380px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-header-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+    .modal-body-section {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .guide-step-box {
+      background: var(--input-bg);
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 4px solid var(--accent-green);
+    }
+    .guide-step-title {
+      font-weight: 800;
+      color: var(--accent-green);
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .btn-modal-close {
+      background: var(--accent-green);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 6px;
+    }
   </style>
   <script src="bible_1Chronicles.js"></script>
 <script src="bible_1Corinthians.js"></script>
@@ -394,8 +488,10 @@
         <span id="readingStatusBadge" style="font-size: 0.82rem; padding: 3px 9px; border-radius: 12px; background: var(--border-color); color: var(--text-secondary); font-weight: bold;">미완료</span>
       </div>
 
+      <!-- 2-LINE FORMATTED GESTURE TIP BOX -->
       <div class="gesture-tip-box" id="readerTipBox">
-        💡 낭독 중 클릭: 해당 구절로 이동 | 길게 누름: 복사 | 더블클릭: 메모
+        💡 낭독 중 클릭: 클릭한 구절로 이동 & 낭독<br>
+        💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -423,8 +519,12 @@
       </div>
     </section>
 
-    <!-- TAB 3: 통독표 (구약통독클럽 TITLE REMOVED!) -->
+    <!-- TAB 3: 통독표 (WITH INSTALL GUIDE BUTTON RESTORED!) -->
     <section id="tab-schedule" class="tab-page">
+      <button id="btnPWAInstallGuide" class="btn-install-guide">
+        📲 스마트폰 홈화면에 앱 추가하는 방법
+      </button>
+
       <div class="progress-box">
         <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 0.95em;">
           <span>📊 통독 달성 진도율</span>
@@ -459,6 +559,29 @@
   </nav>
 
   <div class="toast-msg" id="toastMsg">📋 구절이 복사되었습니다!</div>
+
+  <!-- HOME SCREEN INSTALL GUIDE MODAL DIALOG -->
+  <div class="modal-overlay" id="pwaInstallModal">
+    <div class="modal-card">
+      <div class="modal-header-title">
+        <span>📲 홈화면 앱 추가 안내</span>
+        <button id="btnCloseModalX" style="background:none; border:none; color:var(--text-secondary); font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <div class="modal-body-section">
+        <div class="guide-step-box">
+          <div class="guide-step-title">📱 아이폰 (Safari 브라우저)</div>
+          1. 하단 중앙의 <strong>'공유 버튼(정사각형+화살표)'</strong> 터치<br>
+          2. 메뉴를 아래로 내려 <strong>'홈 화면에 추가'</strong> 터치
+        </div>
+        <div class="guide-step-box" style="border-left-color: var(--accent-gold);">
+          <div class="guide-step-title" style="color: var(--accent-gold);">🤖 안드로이드 (Chrome / 카카오톡)</div>
+          1. 우측 상단 <strong>'더보기(⋮)'</strong> 메뉴 터치<br>
+          2. <strong>'홈 화면에 추가'</strong> 또는 <strong>'앱 설치'</strong> 터치
+        </div>
+      </div>
+      <button class="btn-modal-close" id="btnCloseModalBtn">확인 완료</button>
+    </div>
+  </div>
 
   <script>
   window.addEventListener('DOMContentLoaded', function() {
@@ -575,10 +698,9 @@
           };
         }
 
-        // STRICT PUSH NOTIFICATION DATE CHECK:
-        // PUSH NOTIFICATIONS WILL ONLY FIRE ON OR AFTER SEPT 1ST, 2026 AND ONLY ON MATCHING READING DATES!
+        // STRICT PUSH NOTIFICATION DATE CHECK (SEPT 1ST 2026 ONWARDS)
         var now = new Date();
-        var startDate = new Date(2026, 8, 1); // 2026-09-01
+        var startDate = new Date(2026, 8, 1);
         
         if (now >= startDate) {
           var currentMonth = (now.getMonth() + 1).toString();
@@ -586,7 +708,7 @@
           var currentDateStr = (now.getDate()).toString();
           if (currentDateStr.length < 2) currentDateStr = '0' + currentDateStr;
           
-          var todayMatchStr = currentMonth + '/' + currentDateStr; // e.g. "09/01"
+          var todayMatchStr = currentMonth + '/' + currentDateStr;
 
           if (item.date && item.date.indexOf(todayMatchStr) !== -1) {
             if ("Notification" in window && Notification.permission === "granted") {
@@ -700,9 +822,7 @@
       }
     }
 
-    // STRICT [이전] BUTTON DIRECTION HANDLER:
-    // 1 Press  -> Repeats current verse from start.
-    // 2 Presses -> Moves strictly backward to the previous verse.
+    // STRICT [이전] BUTTON DIRECTION HANDLER
     function handlePrevButtonClick() {
       isTTSSpeaking = false;
       if ('speechSynthesis' in window) {
@@ -731,10 +851,8 @@
         }
 
         if (prevBtnClickCount === 1) {
-          // Repeat current verse from start
           showToast('현재 구절을 처음부터 다시 낭독합니다.');
         } else if (prevBtnClickCount >= 2) {
-          // Jump backward strictly
           if (currentTTSIndex > 0) {
             currentTTSIndex--;
             if (ttsSpeechItems[currentTTSIndex] && ttsSpeechItems[currentTTSIndex].element.classList.contains('bible-chapter-header')) {
@@ -832,7 +950,6 @@
       speakNextVerseTTS();
     }
 
-    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH SYNCHRONOUS HIGHLIGHT & SMOOTH SCROLL!
     function speakNextVerseTTS() {
       if (!isTTSSpeaking || currentTTSIndex >= ttsSpeechItems.length) {
         var wasSpeaking = isTTSSpeaking;
@@ -845,12 +962,10 @@
 
       var itemObj = ttsSpeechItems[currentTTSIndex];
 
-      // Remove existing highlights
       document.querySelectorAll('.is-reading-speaking').forEach(function(el) {
         el.classList.remove('is-reading-speaking');
       });
 
-      // Apply highlight and smooth scroll immediately to current spoken verse!
       if (itemObj && itemObj.element) {
         itemObj.element.classList.add('is-reading-speaking');
         itemObj.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -861,7 +976,7 @@
       utterance.rate = ttsSpeedRates[currentTTSSpeedIndex];
       utterance.pitch = 1.0;
 
-      var hasStepEnded = false; // DEBOUNCE GUARD PREVENTING VERSE SKIPPING
+      var hasStepEnded = false;
 
       utterance.onend = function() {
         if (!isTTSSpeaking || hasStepEnded) return;
@@ -895,7 +1010,6 @@
       showToast(verName + ' 전환');
     }
 
-    // FULL BIBLE VERSION TEXT: "개역개정", "개역한글", "새번역"
     function updateBibleVersionUI() {
       var label = document.getElementById('bibleVersionLabel');
       var name = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
@@ -903,6 +1017,7 @@
       updateReaderTitleHeader();
     }
 
+    // FORMATTED 2-LINE GESTURE TIP BOX UPDATE
     function updateReaderTitleHeader() {
       var title = document.getElementById('readerTitleLabel');
       var tip = document.getElementById('readerTipBox');
@@ -912,9 +1027,12 @@
       }
       if (tip) {
         if (item.zoomInfo) {
-          tip.innerHTML = '💡 낭독 중 클릭: 해당 구절로 이동 | 길게 누름: 복사 | 더블클릭: 메모<br><span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
+          tip.innerHTML = '💡 낭독 중 클릭: 클릭한 구절로 이동 & 낭독<br>' +
+            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모<br>' +
+            '<span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
         } else {
-          tip.innerHTML = '💡 낭독 중 클릭: 해당 구절로 이동 | 길게 누름: 복사 | 더블클릭: 메모';
+          tip.innerHTML = '💡 낭독 중 클릭: 클릭한 구절로 이동 & 낭독<br>' +
+            '💡 길게 누름: 구절 복사 | 더블클릭: 묵상 메모';
         }
       }
     }
@@ -936,9 +1054,6 @@
       }
     }
 
-    // TAB SWITCHING LOGIC:
-    // Shows Bible tools (TTS, Prev, Speed, Version) on 'reader' tab, hides on 'editor' & 'schedule'
-    // Member Name font size stays 0.7x (0.75rem) across all tabs!
     function switchTab(tabName) {
       autoSaveActiveNote();
       stopTTSAudio(true);
@@ -1180,7 +1295,6 @@
               
               isLongPressExecuted = false;
 
-              // Long Press Detection (550ms) -> Copy Verse
               if (pressTimer) clearTimeout(pressTimer);
               pressTimer = setTimeout(function() {
                 isLongPressExecuted = true;
@@ -1197,7 +1311,6 @@
                 return;
               }
 
-              // Double Tap -> Open Note Box | Single Tap -> Jump to Verse ONLY WHEN TTS IS SPEAKING!
               var currentTime = new Date().getTime();
               var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
               var tapLength = currentTime - lastTapTime;
@@ -1207,7 +1320,6 @@
                 openNoteBox(verseKey);
               } else {
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
-                // Single Tap: Jump ONLY when TTS is active (isTTSSpeaking === true)
                 if (isTTSSpeaking) {
                   speakFromSpecificVerseElement(itemEl);
                 }
@@ -1218,7 +1330,6 @@
               if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
             });
 
-            // PC Mouse Double Click -> Open Note Box
             itemEl.addEventListener('dblclick', function(e) {
               if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
               openNoteBox(verseKey);
@@ -1309,6 +1420,35 @@
         });
         container.appendChild(card);
       });
+    }
+
+    // PWA INSTALL GUIDE MODAL HANDLERS
+    var btnPwaGuide = document.getElementById('btnPWAInstallGuide');
+    var pwaModal = document.getElementById('pwaInstallModal');
+    var btnCloseX = document.getElementById('btnCloseModalX');
+    var btnCloseBtn = document.getElementById('btnCloseModalBtn');
+
+    if (btnPwaGuide && pwaModal) {
+      btnPwaGuide.onclick = function() {
+        pwaModal.classList.add('show');
+      };
+    }
+    if (btnCloseX && pwaModal) {
+      btnCloseX.onclick = function() {
+        pwaModal.classList.remove('show');
+      };
+    }
+    if (btnCloseBtn && pwaModal) {
+      btnCloseBtn.onclick = function() {
+        pwaModal.classList.remove('show');
+      };
+    }
+    if (pwaModal) {
+      pwaModal.onclick = function(e) {
+        if (e.target === pwaModal) {
+          pwaModal.classList.remove('show');
+        }
+      };
     }
 
     var btnAudioTTS = document.getElementById('btnAudioTTSPlay');
