@@ -45,16 +45,16 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* REFINED TWO-ROW HEADER WITH ENLARGED LOGO (32px) & VERTICAL CENTER ALIGNMENT */
+    /* REFINED COMPACT TWO-ROW HEADER (LOGO + NAME CENTERED BETWEEN BUTTONS) */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
-      padding-left: 12px;
-      padding-right: 12px;
-      padding-bottom: 8px;
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-bottom: 4px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
@@ -65,58 +65,67 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      min-height: 48px;
+      min-height: 42px;
+      position: relative;
+    }
+
+    .header-left-box {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      justify-content: flex-start;
+    }
+
+    /* LOGO + MEMBER NAME CENTERED IN ROW 1 */
+    .header-logo-center-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .app-brand-logo {
+      height: 26px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .logo-title-large {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .header-right-box {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      flex: 1;
     }
 
     .header-bottom-row {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 6px;
+      gap: 4px;
       width: 100%;
     }
 
-    /* ENLARGED LOGO (32px) + MEMBER NAME (1.12rem), ALIGNED VERTICALLY CENTER */
-    .header-logo-box {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 3px;
-      flex-shrink: 1;
-      min-width: 0;
-      height: 100%;
-    }
-    .app-brand-logo {
-      height: 32px; /* enlarged logo size */
-      width: auto;
-      object-fit: contain;
-      border-radius: 4px;
-    }
-    .logo-title-large {
-      font-size: 1.12rem;
-      font-weight: 800;
-      color: var(--accent-green);
-      line-height: 1.15;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .header-actions-row {
-      display: flex; align-items: center; gap: 5px; flex-shrink: 0;
-    }
-
     .font-size-control {
-      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; height: 30px;
+      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; height: 28px;
     }
     .font-btn {
-      background: none; border: none; color: var(--text-primary); font-size: 0.8rem; font-weight: bold; padding: 0 7px; height: 100%; cursor: pointer; display: flex; align-items: center;
+      background: none; border: none; color: var(--text-primary); font-size: 0.78rem; font-weight: bold; padding: 0 6px; height: 100%; cursor: pointer; display: flex; align-items: center;
     }
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 8px; height: 30px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 16px; padding: 0 7px; height: 28px; font-size: 0.76rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap;
     }
 
     .app-container {
@@ -328,20 +337,25 @@
 </head>
 <body>
 
-  <!-- EXPANDED TWO-ROW HEADER (ENLARGED LOGO 32px & VERTICALLY CENTERED) -->
+  <!-- REFINED COMPACT TWO-ROW HEADER (LOGO + NAME CENTERED BETWEEN BUTTONS) -->
   <header class="app-header">
-    <!-- ROW 1: LOGO + NAME BELOW (LEFT), ALARM SETUP + FONT + THEME (RIGHT) -->
+    <!-- ROW 1: LEFT (ALARM) / CENTER (LOGO + NAME) / RIGHT (FONT + THEME) -->
     <div class="header-top-row">
-      <div class="header-logo-box">
+      <!-- LEFT BUTTON: ALARM -->
+      <div class="header-left-box">
+        <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
+          🔔 <span>알림</span>
+        </button>
+      </div>
+
+      <!-- CENTER BOX: LOGO & MEMBER NAME -->
+      <div class="header-logo-center-box">
         <img src="header_logo.png" alt="Login Church" class="app-brand-logo">
         <div class="logo-title-large">김경면 권사</div>
       </div>
 
-      <div class="header-actions-row">
-        <button class="tool-btn" id="btnPushNotifySetup" style="border-color: var(--accent-gold); color: var(--accent-gold);">
-          🔔 <span>알림 설정</span>
-        </button>
-
+      <!-- RIGHT BUTTONS: FONT & THEME -->
+      <div class="header-right-box">
         <div class="font-size-control" id="headerFontControl">
           <button class="font-btn" id="btnFontDec">가-</button>
           <button class="font-btn" id="btnFontInc">가+</button>
@@ -582,7 +596,6 @@
       localStorage.setItem(PERMANENT_FONT_KEY, currentFontSize);
     }
 
-    // PAUSE & PRESERVE CURRENT TTS VERSE INDEX FOR RESUME
     function stopTTSAudio(isFullReset) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -634,7 +647,6 @@
         return;
       }
 
-      // Build speech queue if new day or fully reset
       if (!isTTSPaused || ttsSpeechItems.length === 0 || currentTTSIndex >= ttsSpeechItems.length) {
         currentTTSIndex = 0;
         ttsSpeechItems = [];
