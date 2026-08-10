@@ -45,19 +45,18 @@
       width: 100%; height: 100%; min-height: 100vh; background-color: var(--nav-bg); color: var(--text-primary); display: flex; flex-direction: column; overflow: hidden; transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    /* SINGLE-ROW ULTRA-SLIM HEADER (ALL 6 BUTTONS IN 1 ROW MATCHING EDITOR TAB HEIGHT) */
+    /* PERFECT UNIFIED ULTRA-SLIM SINGLE-ROW HEADER (EXACTLY MATCHING EDITOR TAB HEIGHT) */
     .app-header {
       background: var(--nav-bg);
       padding-top: env(safe-area-inset-top, 0px);
       padding-left: 8px;
       padding-right: 8px;
-      padding-bottom: 5px;
+      padding-bottom: 4px;
       display: flex;
       flex-direction: column;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
       z-index: 100;
-      transition: all 0.25s ease;
     }
 
     .header-top-row {
@@ -65,11 +64,11 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding-top: 2px;
-      min-height: 42px;
+      padding-top: 1px;
+      min-height: 38px;
     }
 
-    /* LEFT LOGO & MEMBER NAME */
+    /* LOGO & MEMBER NAME (COMPACTLY MATCHING EDITOR TAB SIZING) */
     .header-logo-box {
       display: flex;
       flex-direction: column;
@@ -81,14 +80,14 @@
     }
 
     .app-brand-logo {
-      height: 24px;
+      height: 18px; /* EXACTLY MATCHING EDITOR TAB LOGO HEIGHT */
       width: auto;
       object-fit: contain;
-      border-radius: 4px;
+      border-radius: 3px;
     }
 
     .logo-title-sub {
-      font-size: 1.25rem; /* 1.2X LARGER NAME */
+      font-size: 0.94rem; /* EXACTLY MATCHING EDITOR TAB MEMBER NAME FONT SIZE */
       font-weight: 800;
       color: var(--accent-green);
       line-height: 1.1;
@@ -107,7 +106,7 @@
     .header-actions-row::-webkit-scrollbar { display: none; }
 
     .font-size-control {
-      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; height: 26px; flex-shrink: 0;
+      display: inline-flex; align-items: center; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; height: 25px; flex-shrink: 0;
     }
     .font-btn {
       background: none; border: none; color: var(--text-primary); font-size: 0.74rem; font-weight: bold; padding: 0 4px; height: 100%; cursor: pointer; display: flex; align-items: center;
@@ -115,7 +114,7 @@
     .font-btn:active { background: var(--border-color); }
 
     .tool-btn {
-      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 6px; height: 26px; font-size: 0.74rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; flex-shrink: 0;
+      background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 6px; height: 25px; font-size: 0.74rem; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; flex-shrink: 0;
     }
 
     .app-container {
@@ -327,7 +326,7 @@
 </head>
 <body>
 
-  <!-- SINGLE-ROW HEADER DESIGN TEST: ALL 6 BUTTONS COMPACTLY FIT IN 1 ROW MATCHING EDITOR TAB HEIGHT -->
+  <!-- UNIFIED SINGLE-ROW HEADER MATCHING EDITOR TAB SIZING EXACTLY -->
   <header class="app-header" id="mainAppHeader">
     <div class="header-top-row">
       <div class="header-logo-box" id="headerLogoBox">
@@ -335,7 +334,7 @@
         <div class="logo-title-sub" id="logoTitleText">홍정호 목사</div>
       </div>
 
-      <!-- ALL 6 BUTTONS IN A SINGLE SLIM ROW -->
+      <!-- ALL 6 BUTTONS IN SINGLE SLIM ROW MATCHING EDITOR ROW HEIGHT -->
       <div class="header-actions-row" id="headerActionsRow">
         <button class="tool-btn" id="btnAudioTTSPlay" style="border-color: var(--accent-green); color: var(--accent-green);">
           🔊 <span id="ttsBtnText">낭독</span>
@@ -767,8 +766,9 @@
       }
     }
 
-    // TAB SWITCHING: IN ALL TABS, HEADER IS Ultra-Slim Single Row!
+    // TAB SWITCHING LOGIC:
     // Shows Bible tools (TTS, Speed, Version) when on 'reader' tab, hides on 'editor' & 'schedule'
+    // Logo & Member Name and Header height are ALWAYS EXACTLY UNIFIED & MATCHING!
     function switchTab(tabName) {
       autoSaveActiveNote();
       stopTTSAudio(true);
@@ -786,21 +786,15 @@
       var btnAudio = document.getElementById('btnAudioTTSPlay');
       var btnSpeed = document.getElementById('btnTTSSpeedToggle');
       var btnVer = document.getElementById('btnBibleVerToggle');
-      var titleText = document.getElementById('logoTitleText');
-      var logoImg = document.getElementById('brandLogoImg');
 
       if (tabName === 'reader') {
         if (btnAudio) btnAudio.style.display = 'inline-flex';
         if (btnSpeed) btnSpeed.style.display = 'inline-flex';
         if (btnVer) btnVer.style.display = 'inline-flex';
-        if (titleText) titleText.style.fontSize = '1.25rem'; // 1.2x enlarged name
-        if (logoImg) logoImg.style.height = '24px';
       } else {
         if (btnAudio) btnAudio.style.display = 'none';
         if (btnSpeed) btnSpeed.style.display = 'none';
         if (btnVer) btnVer.style.display = 'none';
-        if (titleText) titleText.style.fontSize = '0.94rem'; // 0.8x smaller on other tabs
-        if (logoImg) logoImg.style.height = '18px';
       }
     }
 
