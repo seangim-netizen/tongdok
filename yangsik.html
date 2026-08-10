@@ -97,7 +97,6 @@
       background: var(--card-bg); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; text-align: center;
     }
 
-    /* DISABLING 300MS TAP DELAY FOR INSTANT VERSE 1 + ALL VERSE DOUBLE CLICK */
     .bible-verse-card {
       background: var(--card-bg); border-radius: 10px; padding: 15px 16px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: var(--verse-font-size); line-height: 1.72; word-break: keep-all; position: relative; cursor: pointer; user-select: none; touch-action: manipulation; transition: transform 0.15s ease, background-color 0.2s ease;
     }
@@ -138,7 +137,7 @@
 
     .journal-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
     .journal-box-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-green); margin-bottom: 8px; }
-    textarea { width: 100%; min-height: 150px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: 1.0rem; resize: vertical; outline: none; line-height: 1.6; }
+    textarea { width: 100%; min-height: 150px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: var(--verse-font-size); resize: vertical; outline: none; line-height: 1.6; }
 
     .progress-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
     .progress-bar-bg { background: var(--input-bg); height: 10px; border-radius: 5px; overflow: hidden; margin: 8px 0; }
@@ -153,7 +152,6 @@
     .check-badge.checked { background: var(--accent-green); color: #fff; }
     .check-badge.unchecked { border: 1px solid var(--text-secondary); color: transparent; }
 
-    /* BOTTOM NAV BAR WITH UNIFIED BACKGROUND COLOR (SAME AS BEZEL AREA) */
     .mobile-bottom-nav {
       position: fixed !important;
       bottom: 0 !important;
@@ -191,7 +189,7 @@
     }
     .nav-tab-item.active {
       color: var(--accent-green) !important;
-      background: var(--nav-bg) !important; /* SAME UNIFIED BACKGROUND AS BOTTOM NAV BAR & BEZEL */
+      background: var(--nav-bg) !important;
       border-top: 3px solid var(--accent-green);
     }
     .nav-tab-icon { font-size: 1.35rem; margin-bottom: 2px; }
@@ -276,7 +274,7 @@
     </div>
 
     <div class="header-actions-row">
-      <div class="font-size-control">
+      <div class="font-size-control" id="headerFontControl">
         <button class="font-btn" id="btnFontDec">가-</button>
         <button class="font-btn" id="btnFontInc">가+</button>
       </div>
@@ -608,6 +606,7 @@
       }
     }
 
+    /* TAB SWITCH WITH TAB-SPECIFIC HEADER BUTTON VISIBILITY */
     function switchTab(tabName) {
       autoSaveActiveNote();
       var pages = document.querySelectorAll('.tab-page');
@@ -619,6 +618,23 @@
       var targetBtn = document.getElementById('btn-tab-' + tabName);
       if (targetPage) targetPage.classList.add('active');
       if (targetBtn) targetBtn.classList.add('active');
+
+      var fontCtrl = document.getElementById('headerFontControl');
+      var verBtn = document.getElementById('btnBibleVerToggle');
+
+      if (tabName === 'reader') {
+        // 성경읽기: 가-/가+ 보임, 개역개정 버튼 보임
+        if (fontCtrl) fontCtrl.style.display = 'inline-flex';
+        if (verBtn) verBtn.style.display = 'inline-flex';
+      } else if (tabName === 'editor') {
+        // 일기쓰기: 가-/가+ 보임(일기장 글자 크기 조정), 개역개정 버튼 숨김!
+        if (fontCtrl) fontCtrl.style.display = 'inline-flex';
+        if (verBtn) verBtn.style.display = 'none';
+      } else if (tabName === 'schedule') {
+        // 통독표: 가-/가+ 숨김, 개역개정 버튼 숨김!
+        if (fontCtrl) fontCtrl.style.display = 'none';
+        if (verBtn) verBtn.style.display = 'none';
+      }
     }
 
     function toggleComplete() {
@@ -814,7 +830,6 @@
           var pressTimer = null;
           var lastTapTime = 0;
 
-          // PERFECTED MULTI-EVENT HANDLER FOR VERSE 1 AND ALL VERSES
           function handleCardPress(e) {
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
             
