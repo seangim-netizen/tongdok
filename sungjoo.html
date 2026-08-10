@@ -394,7 +394,7 @@
       </div>
 
       <div class="gesture-tip-box" id="readerTipBox">
-        💡 클릭: 해당 구절부터 낭독 | 길게 누름: 복사 | 더블클릭: 메모
+        💡 낭독 중 클릭: 해당 구절로 이동 | 길게 누름: 복사 | 더블클릭: 메모
       </div>
 
       <div id="bibleTextContainer"></div>
@@ -479,7 +479,7 @@
     var journals = {};
     var verseNotes = {};
 
-    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE WITH SMART PREV & INSTANT TOUCH JUMP!
+    // PERFECT NO-SKIP EVERY-VERSE TTS ENGINE (JUMP ONLY WHEN IS_TTS_SPEAKING === TRUE!)
     var isTTSSpeaking = false;
     var isTTSPaused = false;
     var currentTTSIndex = 0;
@@ -632,14 +632,15 @@
       }
     }
 
-    // TAP ANY VERSE TO IMMEDIATELY STOP & READ FROM THAT SPECIFIC VERSE!
+    // TAP ANY VERSE TO IMMEDIATELY JUMP TO THAT VERSE ONLY WHEN TTS IS PLAYING!
     function speakFromSpecificVerseElement(targetEl) {
       if (!('speechSynthesis' in window)) {
         alert('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
         return;
       }
 
-      // Stop current speech instantly
+      // Stop current speech & disable async increment
+      isTTSSpeaking = false;
       if ('speechSynthesis' in window) {
         try { window.speechSynthesis.cancel(); } catch(e) {}
       }
@@ -685,13 +686,13 @@
       }
     }
 
-    // SMART [이전] BUTTON HANDLER:
-    // 1 Press  -> Repeats current verse from the beginning.
-    // 2 Presses (within 350ms) -> Jumps to the previous verse.
+    // STRICT [이전] BUTTON DIRECTION HANDLER:
+    // 1 Press  -> Repeats current verse from start.
+    // 2 Presses -> Moves strictly backward to the previous verse.
     function handlePrevButtonClick() {
-      if (!isTTSSpeaking && !isTTSPaused) {
-        showToast('현재 낭독 중이 아닙니다.');
-        return;
+      isTTSSpeaking = false;
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
       }
 
       prevBtnClickCount++;
@@ -701,29 +702,52 @@
       }
 
       prevBtnClickTimer = setTimeout(function() {
+        if (ttsSpeechItems.length === 0) {
+          ttsSpeechItems = [];
+          var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-chapter-header, #bibleTextContainer .bible-verse-card');
+          allReaderElements.forEach(function(el) {
+            if (el.classList.contains('bible-chapter-header')) {
+              var chText = el.innerText.replace('📖 ', '').trim();
+              ttsSpeechItems.push({ element: el, speakText: chText });
+            } else if (el.classList.contains('bible-verse-card')) {
+              var vPureText = el.getAttribute('data-puretext') || el.innerText;
+              ttsSpeechItems.push({ element: el, speakText: vPureText });
+            }
+          });
+        }
+
         if (prevBtnClickCount === 1) {
           // Repeat current verse from start
-          if ('speechSynthesis' in window) {
-            try { window.speechSynthesis.cancel(); } catch(e) {}
-          }
           showToast('현재 구절을 처음부터 다시 낭독합니다.');
-          speakNextVerseTTS();
         } else if (prevBtnClickCount >= 2) {
-          // Jump to previous verse
-          if ('speechSynthesis' in window) {
-            try { window.speechSynthesis.cancel(); } catch(e) {}
-          }
+          // Jump backward strictly
           if (currentTTSIndex > 0) {
             currentTTSIndex--;
+            if (ttsSpeechItems[currentTTSIndex] && ttsSpeechItems[currentTTSIndex].element.classList.contains('bible-chapter-header')) {
+              if (currentTTSIndex > 0) currentTTSIndex--;
+            }
           } else {
             currentTTSIndex = 0;
           }
           showToast('이전 구절로 이동하여 낭독합니다.');
-          speakNextVerseTTS();
         }
+
+        isTTSSpeaking = true;
+        isTTSPaused = false;
+
+        var btnText = document.getElementById('ttsBtnText');
+        var btnObj = document.getElementById('btnAudioTTSPlay');
+        if (btnText) btnText.innerText = '중지';
+        if (btnObj) {
+          btnObj.style.borderColor = 'var(--accent-gold)';
+          btnObj.style.color = 'var(--accent-gold)';
+        }
+
+        speakNextVerseTTS();
+
         prevBtnClickCount = 0;
         prevBtnClickTimer = null;
-      }, 350);
+      }, 300);
     }
 
     function toggleTTSSpeed() {
@@ -874,9 +898,9 @@
       }
       if (tip) {
         if (item.zoomInfo) {
-          tip.innerHTML = '💡 클릭: 해당 구절부터 낭독 | 길게 누름: 복사 | 더블클릭: 메모<br><span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
+          tip.innerHTML = '💡 낭독 중 클릭: 해당 구절로 이동 | 길게 누름: 복사 | 더블클릭: 메모<br><span style="color:var(--accent-gold); font-weight:800;">' + item.zoomInfo + '</span>';
         } else {
-          tip.innerHTML = '💡 클릭: 해당 구절부터 낭독 | 길게 누름: 복사 | 더블클릭: 메모';
+          tip.innerHTML = '💡 낭독 중 클릭: 해당 구절로 이동 | 길게 누름: 복사 | 더블클릭: 메모';
         }
       }
     }
@@ -1159,7 +1183,7 @@
                 return;
               }
 
-              // Double Tap -> Open Note Box | Single Tap -> Instantly STOP & Read from Touched Verse!
+              // Double Tap -> Open Note Box | Single Tap -> Jump to Verse ONLY WHEN TTS IS SPEAKING!
               var currentTime = new Date().getTime();
               var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
               var tapLength = currentTime - lastTapTime;
@@ -1169,8 +1193,10 @@
                 openNoteBox(verseKey);
               } else {
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
-                // Single Tap -> Instantly STOP current speech and jump to touched verse!
-                speakFromSpecificVerseElement(itemEl);
+                // Single Tap: Jump ONLY when TTS is active (isTTSSpeaking === true)
+                if (isTTSSpeaking) {
+                  speakFromSpecificVerseElement(itemEl);
+                }
               }
             });
 
