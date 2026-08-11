@@ -469,7 +469,7 @@
 
     function getVerseText(bName, ch, vNum, ver) {
       var raw = getRawVerse(bName, ch, vNum);
-      if (!raw) return '구절을 불러오는 중...';
+      if (!raw) return '구절 데이터를 불러올 수 없습니다.';
 
       if (ver === 'SB') {
         return '[새번역] ' + raw;
