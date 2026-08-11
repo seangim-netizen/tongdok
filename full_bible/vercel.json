@@ -1,7 +1,11 @@
 {
   "rewrites": [
-    { "source": "/siwoong", "destination": "/siwoong.html" },
-    { "source": "/hyunkyung", "destination": "/hyunkyung.html" },
+    { "source": "/siwoong-full", "destination": "/siwoong_full.html" },
+    { "source": "/siwoong66", "destination": "/siwoong_full.html" },
+    { "source": "/full-siwoong", "destination": "/siwoong_full.html" },
+    { "source": "/hyunkyung-full", "destination": "/hyunkyung_full.html" },
+    { "source": "/hyunkyung66", "destination": "/hyunkyung_full.html" },
+    { "source": "/full-hyunkyung", "destination": "/hyunkyung_full.html" },
     { "source": "/", "destination": "/index.html" }
   ]
 }
