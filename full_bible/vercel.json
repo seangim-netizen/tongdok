@@ -1,8 +1,6 @@
 {
   "rewrites": [
-    { "source": "/kimsiwoong", "destination": "/kimsiwoong.html" },
     { "source": "/siwoong", "destination": "/siwoong.html" },
-    { "source": "/choi", "destination": "/choi.html" },
     { "source": "/hyunkyung", "destination": "/hyunkyung.html" },
     { "source": "/", "destination": "/index.html" }
   ]
