@@ -203,45 +203,120 @@
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
 
-    .journal-container-row {
+    .journal-header-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .col-header-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 8px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .verse-pair-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: stretch;
+    }
+    .verse-card-slim {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-green);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: var(--verse-font-size);
+      line-height: 1.58;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      word-break: keep-all;
+    }
+    .note-card-slim {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-gold);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: var(--verse-font-size);
+      line-height: 1.58;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      word-break: keep-all;
+    }
+    .verse-card-header {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      margin-bottom: 4px;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 3px;
+    }
+    .note-card-header {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 4px;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 3px;
+    }
+    textarea.note-card-textarea {
       width: 100%;
-      align-items: start;
+      min-height: 55px;
+      height: auto;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      padding: 6px 8px;
+      font-size: var(--verse-font-size);
+      resize: none;
+      outline: none;
+      line-height: 1.55;
+      overflow-y: hidden;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+      margin-top: 4px;
     }
-    @media (max-width: 520px) {
-      .journal-container-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
-      }
+    textarea.note-card-textarea:focus {
+      border-color: var(--accent-gold);
     }
-    .journal-box {
+    .journal-general-box {
       background: var(--card-bg);
       border-radius: 8px;
       padding: 10px 10px;
+      margin-top: 12px;
       margin-bottom: 10px;
       border: 1px solid var(--border-color);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
     }
     .journal-box-title {
-      font-size: 0.90rem;
+      font-size: 0.94rem;
       font-weight: 800;
       color: var(--accent-green);
       margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     textarea, textarea.journal-textarea {
       width: 100%;
-      min-height: 110px;
+      min-height: 80px;
       height: auto;
       background: var(--input-bg);
       border: 1px solid var(--border-color);
@@ -255,6 +330,9 @@
       overflow-y: hidden;
       box-sizing: border-box;
       transition: border-color 0.2s ease;
+    }
+    textarea:focus, textarea.journal-textarea:focus {
+      border-color: var(--accent-green);
     }
     textarea:focus, textarea.journal-textarea:focus {
       border-color: var(--accent-green);
@@ -643,20 +721,24 @@
 
     <!-- TAB 2: 일기쓰기 -->
     <section id="tab-editor" class="tab-page">
-      <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
-        ✏️ 통독 일기 작성
+      <div style="font-size: 1.05rem; font-weight: 800; color: var(--accent-green); margin-bottom: 10px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+        <span>✏️ 통독 일기 및 묵상 노트</span>
+        <span id="journalDayBadge" style="font-size: 0.82rem; color: var(--accent-gold); font-weight: bold;"></span>
       </div>
-      <div class="journal-container-row">
-        <!-- LEFT COLUMN: 은혜받은 말씀 -->
-        <div class="journal-box">
-          <div class="journal-box-title">📖 은혜받은 말씀</div>
-          <textarea id="editorGrace" class="journal-textarea" placeholder="오늘 성경 본문 구절이 연동되어 자동 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
-        </div>
-        <!-- RIGHT COLUMN: 받은 교훈 및 적용 -->
-        <div class="journal-box">
-          <div class="journal-box-title">💡 받은 교훈 및 적용</div>
-          <textarea id="editorLesson" class="journal-textarea" placeholder="작성하신 구절 메모와 묵상 결단이 자동 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
-        </div>
+
+      <!-- Column Headers -->
+      <div class="journal-header-row">
+        <div class="col-header-title">📖 은혜받은 말씀 (본문 구절)</div>
+        <div class="col-header-title">💡 받은 교훈 및 묵상 메모</div>
+      </div>
+
+      <!-- Dynamic 1:1 Verse-by-Verse Note Card Container -->
+      <div id="journalVersePairsContainer"></div>
+
+      <!-- General Additional Daily Reflection & Prayer Box -->
+      <div class="journal-general-box">
+        <div class="journal-box-title">📝 종합 묵상 및 기도제목 (자유 기재)</div>
+        <textarea id="editorLesson" class="journal-textarea" placeholder="오늘 성경통독 전체를 읽고 깨달은 종합적인 은혜, 기도제목, 삶의 결단을 자유롭게 적어보세요." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
       </div>
     </section>
 
@@ -1565,21 +1647,26 @@
     function autoExpandTextarea(el) {
       if (!el) return;
       el.style.height = 'auto';
-      el.style.height = Math.max(80, el.scrollHeight + 4) + 'px';
+      el.style.height = Math.max(55, el.scrollHeight + 4) + 'px';
     }
 
     function autoExpandTextarea(el) {
       if (!el) return;
       el.style.height = 'auto';
-      el.style.height = Math.max(80, el.scrollHeight + 4) + 'px';
+      el.style.height = Math.max(55, el.scrollHeight + 4) + 'px';
     }
 
     function syncVerseNotesToJournal() {
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
 
-      var currentItem = scheduleData[activeDay];
-      if (!currentItem || !currentItem.books) return;
+      var dayBadge = document.getElementById('journalDayBadge');
+      var item = scheduleData[activeDay];
+      if (dayBadge && item) {
+        dayBadge.innerText = 'Day ' + activeDay + ' | ' + item.passage;
+      }
+
+      if (!item || !item.books) return;
 
       var db = null;
       if (currentBibleVersion === 'KH' && window.BIBLE_FULL_DB_KH) db = window.BIBLE_FULL_DB_KH;
@@ -1589,10 +1676,14 @@
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
       var NL = String.fromCharCode(10);
 
-      var collectedGrace = [];
-      var collectedLesson = [];
+      var container = document.getElementById('journalVersePairsContainer');
+      if (!container) return;
+      container.innerHTML = '';
 
-      currentItem.books.forEach(function(bInfo) {
+      var pairsCount = 0;
+      var collectedGrace = [];
+
+      item.books.forEach(function(bInfo) {
         var bookName = bInfo.book;
         var bookData = db[bookName] || {};
         for (var c = bInfo.start; c <= bInfo.end; c++) {
@@ -1602,43 +1693,69 @@
             if (vk.indexOf(prefix) === 0) {
               var noteVal = (verseNotes[vk] || '').trim();
               if (noteVal.length > 0) {
+                pairsCount++;
                 var vNum = parseInt(vk.replace(prefix, ''), 10);
                 var vText = (verses[vNum - 1] || '').trim();
                 if (currentBibleVersion === 'SB' && typeof cleanSaebeonyeokVerse === 'function') {
                   vText = cleanSaebeonyeokVerse(vText);
                 }
-                
-                if (vText.length > 0) {
-                  collectedGrace.push('[' + bookName + ' ' + c + ':' + vNum + ', ' + verName + ']' + NL + vText);
-                } else {
-                  collectedGrace.push('[' + bookName + ' ' + c + ':' + vNum + ', ' + verName + ']');
-                }
 
-                collectedLesson.push('[' + bookName + ' ' + c + ':' + vNum + ' 메모]' + NL + noteVal);
+                var pairRow = document.createElement('div');
+                pairRow.className = 'verse-pair-row';
+
+                var leftCard = document.createElement('div');
+                leftCard.className = 'verse-card-slim';
+                leftCard.innerHTML = '<div class="verse-card-header">📖 ' + bookName + ' ' + c + ':' + vNum + ' (' + verName + ')</div>' +
+                                     '<div>' + (vText || '구절 본문') + '</div>';
+
+                var rightCard = document.createElement('div');
+                rightCard.className = 'note-card-slim';
+                
+                var noteHeader = document.createElement('div');
+                noteHeader.className = 'note-card-header';
+                noteHeader.innerText = '💡 ' + bookName + ' ' + c + ':' + vNum + ' 메모';
+                
+                var noteTA = document.createElement('textarea');
+                noteTA.className = 'note-card-textarea';
+                noteTA.value = noteVal;
+                noteTA.setAttribute('data-vkey', vk);
+                noteTA.oninput = function() {
+                  autoExpandTextarea(this);
+                  var targetVk = this.getAttribute('data-vkey');
+                  verseNotes[targetVk] = this.value;
+                  saveJournals();
+                  renderNoteIndicator(targetVk);
+                };
+
+                rightCard.appendChild(noteHeader);
+                rightCard.appendChild(noteTA);
+
+                pairRow.appendChild(leftCard);
+                pairRow.appendChild(rightCard);
+
+                container.appendChild(pairRow);
+
+                setTimeout(function() { autoExpandTextarea(noteTA); }, 20);
+
+                collectedGrace.push('[' + bookName + ' ' + c + ':' + vNum + ', ' + verName + ']' + NL + vText + NL + '[메모] ' + noteVal);
               }
             }
           });
         }
       });
 
-      if (collectedGrace.length > 0) {
-        var combinedGrace = collectedGrace.join(NL + NL);
-        journals[key].grace = combinedGrace;
-        var editorGraceEl = document.getElementById('editorGrace');
-        if (editorGraceEl) {
-          editorGraceEl.value = combinedGrace;
-          autoExpandTextarea(editorGraceEl);
-        }
+      if (pairsCount === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:18px 12px; color:var(--text-secondary); background:var(--card-bg); border-radius:8px; border:1px dashed var(--border-color); font-size:0.86rem; line-height:1.6;">📖 성경 읽기 탭에서 구절을 터치하여 묵상 메모를 남기시면,<br>이곳에 구절 말씀과 작성한 메모가 1:1 대치 카드로 자동 정리됩니다.</div>';
       }
 
-      if (collectedLesson.length > 0) {
-        var combinedLesson = collectedLesson.join(NL + NL);
-        journals[key].lesson = combinedLesson;
-        var editorLessonEl = document.getElementById('editorLesson');
-        if (editorLessonEl) {
-          editorLessonEl.value = combinedLesson;
-          autoExpandTextarea(editorLessonEl);
-        }
+      if (collectedGrace.length > 0) {
+        journals[key].grace = collectedGrace.join(NL + NL);
+      }
+
+      var elLesson = document.getElementById('editorLesson');
+      if (elLesson && journals[key].lesson) {
+        elLesson.value = journals[key].lesson;
+        setTimeout(function() { autoExpandTextarea(elLesson); }, 20);
       }
 
       saveJournals();
