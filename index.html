@@ -2341,6 +2341,7 @@
     renderBible(scheduleData[1]); switchTab('reader');
     renderSchedule();
   });
+  window.onload = function() { renderBible(scheduleData[activeDay] || scheduleData[1], true); };
   </script>
 </body>
 </html>
