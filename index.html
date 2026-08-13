@@ -678,6 +678,7 @@
       box-sizing: border-box;
     }
 </style>
+  <script src="bible_db_66.js?v=20260812_01"></script>
   <script src="bible_Genesis.js?v=20260812_01"></script>
 <script src="bible_Exodus.js?v=20260812_01"></script>
 <script src="bible_Leviticus.js?v=20260812_01"></script>
@@ -1960,13 +1961,7 @@
         return;
       }
 
-      // Robust 4-fold fallback database retrieval
-      var db = null;
-      if (currentBibleVersion === 'KH' && window.BIBLE_FULL_DB_KH) db = window.BIBLE_FULL_DB_KH;
-      else if (currentBibleVersion === 'SB' && window.BIBLE_FULL_DB_SB) db = window.BIBLE_FULL_DB_SB;
-
-      if (!db || Object.keys(db).length === 0) {
-        db = window.BIBLE_FULL_DB || window.BIBLE_FULL_DB_KG || window.BIBLE_DB || window.BIBLE_FULL_DB_KH || window.BIBLE_FULL_DB_SB || {};
+      var db = getBibleDatabase();;
       }
 
       var totalVersesRendered = 0;
