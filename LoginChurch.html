@@ -1956,17 +1956,17 @@
       if (!text) return '';
       var cleaned = text;
       cleaned = cleaned.replace(/\(\([^)]*\)\)/g, '');
-      cleaned = cleaned.replace(/[\'\"\`]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^\)]*?\)\s*/g, '');
-      cleaned = cleaned.replace(/\([a-z0-9]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^\)]*\)/gi, '');
-      cleaned = cleaned.replace(/\([a-z]\s+[^\)]*\)/gi, '');
-      cleaned = cleaned.replace(/\(\d+[\d\s,;-]*절[^\)]*\)/g, '');
+      cleaned = cleaned.replace(/['"`]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^)]*?\)\s*/g, '');
+      cleaned = cleaned.replace(/\([a-z0-9]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^)]*\)/gi, '');
+      cleaned = cleaned.replace(/\([a-z]\s+[^)]*\)/gi, '');
+      cleaned = cleaned.replace(/\(\d+[\d\s,;-]*절[^)]*\)/g, '');
       cleaned = cleaned.replace(/\([a-z]\)/gi, '');
       cleaned = cleaned.replace(/\(\(/g, '').replace(/\)\)/g, '');
       cleaned = cleaned.replace(/^[a-z](?=[\uac00-\ud7a3])/g, '');
       cleaned = cleaned.replace(/(\s)[a-z](?=[\uac00-\ud7a3])/g, '$1');
-      cleaned = cleaned.replace(/([\"\'\(\[\{\u25cb\u25ef])[a-z](?=[\uac00-\ud7a3])/g, '$1');
+      cleaned = cleaned.replace(/(["'(\[{\u25cb\u25ef])[a-z](?=[\uac00-\ud7a3])/g, '$1');
       cleaned = cleaned.replace(/\s{2,}/g, ' ');
-      cleaned = cleaned.replace(/\s+([\.,!\?\)])/g, '$1');
+      cleaned = cleaned.replace(/\s+([.,!?)])/g, '$1');
       return cleaned.trim();
     }
 
