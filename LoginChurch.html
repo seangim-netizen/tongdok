@@ -2329,6 +2329,7 @@
 
     loadJournals();
     renderBible(scheduleData[1]); switchTab('reader');
+    window.onload = function() { renderBible(scheduleData[activeDay] || scheduleData[1], true); };
     renderSchedule();
   });
   </script>
