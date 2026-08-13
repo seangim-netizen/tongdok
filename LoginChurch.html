@@ -203,41 +203,61 @@
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
 
+    .journal-container-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      align-items: start;
+    }
+    @media (max-width: 520px) {
+      .journal-container-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+    }
     .journal-box {
       background: var(--card-bg);
       border-radius: 8px;
-      padding: 10px 12px;
+      padding: 10px 10px;
       margin-bottom: 10px;
       border: 1px solid var(--border-color);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
+      min-width: 0;
     }
     .journal-box-title {
-      font-size: 0.96rem;
+      font-size: 0.90rem;
       font-weight: 800;
       color: var(--accent-green);
       margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     textarea, textarea.journal-textarea {
       width: 100%;
-      min-height: 80px;
+      min-height: 110px;
       height: auto;
       background: var(--input-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       color: var(--text-primary);
-      padding: 10px 12px;
+      padding: 8px 10px;
       font-size: var(--verse-font-size);
       resize: none;
       outline: none;
-      line-height: 1.62;
+      line-height: 1.6;
       overflow-y: hidden;
       box-sizing: border-box;
       transition: border-color 0.2s ease;
+    }
+    textarea:focus, textarea.journal-textarea:focus {
+      border-color: var(--accent-green);
     }
     textarea:focus, textarea.journal-textarea:focus {
       border-color: var(--accent-green);
@@ -626,13 +646,17 @@
       <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green); margin-bottom: 12px; border-bottom: 2px solid var(--accent-green); padding-bottom: 6px;">
         ✏️ 통독 일기 작성
       </div>
-      <div class="journal-box">
-        <div class="journal-box-title">📖 은혜받은 말씀</div>
-        <textarea id="editorGrace" class="journal-textarea" placeholder="오늘 성경 본문 구절이 연동되어 자동으로 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
-      </div>
-      <div class="journal-box">
-        <div class="journal-box-title">💡 받은 교훈 및 적용</div>
-        <textarea id="editorLesson" class="journal-textarea" placeholder="성경 읽기 구절 메모 및 깨달은 교훈, 결단이 자동으로 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
+      <div class="journal-container-row">
+        <!-- LEFT COLUMN: 은혜받은 말씀 -->
+        <div class="journal-box">
+          <div class="journal-box-title">📖 은혜받은 말씀</div>
+          <textarea id="editorGrace" class="journal-textarea" placeholder="오늘 성경 본문 구절이 연동되어 자동 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
+        </div>
+        <!-- RIGHT COLUMN: 받은 교훈 및 적용 -->
+        <div class="journal-box">
+          <div class="journal-box-title">💡 받은 교훈 및 적용</div>
+          <textarea id="editorLesson" class="journal-textarea" placeholder="작성하신 구절 메모와 묵상 결단이 자동 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
+        </div>
       </div>
     </section>
 
