@@ -174,7 +174,7 @@
     .verse-num { font-weight: bold; color: var(--accent-green); margin-right: 6px; font-size: 1.05em; pointer-events: none; }
 
     .note-indicator {
-      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap;
+      font-size: 0.92rem; color: var(--accent-gold); font-weight: bold; margin-top: 8px; padding: 8px 10px; border-top: 1px dashed var(--accent-gold); background: rgba(245, 158, 11, 0.08); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; overflow-wrap: break-word; min-width: 0; max-width: 100%; box-sizing: border-box;
     }
 
     .btn-copy-note {
@@ -182,7 +182,7 @@
     }
 
     .verse-note-box {
-      width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 10px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 6px;
+      width: 100%; margin-top: 10px; background: var(--input-bg); border: 2px solid var(--accent-gold); border-radius: 10px; padding: 10px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); display: flex; flex-direction: column; gap: 6px; word-break: break-word; overflow-wrap: anywhere; overflow-wrap: break-word; box-sizing: border-box;
     }
 
     .memo-guide-text {
@@ -190,7 +190,7 @@
     }
 
     .verse-note-textarea {
-      width: 100%; min-height: 85px; background: transparent; border: none; color: var(--text-primary); font-size: 0.98rem; line-height: 1.55; outline: none; resize: vertical; font-family: inherit;
+      width: 100%; min-height: 85px; background: transparent; border: none; color: var(--text-primary); font-size: 0.98rem; line-height: 1.55; outline: none; resize: vertical; font-family: inherit; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; overflow-wrap: break-word; box-sizing: border-box;
     }
 
     .btn-save-note-inside {
@@ -229,6 +229,7 @@
       margin-bottom: 10px;
       align-items: stretch;
       width: 100%;
+      height: auto;
     }
     .verse-card-slim {
       background: var(--card-bg);
@@ -243,7 +244,10 @@
       flex-direction: column;
       justify-content: flex-start;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-      word-break: keep-all;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
       height: 100%;
       box-sizing: border-box;
     }
@@ -260,7 +264,10 @@
       flex-direction: column;
       justify-content: flex-start;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-      word-break: keep-all;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
       height: 100%;
       box-sizing: border-box;
     }
@@ -286,7 +293,7 @@
       width: 100%;
       flex: 1;
       min-height: 50px;
-      height: 100%;
+      height: auto;
       background: var(--input-bg);
       border: 1px solid var(--border-color);
       border-radius: 6px;
@@ -299,6 +306,11 @@
       box-sizing: border-box;
       transition: border-color 0.2s ease;
       margin-top: 4px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
+      overflow-y: hidden;
     }
     textarea.note-card-textarea:focus {
       border-color: var(--accent-gold);
@@ -337,6 +349,10 @@
       overflow-y: hidden;
       box-sizing: border-box;
       transition: border-color 0.2s ease;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
     }
     textarea:focus, textarea.journal-textarea:focus {
       border-color: var(--accent-green);
@@ -1592,6 +1608,8 @@
 
       if (tabName === 'editor') {
         syncVerseNotesToJournal();
+        setTimeout(expandAllJournalTextareas, 50);
+        setTimeout(expandAllJournalTextareas, 200);
       }
       if (tabName === 'reader') {
         if (btnAudio) btnAudio.style.display = 'inline-flex';
@@ -1694,12 +1712,20 @@
         
     function autoExpandTextarea(el) {
       if (!el) return;
+      if (el.offsetWidth === 0 && el.offsetHeight === 0) return;
       el.style.height = 'auto';
-      var newH = Math.max(50, el.scrollHeight + 4);
+      var newH = Math.max(50, el.scrollHeight + 8);
       el.style.height = newH + 'px';
       var row = el.closest('.verse-pair-row');
       if (row) {
         row.style.height = 'auto';
+      }
+    }
+
+    function expandAllJournalTextareas() {
+      var tas = document.querySelectorAll('#tab-editor textarea');
+      for (var i = 0; i < tas.length; i++) {
+        autoExpandTextarea(tas[i]);
       }
     }
 
@@ -1791,6 +1817,8 @@
                     }
                   }
                 };
+                noteTA.onkeyup = function() { autoExpandTextarea(this); };
+                noteTA.onfocus = function() { autoExpandTextarea(this); };
 
                 rightCard.appendChild(noteHeader);
                 rightCard.appendChild(noteTA);
@@ -1821,6 +1849,8 @@
       if (elLesson && journals[key].lesson) {
         elLesson.value = journals[key].lesson;
         setTimeout(function() { autoExpandTextarea(elLesson); }, 30);
+      setTimeout(expandAllJournalTextareas, 30);
+      setTimeout(expandAllJournalTextareas, 150);
       }
 
       saveJournals();
@@ -1878,6 +1908,8 @@
           if (ind) ind.style.display = 'none';
           if (ta) {
             ta.focus();
+            autoExpandTextarea(ta);
+            ta.oninput = function() { autoExpandTextarea(this); };
           }
           activeOpenNoteKey = vk;
         }
@@ -1965,7 +1997,7 @@
 
             itemEl.innerHTML = '<span class="verse-num">' + vNum + '</span> ' + vText + 
               '<div class="note-indicator" id="ind_note_' + verseKey + '" style="' + displayIndStyle + '">' +
-                '<div style="flex:1;">📝 <span class="note-text-content">' + savedNote + '</span></div>' +
+                '<div style="flex:1; min-width:0; word-break:break-word; overflow-wrap:anywhere; overflow-wrap:break-word;">📝 <span class="note-text-content" style="white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; overflow-wrap:break-word;">' + savedNote + '</span></div>' +
                 '<button class="btn-copy-note" id="btncopy_' + verseKey + '">메모 복사</button>' +
               '</div>' +
               '<div class="verse-note-box" id="box_note_' + verseKey + '" style="display: none;">' +
