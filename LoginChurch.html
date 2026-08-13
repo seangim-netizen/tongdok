@@ -203,9 +203,45 @@
     .btn-complete.not-completed { background: var(--accent-green); color: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
     .btn-complete.completed { background: #065f46; color: #34d399; border: 1px solid #10b981; }
 
-    .journal-box { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); }
-    .journal-box-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-green); margin-bottom: 8px; }
-    textarea { width: 100%; min-height: 150px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); padding: 12px; font-size: var(--verse-font-size); resize: vertical; outline: none; line-height: 1.6; }
+    .journal-box {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    .journal-box-title {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    textarea, textarea.journal-textarea {
+      width: 100%;
+      min-height: 80px;
+      height: auto;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 10px 12px;
+      font-size: var(--verse-font-size);
+      resize: none;
+      outline: none;
+      line-height: 1.62;
+      overflow-y: hidden;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, height 0.15s ease;
+    }
+    textarea:focus, textarea.journal-textarea:focus {
+      border-color: var(--accent-green);
+    }
 
     .btn-install-guide {
       width: 100%;
@@ -589,11 +625,11 @@
       </div>
       <div class="journal-box">
         <div class="journal-box-title">📖 은혜받은 말씀</div>
-        <textarea id="editorGrace" placeholder="오늘 성경을 읽으시면서 가슴을 울린 구절을 적어보세요."></textarea>
+        <textarea id="editorGrace" class="journal-textarea" placeholder="오늘 성경 본문 구절이 연동되어 자동으로 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
       </div>
       <div class="journal-box">
         <div class="journal-box-title">💡 받은 교훈 및 적용</div>
-        <textarea id="editorLesson" placeholder="깨달은 교훈과 삶의 결단, 기도제목을 적어보세요."></textarea>
+        <textarea id="editorLesson" class="journal-textarea" placeholder="성경 읽기 구절 메모 및 깨달은 교훈, 결단이 자동으로 저장됩니다." oninput="autoExpandTextarea(this); saveJournalData();"></textarea>
       </div>
     </section>
 
@@ -725,33 +761,31 @@
       if (!availableVoices || availableVoices.length === 0) {
         if ('speechSynthesis' in window) availableVoices = window.speechSynthesis.getVoices();
       }
-      var koVoices = availableVoices.filter(function(v) {
-        return v.lang && (v.lang.indexOf('ko') !== -1 || v.lang.indexOf('KO') !== -1);
+      var koVoices = (availableVoices || []).filter(function(v) {
+        return v.lang && (v.lang.indexOf('ko') !== -1 || v.lang.indexOf('KO') !== -1 || v.lang.indexOf('Kr') !== -1 || v.lang.indexOf('KR') !== -1);
       });
 
-      if (koVoices.length === 0) return null;
+      if (koVoices.length === 0) return { voice: null, isExplicitMale: false };
 
       if (currentVoiceGender === 'male') {
-        // Find male pattern voices
         for (var i = 0; i < koVoices.length; i++) {
           var v = koVoices[i];
           var vName = (v.name + ' ' + (v.voiceURI || '')).toLowerCase();
-          if (vName.indexOf('male') !== -1 || vName.indexOf('남성') !== -1 || vName.indexOf('injoon') !== -1 || vName.indexOf('minho') !== -1 || vName.indexOf('minsu') !== -1 || vName.indexOf('kye-jin') !== -1 || vName.indexOf('ism') !== -1 || vName.indexOf('standard-b') !== -1 || vName.indexOf('wavenet-b') !== -1) {
-            return v;
+          if (vName.indexOf('male') !== -1 || vName.indexOf('남성') !== -1 || vName.indexOf('injoon') !== -1 || vName.indexOf('인준') !== -1 || vName.indexOf('minho') !== -1 || vName.indexOf('민호') !== -1 || vName.indexOf('minsu') !== -1 || vName.indexOf('민수') !== -1 || vName.indexOf('kye-jin') !== -1 || vName.indexOf('ism') !== -1 || vName.indexOf('standard-b') !== -1 || vName.indexOf('wavenet-b') !== -1 || vName.indexOf('wavenet-c') !== -1 || vName.indexOf('wavenet-d') !== -1) {
+            return { voice: v, isExplicitMale: true };
           }
         }
-        // Fallback for male: 2nd voice if available, else 1st
-        return koVoices.length > 1 ? koVoices[1] : koVoices[0];
+        var fallBackVoice = (koVoices.length > 1) ? koVoices[1] : koVoices[0];
+        return { voice: fallBackVoice, isExplicitMale: false };
       } else {
-        // Find female pattern voices
         for (var j = 0; j < koVoices.length; j++) {
           var vf = koVoices[j];
           var vfName = (vf.name + ' ' + (vf.voiceURI || '')).toLowerCase();
-          if (vfName.indexOf('female') !== -1 || vfName.indexOf('여성') !== -1 || vfName.indexOf('seoyeon') !== -1 || vfName.indexOf('yuna') !== -1 || vfName.indexOf('sora') !== -1 || vfName.indexOf('sun-hi') !== -1 || vfName.indexOf('standard-a') !== -1 || vfName.indexOf('wavenet-a') !== -1) {
-            return vf;
+          if (vfName.indexOf('female') !== -1 || vfName.indexOf('여성') !== -1 || vfName.indexOf('heami') !== -1 || vfName.indexOf('혜미') !== -1 || vfName.indexOf('sunhi') !== -1 || vfName.indexOf('선희') !== -1 || vfName.indexOf('standard-a') !== -1 || vfName.indexOf('wavenet-a') !== -1) {
+            return { voice: vf, isExplicitMale: false };
           }
         }
-        return koVoices[0];
+        return { voice: koVoices[0], isExplicitMale: false };
       }
     }
 
@@ -1260,11 +1294,19 @@
       var utterance = new SpeechSynthesisUtterance(itemObj.speakText);
       utterance.lang = 'ko-KR';
       utterance.rate = ttsSpeedRates[currentTTSSpeedIndex];
-      utterance.pitch = (currentVoiceGender === 'male') ? 0.9 : 1.0;
 
-      var selectedVoiceObj = getSelectedVoice();
-      if (selectedVoiceObj) {
-        utterance.voice = selectedVoiceObj;
+      var voiceRes = getSelectedVoice();
+      if (voiceRes && voiceRes.voice) {
+        utterance.voice = voiceRes.voice;
+      }
+
+      if (currentVoiceGender === 'male') {
+        utterance.pitch = (voiceRes && voiceRes.isExplicitMale) ? 0.85 : 0.68;
+        if (!voiceRes || !voiceRes.isExplicitMale) {
+          utterance.rate = ttsSpeedRates[currentTTSSpeedIndex] * 0.95;
+        }
+      } else {
+        utterance.pitch = 1.05;
       }
 
       var hasStepEnded = false;
@@ -1504,40 +1546,88 @@
     }
 
     
-        function syncVerseNotesToJournal() {
+        
+    function autoExpandTextarea(el) {
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = Math.max(80, el.scrollHeight + 4) + 'px';
+    }
+
+    function syncVerseNotesToJournal() {
       var key = 'day_' + activeDay;
       if (!journals[key]) journals[key] = {};
 
       var currentItem = scheduleData[activeDay];
       if (!currentItem || !currentItem.books) return;
 
-      var collectedNotes = [];
+      var db = null;
+      if (currentBibleVersion === 'KH' && window.BIBLE_FULL_DB_KH) db = window.BIBLE_FULL_DB_KH;
+      else if (currentBibleVersion === 'SB' && window.BIBLE_FULL_DB_SB) db = window.BIBLE_FULL_DB_SB;
+      if (!db) db = window.BIBLE_FULL_DB || window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_66_DB_SB || {};
+
+      var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
+
+      var collectedGrace = [];
+      var collectedLesson = [];
+
       currentItem.books.forEach(function(bInfo) {
         var bookName = bInfo.book;
+        var bookData = db[bookName] || {};
         for (var c = bInfo.start; c <= bInfo.end; c++) {
+          var verses = bookData[c.toString()] || bookData[c] || [];
           var prefix = bookName + '_' + c + '_';
           Object.keys(verseNotes).forEach(function(vk) {
             if (vk.indexOf(prefix) === 0) {
-              var val = (verseNotes[vk] || '').trim();
-              if (val.length > 0) {
-                var vNum = vk.replace(prefix, '');
-                collectedNotes.push('[' + bookName + ' ' + c + ':' + vNum + ']' + String.fromCharCode(10) + val);
+              var noteVal = (verseNotes[vk] || '').trim();
+              if (noteVal.length > 0) {
+                var vNum = parseInt(vk.replace(prefix, ''), 10);
+                var vText = (verses[vNum - 1] || '').trim();
+                if (currentBibleVersion === 'SB' && typeof cleanSaebeonyeokVerse === 'function') {
+                  vText = cleanSaebeonyeokVerse(vText);
+                }
+                
+                // Grace: Bible Verse Passage Header & Text
+                if (vText.length > 0) {
+                  collectedGrace.push('[' + bookName + ' ' + c + ':' + vNum + ', ' + verName + ']
+' + vText);
+                } else {
+                  collectedGrace.push('[' + bookName + ' ' + c + ':' + vNum + ', ' + verName + ']');
+                }
+
+                // Lesson: Verse Note Content
+                collectedLesson.push('[' + bookName + ' ' + c + ':' + vNum + ' 메모]
+' + noteVal);
               }
             }
           });
         }
       });
 
-      if (collectedNotes.length > 0) {
-        var combinedText = collectedNotes.join(String.fromCharCode(10) + String.fromCharCode(10));
-        journals[key].grace = combinedText;
-        saveJournals();
+      if (collectedGrace.length > 0) {
+        var combinedGrace = collectedGrace.join('
 
+');
+        journals[key].grace = combinedGrace;
         var editorGraceEl = document.getElementById('editorGrace');
         if (editorGraceEl) {
-          editorGraceEl.value = combinedText;
+          editorGraceEl.value = combinedGrace;
+          autoExpandTextarea(editorGraceEl);
         }
       }
+
+      if (collectedLesson.length > 0) {
+        var combinedLesson = collectedLesson.join('
+
+');
+        journals[key].lesson = combinedLesson;
+        var editorLessonEl = document.getElementById('editorLesson');
+        if (editorLessonEl) {
+          editorLessonEl.value = combinedLesson;
+          autoExpandTextarea(editorLessonEl);
+        }
+      }
+
+      saveJournals();
     }
 
     function autoSaveActiveNote() {
@@ -1801,6 +1891,10 @@
       if (l) l.value = jData.lesson || '';
 
       updateCompleteButtonUI();
+      setTimeout(function() {
+        autoExpandTextarea(document.getElementById('editorGrace'));
+        autoExpandTextarea(document.getElementById('editorLesson'));
+      }, 100);
     }
 
     function renderSchedule() {
