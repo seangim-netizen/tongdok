@@ -1777,10 +1777,7 @@
 
       if (!item || !item.books) return;
 
-      var db = null;
-      if (currentBibleVersion === 'KH' && window.BIBLE_FULL_DB_KH) db = window.BIBLE_FULL_DB_KH;
-      else if (currentBibleVersion === 'SB' && window.BIBLE_FULL_DB_SB) db = window.BIBLE_FULL_DB_SB;
-      if (!db) db = window.BIBLE_FULL_DB || window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_66_DB_SB || {};
+      var db = getBibleDatabase();
 
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
       var NL = String.fromCharCode(10);
@@ -1968,6 +1965,16 @@
       cleaned = cleaned.replace(/\s{2,}/g, ' ');
       cleaned = cleaned.replace(/\s+([.,!?)])/g, '$1');
       return cleaned.trim();
+    }
+
+    function getBibleDatabase() {
+      var db = null;
+      if (typeof currentBibleVersion !== 'undefined') {
+        if (currentBibleVersion === 'KH' && window.BIBLE_FULL_DB_KH) db = window.BIBLE_FULL_DB_KH;
+        else if (currentBibleVersion === 'SB' && window.BIBLE_FULL_DB_SB) db = window.BIBLE_FULL_DB_SB;
+      }
+      if (!db) db = window.BIBLE_FULL_DB || window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_66_DB_SB || {};
+      return db;
     }
 
     function renderBible(item, isRetry) {
