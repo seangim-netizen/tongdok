@@ -1697,6 +1697,10 @@
       el.style.height = 'auto';
       var newH = Math.max(50, el.scrollHeight + 4);
       el.style.height = newH + 'px';
+      var row = el.closest('.verse-pair-row');
+      if (row) {
+        row.style.height = 'auto';
+      }
     }
 
     function syncVerseNotesToJournal() {
@@ -1768,9 +1772,24 @@
                 noteTA.oninput = function() {
                   autoExpandTextarea(this);
                   var targetVk = this.getAttribute('data-vkey');
-                  verseNotes[targetVk] = this.value;
+                  var val = this.value;
+                  verseNotes[targetVk] = val;
                   saveJournals();
-                  renderNoteIndicator(targetVk);
+
+                  // Safely update note indicator DOM in Bible reader if loaded
+                  var ind = document.getElementById('ind_note_' + targetVk);
+                  var card = document.querySelector('[data-vkey="' + targetVk + '"]');
+                  if (ind) {
+                    var txtSpan = ind.querySelector('.note-text-content');
+                    if (val.trim().length > 0) {
+                      ind.style.display = 'flex';
+                      if (txtSpan) txtSpan.innerText = val;
+                      if (card) card.classList.add('has-note-card');
+                    } else {
+                      ind.style.display = 'none';
+                      if (card) card.classList.remove('has-note-card');
+                    }
+                  }
                 };
 
                 rightCard.appendChild(noteHeader);
@@ -1781,7 +1800,7 @@
 
                 container.appendChild(pairRow);
 
-                setTimeout(function() { autoExpandTextarea(noteTA); }, 20);
+                setTimeout(function() { autoExpandTextarea(noteTA); }, 30);
 
                 collectedGrace.push('[' + bookName + ' ' + c + ':' + vNum + ', ' + verName + ']' + NL + vText + NL + '[메모] ' + noteVal);
               }
@@ -1801,7 +1820,7 @@
       var elLesson = document.getElementById('editorLesson');
       if (elLesson && journals[key].lesson) {
         elLesson.value = journals[key].lesson;
-        setTimeout(function() { autoExpandTextarea(elLesson); }, 20);
+        setTimeout(function() { autoExpandTextarea(elLesson); }, 30);
       }
 
       saveJournals();
