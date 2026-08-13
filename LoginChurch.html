@@ -1916,8 +1916,6 @@
           if (ind) ind.style.display = 'none';
           if (ta) {
             ta.focus();
-            autoExpandTextarea(ta);
-            ta.oninput = function() { autoExpandTextarea(this); };
           }
           activeOpenNoteKey = vk;
         }
@@ -2044,7 +2042,7 @@
 
               if (lastTapTime > 0 && tapLength < 450 && tapLength > 40) {
                 itemEl.setAttribute('data-lasttap', '0');
-                openNoteBox(verseKey);
+                openNoteBox(verseKey, true);
               } else {
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
                 handleVerseElementTouch(itemEl);
@@ -2072,7 +2070,7 @@
             itemEl.addEventListener('dblclick', function(e) {
               if (clickTimer) clearTimeout(clickTimer);
               if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              openNoteBox(verseKey);
+              openNoteBox(verseKey, true);
             });
 
             var btnCopy = itemEl.querySelector('#btncopy_' + verseKey);
@@ -2242,16 +2240,14 @@
 
     var btnAudioTTS = document.getElementById('btnAudioTTSPlay');
     if (btnAudioTTS) {
-      btnAudioTTS.onclick = function(e) {
-        e.preventDefault();
+      btnAudioTTS.onclick = function() {
         startTTSAudio();
       };
     }
 
     var bFontInc = document.getElementById('btnFontInc');
     if (bFontInc) {
-      bFontInc.onclick = function(e) {
-        e.preventDefault();
+      bFontInc.onclick = function() {
         if (currentFontSize < 1.6) {
           currentFontSize += 0.1;
           applyFontSize();
@@ -2262,8 +2258,7 @@
 
     var bFontDec = document.getElementById('btnFontDec');
     if (bFontDec) {
-      bFontDec.onclick = function(e) {
-        e.preventDefault();
+      bFontDec.onclick = function() {
         if (currentFontSize > 0.85) {
           currentFontSize -= 0.1;
           applyFontSize();
@@ -2274,48 +2269,42 @@
 
     var b1 = document.getElementById('btnBibleVerToggle');
     if (b1) {
-      b1.onclick = function(e) {
-        e.preventDefault();
+      b1.onclick = function() {
         switchBibleVersion();
       };
     }
 
     var b2 = document.getElementById('btnThemeToggle');
     if (b2) {
-      b2.onclick = function(e) {
-        e.preventDefault();
+      b2.onclick = function() {
         toggleThemeMode();
       };
     }
 
     var b3 = document.getElementById('btnToggleComplete');
     if (b3) {
-      b3.onclick = function(e) {
-        e.preventDefault();
+      b3.onclick = function() {
         toggleComplete();
       };
     }
 
     var t1 = document.getElementById('btn-tab-reader');
     if (t1) {
-      t1.onclick = function(e) {
-        e.preventDefault();
+      t1.onclick = function() {
         switchTab('reader');
       };
     }
 
     var t2 = document.getElementById('btn-tab-editor');
     if (t2) {
-      t2.onclick = function(e) {
-        e.preventDefault();
+      t2.onclick = function() {
         switchTab('editor');
       };
     }
 
     var t3 = document.getElementById('btn-tab-schedule');
     if (t3) {
-      t3.onclick = function(e) {
-        e.preventDefault();
+      t3.onclick = function() {
         switchTab('schedule');
       };
     }
