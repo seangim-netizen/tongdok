@@ -1,0 +1,94 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/sungjoo",
+      "destination": "/sungjoo.html"
+    },
+    {
+      "source": "/taewoong",
+      "destination": "/taewoong.html"
+    },
+    {
+      "source": "/sunghwan",
+      "destination": "/sunghwan.html"
+    },
+    {
+      "source": "/hyunkyung",
+      "destination": "/hyunkyung.html"
+    },
+    {
+      "source": "/guihyun",
+      "destination": "/guihyun.html"
+    },
+    {
+      "source": "/eunwoo",
+      "destination": "/eunwoo.html"
+    },
+    {
+      "source": "/sohee",
+      "destination": "/sohee.html"
+    },
+    {
+      "source": "/sunga",
+      "destination": "/sunga.html"
+    },
+    {
+      "source": "/eunjung",
+      "destination": "/eunjung.html"
+    },
+    {
+      "source": "/siwoong",
+      "destination": "/siwoong.html"
+    },
+    {
+      "source": "/jungho",
+      "destination": "/jungho.html"
+    },
+    {
+      "source": "/yonghee",
+      "destination": "/yonghee.html"
+    },
+    {
+      "source": "/jihyun",
+      "destination": "/jihyun.html"
+    },
+    {
+      "source": "/yoonsook",
+      "destination": "/yoonsook.html"
+    },
+    {
+      "source": "/minyoung",
+      "destination": "/minyoung.html"
+    },
+    {
+      "source": "/yangsik",
+      "destination": "/yangsik.html"
+    },
+    {
+      "source": "/kyungmyun",
+      "destination": "/kyungmyun.html"
+    },
+    {
+      "source": "/junghoon",
+      "destination": "/junghoon.html"
+    },
+    {
+      "source": "/yosep",
+      "destination": "/yosep.html"
+    },
+    {
+      "source": "/jungmi",
+      "destination": "/jungmi.html"
+    },
+    {
+      "source": "/:slug",
+      "destination": "/:slug.html"
+    },
+    {
+      "source": "/",
+      "destination": "/siwoong.html"
+    }
+  ]
+}
