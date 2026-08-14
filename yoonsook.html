@@ -914,7 +914,7 @@
   </div>
 
   <script>
-  window.addEventListener('DOMContentLoaded', function() {
+  (function() {
     var PERMANENT_STORAGE_KEY = 'loginchurch_permanent_tongdok_data_' + 'siwoong';
     var PERMANENT_THEME_KEY = 'loginchurch_permanent_theme_' + 'siwoong';
     var PERMANENT_VER_KEY = 'loginchurch_permanent_bible_ver_' + 'siwoong';
@@ -1763,7 +1763,6 @@
         autoExpandTextarea(tas[i]);
       }
     }
-    }
 
     function syncVerseNotesToJournal() {
       var key = 'day_' + activeDay;
@@ -1988,8 +1987,7 @@
         return;
       }
 
-      var db = getBibleDatabase();;
-      }
+      var db = getBibleDatabase();
 
       var totalVersesRendered = 0;
 
@@ -2350,7 +2348,7 @@
     loadJournals();
     renderBible(scheduleData[1]); switchTab('reader');
     renderSchedule();
-  });
+  })();
   </script>
 </body>
 </html>

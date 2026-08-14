@@ -1,0 +1,292 @@
+
+  (function() {
+    var STORAGE_KEY = 'tongdok_journal_data_v2_' + '장성주';
+
+    var scheduleData = [
+      {"day": 0, "date": "09월 01일 (화)", "passage": "개요 강의", "book": "개요 강의", "start": 1, "end": 1},
+      {"day": 1, "date": "09/02 (수)", "passage": "출애굽기 1~3장", "book": "출애굽기", "start": 1, "end": 3},
+      {"day": 2, "date": "09/03 (목)", "passage": "출애굽기 4~6장", "book": "출애굽기", "start": 4, "end": 6},
+      {"day": 3, "date": "09/04 (금)", "passage": "출애굽기 7~9장", "book": "출애굽기", "start": 7, "end": 9},
+      {"day": 4, "date": "09/05 (토)", "passage": "출애굽기 10~12장", "book": "출애굽기", "start": 10, "end": 12},
+      {"day": 5, "date": "09/06 (일)", "passage": "출애굽기 13~15장", "book": "출애굽기", "start": 13, "end": 15},
+      {"day": 6, "date": "09/07 (월)", "passage": "출애굽기 16~18장", "book": "출애굽기", "start": 16, "end": 18},
+      {"day": 7, "date": "09/08 (화)", "passage": "출애굽기 19~20장", "book": "출애굽기", "start": 19, "end": 20},
+      {"day": 8, "date": "09/09 (수)", "passage": "출애굽기 21~23장", "book": "출애굽기", "start": 21, "end": 23},
+      {"day": 9, "date": "09/10 (목)", "passage": "출애굽기 24~26장", "book": "출애굽기", "start": 24, "end": 26},
+      {"day": 10, "date": "09/11 (금)", "passage": "출애굽기 27~29장", "book": "출애굽기", "start": 27, "end": 29},
+      {"day": 11, "date": "09/12 (토)", "passage": "출애굽기 30~32장", "book": "출애굽기", "start": 30, "end": 32},
+      {"day": 12, "date": "09/13 (일)", "passage": "출애굽기 33~35장", "book": "출애굽기", "start": 33, "end": 35},
+      {"day": 13, "date": "09/14 (월)", "passage": "출애굽기 36~38장", "book": "출애굽기", "start": 36, "end": 38},
+      {"day": 14, "date": "09/15 (화)", "passage": "출애굽기 39~40장", "book": "출애굽기", "start": 39, "end": 40},
+      {"day": 15, "date": "09/16 (수)", "passage": "레위기 1~4장", "book": "레위기", "start": 1, "end": 4},
+      {"day": 16, "date": "09/17 (목)", "passage": "레위기 5~8장", "book": "레위기", "start": 5, "end": 8},
+      {"day": 17, "date": "09/18 (금)", "passage": "레위기 9~12장", "book": "레위기", "start": 9, "end": 12},
+      {"day": 18, "date": "09/19 (토)", "passage": "레위기 13~15장", "book": "레위기", "start": 13, "end": 15},
+      {"day": 19, "date": "09/20 (일)", "passage": "레위기 16~18장", "book": "레위기", "start": 16, "end": 18},
+      {"day": 20, "date": "09/21 (월)", "passage": "레위기 19~21장", "book": "레위기", "start": 19, "end": 21},
+      {"day": 21, "date": "09/22 (화)", "passage": "레위기 22~24장", "book": "레위기", "start": 22, "end": 24},
+      {"day": 22, "date": "09/23 (수)", "passage": "레위기 25~27장", "book": "레위기", "start": 25, "end": 27},
+      {"day": 23, "date": "09/24 (목)", "passage": "민수기 1~4장", "book": "민수기", "start": 1, "end": 4},
+      {"day": 24, "date": "09/25 (금)", "passage": "민수기 5~8장", "book": "민수기", "start": 5, "end": 8},
+      {"day": 25, "date": "09/26 (토)", "passage": "민수기 9~12장", "book": "민수기", "start": 9, "end": 12},
+      {"day": 26, "date": "09/27 (일)", "passage": "민수기 13~16장", "book": "민수기", "start": 13, "end": 16},
+      {"day": 27, "date": "09/28 (월)", "passage": "민수기 17~20장", "book": "민수기", "start": 17, "end": 20},
+      {"day": 28, "date": "09/29 (화)", "passage": "민수기 21~24장", "book": "민수기", "start": 21, "end": 24},
+      {"day": 29, "date": "09/30 (수)", "passage": "민수기 25~27장", "book": "민수기", "start": 25, "end": 27},
+      {"day": 30, "date": "10/01 (목)", "passage": "민수기 28~31장", "book": "민수기", "start": 28, "end": 31},
+      {"day": 31, "date": "10/02 (금)", "passage": "민수기 32~34장", "book": "민수기", "start": 32, "end": 34},
+      {"day": 32, "date": "10/03 (토)", "passage": "민수기 35~36장", "book": "민수기", "start": 35, "end": 36},
+      {"day": 33, "date": "10/04 (일)", "passage": "신명기 1~3장", "book": "신명기", "start": 1, "end": 3},
+      {"day": 34, "date": "10/05 (월)", "passage": "신명기 4~6장", "book": "신명기", "start": 4, "end": 6},
+      {"day": 35, "date": "10/06 (화)", "passage": "신명기 7~9장", "book": "신명기", "start": 7, "end": 9},
+      {"day": 36, "date": "10/07 (수)", "passage": "신명기 10~12장", "book": "신명기", "start": 10, "end": 12},
+      {"day": 37, "date": "10/08 (목)", "passage": "신명기 13~16장", "book": "신명기", "start": 13, "end": 16},
+      {"day": 38, "date": "10/09 (금)", "passage": "신명기 17~20장", "book": "신명기", "start": 17, "end": 20},
+      {"day": 39, "date": "10/10 (토)", "passage": "신명기 21~24장", "book": "신명기", "start": 21, "end": 24},
+      {"day": 40, "date": "10/11 (일)", "passage": "신명기 25~27장", "book": "신명기", "start": 25, "end": 27},
+      {"day": 41, "date": "10/12 (월)", "passage": "신명기 28~30장", "book": "신명기", "start": 28, "end": 30},
+      {"day": 42, "date": "10/13 (화)", "passage": "신명기 31~34장", "book": "신명기", "start": 31, "end": 34},
+      {"day": 43, "date": "10/14 (수)", "passage": "여호수아 1~4장", "book": "여호수아", "start": 1, "end": 4},
+      {"day": 44, "date": "10/15 (목)", "passage": "여호수아 5~8장", "book": "여호수아", "start": 5, "end": 8},
+      {"day": 45, "date": "10/16 (금)", "passage": "여호수아 9~12장", "book": "여호수아", "start": 9, "end": 12},
+      {"day": 46, "date": "10/17 (토)", "passage": "여호수아 13~16장", "book": "여호수아", "start": 13, "end": 16},
+      {"day": 47, "date": "10/18 (일)", "passage": "여호수아 17~20장", "book": "여호수아", "start": 17, "end": 20},
+      {"day": 48, "date": "10/19 (월)", "passage": "여호수아 21~24장", "book": "여호수아", "start": 21, "end": 24},
+      {"day": 49, "date": "10/20 (화)", "passage": "사사기 1~4장", "book": "사사기", "start": 1, "end": 4},
+      {"day": 50, "date": "10/21 (수)", "passage": "사사기 5~8장", "book": "사사기", "start": 5, "end": 8},
+      {"day": 51, "date": "10/22 (목)", "passage": "사사기 9~12장", "book": "사사기", "start": 9, "end": 12},
+      {"day": 52, "date": "10/23 (금)", "passage": "사사기 13~16장", "book": "사사기", "start": 13, "end": 16},
+      {"day": 53, "date": "10/24 (토)", "passage": "사사기 17~21장", "book": "사사기", "start": 17, "end": 21},
+      {"day": 54, "date": "10/25 (일)", "passage": "룻기 1~4장", "book": "룻기", "start": 1, "end": 4},
+      {"day": 55, "date": "10/26 (월)", "passage": "사무엘상 1~4장", "book": "사무엘상", "start": 1, "end": 4},
+      {"day": 56, "date": "10/27 (화)", "passage": "사무엘상 5~8장", "book": "사무엘상", "start": 5, "end": 8},
+      {"day": 57, "date": "10/28 (수)", "passage": "사무엘상 9~12장", "book": "사무엘상", "start": 9, "end": 12},
+      {"day": 58, "date": "10/29 (목)", "passage": "사무엘상 13~15장", "book": "사무엘상", "start": 13, "end": 15},
+      {"day": 59, "date": "10/30 (금)", "passage": "사무엘상 16~19장", "book": "사무엘상", "start": 16, "end": 19},
+      {"day": 60, "date": "10/31 (토)", "passage": "사무엘상 20~23장", "book": "사무엘상", "start": 20, "end": 23},
+      {"day": 61, "date": "11/01 (일)", "passage": "사무엘상 24~27장", "book": "사무엘상", "start": 24, "end": 27},
+      {"day": 62, "date": "11/02 (월)", "passage": "사무엘상 28~31장", "book": "사무엘상", "start": 28, "end": 31},
+      {"day": 63, "date": "11/03 (화)", "passage": "사무엘하 1~4장", "book": "사무엘하", "start": 1, "end": 4},
+      {"day": 64, "date": "11/04 (수)", "passage": "사무엘하 5~8장", "book": "사무엘하", "start": 5, "end": 8},
+      {"day": 65, "date": "11/05 (목)", "passage": "사무엘하 9~12장", "book": "사무엘하", "start": 9, "end": 12},
+      {"day": 66, "date": "11/06 (금)", "passage": "사무엘하 13~16장", "book": "사무엘하", "start": 13, "end": 16},
+      {"day": 67, "date": "11/07 (토)", "passage": "사무엘하 17~20장", "book": "사무엘하", "start": 17, "end": 20},
+      {"day": 68, "date": "11/08 (일)", "passage": "사무엘하 21~24장", "book": "사무엘하", "start": 21, "end": 24},
+      {"day": 69, "date": "11/09 (월)", "passage": "열왕기상 1~4장", "book": "열왕기상", "start": 1, "end": 4},
+      {"day": 70, "date": "11/10 (화)", "passage": "열왕기상 5~8장", "book": "열왕기상", "start": 5, "end": 8},
+      {"day": 71, "date": "11/11 (수)", "passage": "열왕기상 9~12장", "book": "열왕기상", "start": 9, "end": 12},
+      {"day": 72, "date": "11/12 (목)", "passage": "열왕기상 13~16장", "book": "열왕기상", "start": 13, "end": 16},
+      {"day": 73, "date": "11/13 (금)", "passage": "열왕기상 17~19장", "book": "열왕기상", "start": 17, "end": 19},
+      {"day": 74, "date": "11/14 (토)", "passage": "열왕기상 20~22장", "book": "열왕기상", "start": 20, "end": 22},
+      {"day": 75, "date": "11/15 (일)", "passage": "열왕기하 1~4장", "book": "열왕기하", "start": 1, "end": 4},
+      {"day": 76, "date": "11/16 (월)", "passage": "열왕기하 5~8장", "book": "열왕기하", "start": 5, "end": 8},
+      {"day": 77, "date": "11/17 (화)", "passage": "열왕기하 9~12장", "book": "열왕기하", "start": 9, "end": 12},
+      {"day": 78, "date": "11/18 (수)", "passage": "열왕기하 13~16장", "book": "열왕기하", "start": 13, "end": 16},
+      {"day": 79, "date": "11/19 (목)", "passage": "열왕기하 17~20장", "book": "열왕기하", "start": 17, "end": 20},
+      {"day": 80, "date": "11/20 (금)", "passage": "열왕기하 21~23장", "book": "열왕기하", "start": 21, "end": 23},
+      {"day": 81, "date": "11/21 (토)", "passage": "열왕기하 24~25장", "book": "열왕기하", "start": 24, "end": 25},
+      {"day": 82, "date": "11/22 (일)", "passage": "역대상 1~5장", "book": "역대상", "start": 1, "end": 5},
+      {"day": 83, "date": "11/23 (월)", "passage": "역대상 6~10장", "book": "역대상", "start": 6, "end": 10},
+      {"day": 84, "date": "11/24 (화)", "passage": "역대상 11~15장", "book": "역대상", "start": 11, "end": 15},
+      {"day": 85, "date": "11/25 (수)", "passage": "역대상 16~20장", "book": "역대상", "start": 16, "end": 20},
+      {"day": 86, "date": "11/26 (목)", "passage": "역대상 21~25장", "book": "역대상", "start": 21, "end": 25},
+      {"day": 87, "date": "11/27 (금)", "passage": "역대상 26~29장", "book": "역대상", "start": 26, "end": 29},
+      {"day": 88, "date": "11/28 (토)", "passage": "역대하 1~5장", "book": "역대하", "start": 1, "end": 5},
+      {"day": 89, "date": "11/29 (일)", "passage": "역대하 6~10장", "book": "역대하", "start": 6, "end": 10},
+      {"day": 90, "date": "11/30 (월)", "passage": "역대하 11~15장", "book": "역대하", "start": 11, "end": 15},
+      {"day": 91, "date": "12/01 (화)", "passage": "역대하 16~20장", "book": "역대하", "start": 16, "end": 20},
+      {"day": 92, "date": "12/02 (수)", "passage": "역대하 21~25장", "book": "역대하", "start": 21, "end": 25},
+      {"day": 93, "date": "12/03 (목)", "passage": "역대하 26~30장", "book": "역대하", "start": 26, "end": 30},
+      {"day": 94, "date": "12/04 (금)", "passage": "역대하 31~36장", "book": "역대하", "start": 31, "end": 36},
+      {"day": 95, "date": "12/05 (토)", "passage": "아가 1~4장", "book": "아가", "start": 1, "end": 4},
+      {"day": 96, "date": "12/06 (일)", "passage": "아가 5~8장", "book": "아가", "start": 5, "end": 8},
+      {"day": 97, "date": "12/07 (월)", "passage": "오바디야 1장, 이사야 1~3장", "book": "이사야", "start": 1, "end": 3},
+      {"day": 98, "date": "12/08 (화)", "passage": "이사야 4~8장", "book": "이사야", "start": 4, "end": 8},
+      {"day": 99, "date": "12/09 (수)", "passage": "이사야 9~14장", "book": "이사야", "start": 9, "end": 14},
+      {"day": 100, "date": "12/10 (목)", "passage": "이사야 15~20장", "book": "이사야", "start": 15, "end": 20},
+      {"day": 101, "date": "12/11 (금)", "passage": "이사야 21~27장", "book": "이사야", "start": 21, "end": 27},
+      {"day": 102, "date": "12/12 (토)", "passage": "이사야 28~35장", "book": "이사야", "start": 28, "end": 35},
+      {"day": 103, "date": "12/13 (일)", "passage": "이사야 36~40장", "book": "이사야", "start": 36, "end": 40},
+      {"day": 104, "date": "12/14 (월)", "passage": "이사야 41~45장", "book": "이사야", "start": 41, "end": 45},
+      {"day": 105, "date": "12/15 (화)", "passage": "이사야 46~50장", "book": "이사야", "start": 46, "end": 50},
+      {"day": 106, "date": "12/16 (수)", "passage": "이사야 51~55장", "book": "이사야", "start": 51, "end": 55},
+      {"day": 107, "date": "12/17 (목)", "passage": "이사야 56~60장", "book": "이사야", "start": 56, "end": 60},
+      {"day": 108, "date": "12/18 (금)", "passage": "이사야 61~66장", "book": "이사야", "start": 61, "end": 66},
+      {"day": 109, "date": "12/19 (토)", "passage": "예레미야 1~5장", "book": "예레미야", "start": 1, "end": 5},
+      {"day": 110, "date": "12/20 (일)", "passage": "예레미야 6~10장", "book": "예레미야", "start": 6, "end": 10},
+      {"day": 111, "date": "12/21 (월)", "passage": "예레미야 11~15장", "book": "예레미야", "start": 11, "end": 15},
+      {"day": 112, "date": "12/22 (화)", "passage": "예레미야 16~20장", "book": "예레미야", "start": 16, "end": 20}
+    ];
+
+    var activeDay = 1;
+    var journals = {};
+
+    function loadJournals() {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { journals = JSON.parse(saved); } catch(e) { journals = {}; }
+      }
+    }
+
+    function saveJournals() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(journals));
+    }
+
+    window.switchTab = function(tabName) {
+      var pages = document.querySelectorAll('.tab-page');
+      var btns = document.querySelectorAll('.nav-tab-item');
+
+      for (var i = 0; i < pages.length; i++) { pages[i].classList.remove('active'); }
+      for (var j = 0; j < btns.length; j++) { btns[j].classList.remove('active'); }
+
+      var targetPage = document.getElementById('tab-' + tabName);
+      var targetBtn = document.getElementById('btn-tab-' + tabName);
+      if (targetPage) targetPage.classList.add('active');
+      if (targetBtn) targetBtn.classList.add('active');
+    };
+
+    window.toggleComplete = function() {
+      var key = 'day_' + activeDay;
+      if (!journals[key]) journals[key] = {};
+      journals[key].completed = !journals[key].completed;
+      saveJournals();
+
+      updateCompleteButtonUI();
+      renderSchedule();
+    };
+
+    window.saveJournal = function() {
+      var key = 'day_' + activeDay;
+      if (!journals[key]) journals[key] = {};
+      var g = document.getElementById('editorGrace');
+      var l = document.getElementById('editorLesson');
+      if (g) journals[key].grace = g.value;
+      if (l) journals[key].lesson = l.value;
+      saveJournals();
+    };
+
+    function updateCompleteButtonUI() {
+      var key = 'day_' + activeDay;
+      var isCompleted = journals[key] && journals[key].completed;
+
+      var btn = document.getElementById('btnToggleComplete');
+      var badge = document.getElementById('readingStatusBadge');
+
+      if (btn) {
+        if (isCompleted) {
+          btn.className = 'btn-complete completed';
+          btn.innerHTML = '🎉 통독 완료됨 (다시 누르면 취소)';
+        } else {
+          btn.className = 'btn-complete not-completed';
+          btn.innerHTML = '✅ 오늘 말씀 통독 완료하기';
+        }
+      }
+
+      if (badge) {
+        if (isCompleted) {
+          badge.style.background = '#065f46';
+          badge.style.color = '#34d399';
+          badge.innerText = '✓ 완료됨';
+        } else {
+          badge.style.background = '#334155';
+          badge.style.color = '#94a3b8';
+          badge.innerText = '미완료';
+        }
+      }
+    }
+
+    function renderBible(item) {
+      var container = document.getElementById('bibleTextContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (item.book === '개요 강의') {
+        container.innerHTML = '<div style="padding: 20px; color: var(--accent-gold); line-height: 1.8; background: #1e293b; border-radius: 8px;">📌 2026 하반기 구약 성경통독 클럽 개요 강의일입니다.<br>출애굽기 1장부터 통독 준비를 해주세요.</div>';
+        updateCompleteButtonUI();
+        return;
+      }
+
+      var db = window.BIBLE_FULL_DB || {};
+      var bookData = db[item.book] || {};
+
+      for (var c = item.start; c <= item.end; c++) {
+        var verses = bookData[c.toString()] || [];
+        var chHeader = document.createElement('div');
+        chHeader.style.cssText = 'font-size: 1.1rem; font-weight: 700; color: var(--accent-green); margin-top: 1.2rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;';
+        chHeader.innerText = '📖 ' + item.book + ' ' + c + '장 (' + verses.length + '개 절 전체)';
+        container.appendChild(chHeader);
+
+        verses.forEach(function(vText, idx) {
+          var itemEl = document.createElement('div');
+          itemEl.className = 'bible-verse-item';
+          itemEl.innerHTML = '<span class="verse-num">' + (idx + 1) + '</span> ' + vText;
+          container.appendChild(itemEl);
+        });
+      }
+
+      var key = 'day_' + item.day;
+      var jData = journals[key] || {};
+      var g = document.getElementById('editorGrace');
+      var l = document.getElementById('editorLesson');
+      if (g) g.value = jData.grace || '';
+      if (l) l.value = jData.lesson || '';
+
+      updateCompleteButtonUI();
+    }
+
+    function renderSchedule() {
+      var container = document.getElementById('scheduleListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      var doneCount = 0;
+      scheduleData.forEach(function(item) {
+        var key = 'day_' + item.day;
+        if (journals[key] && journals[key].completed) doneCount++;
+      });
+
+      var totalDays = scheduleData.length - 1;
+      var pct = Math.round((doneCount / totalDays) * 100);
+      var pPct = document.getElementById('progressPercent');
+      var pCnt = document.getElementById('progressCount');
+      var pFill = document.getElementById('progressBarFill');
+
+      if (pPct) pPct.innerText = pct + '%';
+      if (pCnt) pCnt.innerText = doneCount + ' / ' + totalDays + ' 일 완료';
+      if (pFill) pFill.style.width = pct + '%';
+
+      scheduleData.forEach(function(item) {
+        var key = 'day_' + item.day;
+        var isDone = journals[key] && journals[key].completed;
+
+        var card = document.createElement('div');
+        card.className = 'schedule-card ' + (item.day === activeDay ? 'active' : '') + (isDone ? ' is-done' : '');
+        card.innerHTML = '<div><div class="schedule-meta">Day ' + item.day + ' | ' + item.date + '</div><div class="schedule-passage">' + item.passage + '</div></div><div class="check-badge ' + (isDone ? 'checked' : 'unchecked') + '">' + (isDone ? '✓' : '') + '</div>';
+        card.onclick = function() {
+          activeDay = item.day;
+          var head = document.getElementById('headerPassage');
+          if (head) head.innerText = item.passage;
+          renderBible(item);
+          renderSchedule();
+          window.switchTab('reader');
+        };
+        container.appendChild(card);
+      });
+    }
+
+    
+    // GLOBAL WINDOW BINDINGS FOR MOBILE INLINE ONCLICK
+    window.startTTSAudio = startTTSAudio;
+    window.switchBibleVersion = switchBibleVersion;
+    window.toggleThemeMode = toggleThemeMode;
+    window.incFontSize = incFontSize;
+    window.decFontSize = decFontSize;
+    window.switchTab = switchTab;
+    window.toggleComplete = toggleComplete;
+    window.getBibleDatabase = getBibleDatabase;
+
+    loadJournals();
+    renderBible(scheduleData[1]);
+    renderSchedule();
+  })();
+  
