@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="app_logo.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="LoginChurch">
+  <meta name="apple-mobile-web-app-title" content="최양식 권사">
   <title>📖 최양식 권사님의 성경통독일기장</title>
   <style>
     :root {
@@ -678,10 +678,8 @@
       box-sizing: border-box;
     }
 </style>
-  
 
-  
-  <script src="bible_db_66.js?v=20260814_999"></script>
+  <script src="bible_db_66.js?v=20260812_01"></script>
   <script src="bible_Genesis.js?v=20260812_01"></script>
   <script src="bible_Exodus.js?v=20260812_01"></script>
   <script src="bible_Leviticus.js?v=20260812_01"></script>
@@ -916,7 +914,7 @@
   </div>
 
   <script>
-  (function() {
+  window.addEventListener('DOMContentLoaded', function() {
     var PERMANENT_STORAGE_KEY = 'loginchurch_permanent_tongdok_data_' + 'siwoong';
     var PERMANENT_THEME_KEY = 'loginchurch_permanent_theme_' + 'siwoong';
     var PERMANENT_VER_KEY = 'loginchurch_permanent_bible_ver_' + 'siwoong';
@@ -1778,10 +1776,7 @@
 
       if (!item || !item.books) return;
 
-      var db = null;
-      if (currentBibleVersion === 'KH' && window.BIBLE_FULL_DB_KH) db = window.BIBLE_FULL_DB_KH;
-      else if (currentBibleVersion === 'SB' && window.BIBLE_FULL_DB_SB) db = window.BIBLE_FULL_DB_SB;
-      if (!db) db = window.BIBLE_FULL_DB || window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_66_DB_SB || {};
+      var db = getBibleDatabase();
 
       var verName = (currentBibleVersion === 'KG' ? '개역개정' : (currentBibleVersion === 'KH' ? '개역한글' : '새번역'));
       var NL = String.fromCharCode(10);
@@ -1957,18 +1952,28 @@
       if (!text) return '';
       var cleaned = text;
       cleaned = cleaned.replace(/\(\([^)]*\)\)/g, '');
-      cleaned = cleaned.replace(/[\'\"\`]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^\)]*?\)\s*/g, '');
-      cleaned = cleaned.replace(/\([a-z0-9]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^\)]*\)/gi, '');
-      cleaned = cleaned.replace(/\([a-z]\s+[^\)]*\)/gi, '');
-      cleaned = cleaned.replace(/\(\d+[\d\s,;-]*절[^\)]*\)/g, '');
+      cleaned = cleaned.replace(/['"`]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^)]*?\)\s*/g, '');
+      cleaned = cleaned.replace(/\([a-z0-9]?\s*(?:또는|히|칠|사|라|아|수|스|게|참|사마리아|불가타|시리아|생명|위로|증가|떠돌아|허락|아담|생산|잇샤|이쉬|아다마|창|손을|살아|피조물|\d+절)[^)]*\)/gi, '');
+      cleaned = cleaned.replace(/\([a-z]\s+[^)]*\)/gi, '');
+      cleaned = cleaned.replace(/\(\d+[\d\s,;-]*절[^)]*\)/g, '');
       cleaned = cleaned.replace(/\([a-z]\)/gi, '');
       cleaned = cleaned.replace(/\(\(/g, '').replace(/\)\)/g, '');
       cleaned = cleaned.replace(/^[a-z](?=[\uac00-\ud7a3])/g, '');
       cleaned = cleaned.replace(/(\s)[a-z](?=[\uac00-\ud7a3])/g, '$1');
-      cleaned = cleaned.replace(/([\"\'\(\[\{\u25cb\u25ef])[a-z](?=[\uac00-\ud7a3])/g, '$1');
+      cleaned = cleaned.replace(/(["'(\[{\u25cb\u25ef])[a-z](?=[\uac00-\ud7a3])/g, '$1');
       cleaned = cleaned.replace(/\s{2,}/g, ' ');
-      cleaned = cleaned.replace(/\s+([\.,!\?\)])/g, '$1');
+      cleaned = cleaned.replace(/\s+([.,!?)])/g, '$1');
       return cleaned.trim();
+    }
+
+    function getBibleDatabase() {
+      var db = null;
+      if (typeof currentBibleVersion !== 'undefined') {
+        if (currentBibleVersion === 'KH' && window.BIBLE_FULL_DB_KH) db = window.BIBLE_FULL_DB_KH;
+        else if (currentBibleVersion === 'SB' && window.BIBLE_FULL_DB_SB) db = window.BIBLE_FULL_DB_SB;
+      }
+      if (!db) db = window.BIBLE_FULL_DB || window.BIBLE_FULL_DB_KG || window.BIBLE_66_DB_KG || window.BIBLE_66_DB_SB || {};
+      return db;
     }
 
     function renderBible(item, isRetry) {
@@ -2337,8 +2342,7 @@
     var el = document.getElementById('editorLesson');
     if (el) el.addEventListener('input', saveJournalData);
 
-    
-    window.startTTSAudio = startTTSAudio;
+        window.startTTSAudio = startTTSAudio;
     window.switchBibleVersion = switchBibleVersion;
     window.toggleThemeMode = toggleThemeMode;
     window.incFontSize = incFontSize;
@@ -2346,11 +2350,11 @@
     window.switchTab = switchTab;
     window.toggleComplete = toggleComplete;
     window.getBibleDatabase = getBibleDatabase;
-
     loadJournals();
     renderBible(scheduleData[1]); switchTab('reader');
     renderSchedule();
-  })();
+  });
+  window.onload = function() { renderBible(scheduleData[activeDay] || scheduleData[1], true); };
   </script>
 </body>
 </html>
