@@ -1580,6 +1580,7 @@
     function updateReaderTitleHeader() {
       var title = document.getElementById('readerTitleLabel');
       var tip = document.getElementById('readerTipBox');
+      if (!activeDay || activeDay === 0) activeDay = 1;
       var item = scheduleData[activeDay] || scheduleData[1];
       if (title && item) {
         title.innerText = '📖 ' + item.passage;
