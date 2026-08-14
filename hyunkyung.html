@@ -2351,10 +2351,15 @@
     window.toggleComplete = toggleComplete;
     window.getBibleDatabase = getBibleDatabase;
     loadJournals();
-    renderBible(scheduleData[1]); switchTab('reader');
+    if (!activeDay || activeDay === 0) activeDay = 1;
+    renderBible(scheduleData[activeDay] || scheduleData[1]); switchTab('reader');
     renderSchedule();
   });
-  window.onload = function() { renderBible(scheduleData[activeDay] || scheduleData[1], true); };
+  window.onload = function() {
+      if (!activeDay || activeDay === 0) activeDay = 1;
+      renderBible(scheduleData[activeDay] || scheduleData[1], true);
+      renderSchedule();
+    };
   </script>
 </body>
 </html>

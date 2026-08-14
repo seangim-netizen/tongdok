@@ -514,7 +514,8 @@
     }
 
     loadJournals();
-    renderBible(scheduleData[1]);
+    if (!activeDay || activeDay === 0) activeDay = 1;
+    renderBible(scheduleData[activeDay] || scheduleData[1]);
     renderSchedule();
   })();
   </script>
