@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="LoginChurch">
-  <title>📖 나정훈 권사 성경통독일기장</title>
+  <title>📖 LoginChurch 나정훈 권사 성경통독일기장</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -586,7 +586,7 @@
 <script src="bible_Zechariah.js"></script>
 <script src="bible_Zephaniah.js"></script>
 
-  <script src="bible_db_66.js?v=20260815_anima1973_v2" defer></script>
+  <script src="bible_db_66.js" defer></script>
 </head>
 <body>
 
@@ -595,7 +595,7 @@
     <div class="header-top-row">
       <div class="header-logo-box" id="headerLogoBox">
         <img src="header_logo.png" alt="Login Church" class="app-brand-logo" id="brandLogoImg">
-        <div class="logo-title-sub" id="logoTitleText">나정훈 권사</div>
+        <div class="logo-title-sub" id="logoTitleText">LoginChurch | 나정훈 권사</div>
       </div>
 
       <div class="header-actions-row" id="headerActionsRow">
@@ -604,7 +604,7 @@
         </button>
 
         <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
-          <span id="bibleVersionLabel">새번역</span>
+          <span id="bibleVersionLabel">개역개정</span>
         </button>
 
         <div class="font-size-control" id="headerFontControl">
@@ -754,7 +754,7 @@
     var PERMANENT_VER_KEY = 'loginchurch_permanent_bible_ver_' + 'junghoon';
     var PERMANENT_FONT_KEY = 'loginchurch_permanent_font_size_' + 'junghoon';
 
-    var currentBibleVersion = localStorage.getItem(PERMANENT_VER_KEY) || 'SB';
+    var currentBibleVersion = 'KG';
     var currentFontSize = 0.9;
     var activeOpenNoteKey = null;
 
@@ -984,7 +984,6 @@
 
     // TOUCH VERSE HANDLER
     function handleVerseElementTouch(targetEl) {
-      autoSaveActiveNote();
       ttsSpeechItems = [];
       var allReaderElements = document.querySelectorAll('#bibleTextContainer .bible-verse-card');
       allReaderElements.forEach(function(el) {
@@ -1019,7 +1018,7 @@
           }
           speakNextVerseTTS();
         } else {
-          showToast(labelText + '이(가) 시작 위치로 선택되었습니다. [낭독] 버튼을 누르면 재생됩니다.');
+          showToast(labelText + '이(가) 시작 위치로 지정되었습니다. [낭독] 버튼을 누르면 재생됩니다.');
         }
       }
     }
@@ -1583,7 +1582,6 @@
 
             itemEl.addEventListener('touchstart', function(e) {
               if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              autoSaveActiveNote();
               
               isLongPressExecuted = false;
               isTouchScrolling = false;
@@ -1628,14 +1626,6 @@
                 itemEl.setAttribute('data-lasttap', currentTime.toString());
                 handleVerseElementTouch(itemEl);
               }
-            });
-
-            itemEl.addEventListener('click', function(e) {
-              if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON' || e.target.classList.contains('btn-copy-note') || e.target.classList.contains('btn-save-note-inside')) return;
-              autoSaveActiveNote();
-              var lastTapTime = parseInt(itemEl.getAttribute('data-lasttap') || '0', 10);
-              if (new Date().getTime() - lastTapTime < 500) return;
-              handleVerseElementTouch(itemEl);
             });
 
             itemEl.addEventListener('dblclick', function(e) {
