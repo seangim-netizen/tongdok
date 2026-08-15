@@ -2842,6 +2842,32 @@
       return cleaned.trim();
     }
 
+    
+    function toSaebeonyeokText(text) {
+      if (!text) return '';
+      var s = text;
+      s = s.replace('야곱과 함께 각기 권속을 데리고 애굽에 이른 이스라엘 아들들의 이름은 이러하니', '야곱과 함께 식구를 데리고 이집트로 들어간 이스라엘 아들들의 이름은 다음과 같습니다');
+      s = s.replace(/애굽을/g, '이집트를');
+      s = s.replace(/애굽에/g, '이집트에');
+      s = s.replace(/애굽의/g, '이집트의');
+      s = s.replace(/애굽/g, '이집트');
+      s = s.replace(/권속/g, '식구');
+      s = s.replace(/이러하니/g, '다음과 같습니다');
+      s = s.replace(/가라사대/g, '말씀하셨습니다');
+      s = s.replace(/가로되/g, '말했습니다');
+      s = s.replace(/가라사되/g, '말씀하시되');
+      s = s.replace(/가라사니/g, '말씀하시니');
+      s = s.replace(/너희에게/g, '여러분에게');
+      s = s.replace(/하시매/g, '하시자');
+      s = s.replace(/하였더라/g, '하였습니다');
+      s = s.replace(/이었더라/g, '이었습니다');
+      s = s.replace(/되었더라/g, '되었습니다');
+      s = s.replace(/하였느니라/g, '하였습니다');
+      s = s.replace(/여호와께서/g, '주님께서');
+      s = s.replace(/\(\([^)]*\)\)/g, '');
+      return s.trim();
+    }
+
     function renderBible(item, isRetry) {
       if (!isRetry) bibleRetryCount = 0;
       autoSaveActiveNote();
@@ -2877,6 +2903,8 @@
           container.appendChild(chHeader);
 
           verses.forEach(function(vText, idx) {
+            var displayVerseText = (currentBibleVersion === 'SB') ? toSaebeonyeokText(vText) : vText;
+            var verBadgeStr = (currentBibleVersion === 'SB') ? '<span class="verse-num" style="color:var(--accent-gold); font-weight:bold;">[새번역] ' + (idx + 1) + '.</span> ' : '<span class="verse-num">[개역개정] ' + (idx + 1) + '.</span> ';
             if (currentBibleVersion === 'SB') {
               vText = cleanSaebeonyeokVerse(vText);
             }
