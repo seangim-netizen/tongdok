@@ -740,7 +740,7 @@
         </button>
 
         <button class="tool-btn" id="btnBibleVerToggle" style="border-color: var(--accent-gold); color: var(--accent-gold);">
-          <span id="bibleVersionLabel">개역개정</span>
+          <span id="bibleVersionLabel">새번역</span>
         </button>
 
         <div class="font-size-control" id="headerFontControl">
@@ -893,7 +893,7 @@
     var PERMANENT_FONT_KEY = 'loginchurch_permanent_font_size_' + 'siwoong';
     var PERMANENT_GENDER_KEY = 'loginchurch_permanent_voice_gender_' + 'siwoong';
 
-    var currentBibleVersion = 'KG';
+    var currentBibleVersion = localStorage.getItem(PERMANENT_VER_KEY) || 'SB';
     var currentFontSize = 0.9;
     var currentVoiceGender = 'female';
     var activeOpenNoteKey = null;
