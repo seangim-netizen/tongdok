@@ -40,5 +40,6 @@
       "source": "/",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "buildTimestamp": "1786753363"
 }
