@@ -737,10 +737,10 @@
 
   <script>
   window.addEventListener('DOMContentLoaded', function() {
-    var PERMANENT_STORAGE_KEY = 'loginchurch_permanent_tongdok_data_' + 'siwoong';
-    var PERMANENT_THEME_KEY = 'loginchurch_permanent_theme_' + 'siwoong';
-    var PERMANENT_VER_KEY = 'loginchurch_permanent_bible_ver_' + 'siwoong';
-    var PERMANENT_FONT_KEY = 'loginchurch_permanent_font_size_' + 'siwoong';
+    var PERMANENT_STORAGE_KEY = 'loginchurch_permanent_tongdok_data_' + 'jiyeon';
+    var PERMANENT_THEME_KEY = 'loginchurch_permanent_theme_' + 'jiyeon';
+    var PERMANENT_VER_KEY = 'loginchurch_permanent_bible_ver_' + 'jiyeon';
+    var PERMANENT_FONT_KEY = 'loginchurch_permanent_font_size_' + 'jiyeon';
 
     var currentBibleVersion = localStorage.getItem(PERMANENT_VER_KEY) || 'SB';
     var currentFontSize = 0.9;
@@ -795,9 +795,10 @@
 
       if (!dataLoaded || (Object.keys(journals).length === 0 && Object.keys(verseNotes).length === 0)) {
         var oldKeys = [
-          'tongdok_journal_v7_' + 'siwoong',
-          'tongdok_journal_v6_' + 'siwoong',
-          'tongdok_journal_' + 'siwoong',
+          'loginchurch_permanent_tongdok_data_jiyeon',
+          'tongdok_journal_v7_jiyeon',
+          'tongdok_journal_v6_jiyeon',
+          'tongdok_journal_jiyeon',
           'tongdok_journal_data'
         ];
         for (var k = 0; k < oldKeys.length; k++) {
