@@ -388,6 +388,8 @@
 
     function loadJournals() {
       try {
+        var savedDay = localStorage.getItem(STORAGE_KEY + "_last_day");
+        if (savedDay) { var pD = parseInt(savedDay, 10); if (!isNaN(pD) && pD > 0) activeDay = pD; }
         var saved = localStorage.getItem(STORAGE_KEY);
         if (saved) journalData = JSON.parse(saved);
         var savedMemos = localStorage.getItem(STORAGE_KEY + '_memos');
@@ -398,6 +400,7 @@
     function saveJournals() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(journalData));
+        localStorage.setItem(STORAGE_KEY + "_last_day", activeDay.toString());
         localStorage.setItem(STORAGE_KEY + '_memos', JSON.stringify(verseMemos));
         var ind = document.getElementById('saveIndicator');
         if (ind) {
