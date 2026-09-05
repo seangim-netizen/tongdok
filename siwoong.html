@@ -910,7 +910,7 @@
 
     function saveJournals() {
       try {
-        localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes }));
+        localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes, lastReadDay: activeDay }));
       } catch(e) {}
     }
 

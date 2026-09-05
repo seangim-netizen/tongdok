@@ -409,6 +409,12 @@
     }
 
     function renderBible(item) {
+      if (item && item.day !== undefined && item.day !== null) {
+        activeDay = item.day;
+        try {
+          localStorage.setItem(PERMANENT_DAY_KEY, activeDay.toString());
+        } catch(e) {}
+      }
       var container = document.getElementById('bibleTextContainer');
       if (!container) return;
       container.innerHTML = '';

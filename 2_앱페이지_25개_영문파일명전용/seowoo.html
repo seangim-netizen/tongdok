@@ -741,6 +741,7 @@
     var PERMANENT_THEME_KEY = 'loginchurch_permanent_theme_' + 'seowoo';
     var PERMANENT_VER_KEY = 'loginchurch_permanent_bible_ver_' + 'seowoo';
     var PERMANENT_FONT_KEY = 'loginchurch_permanent_font_size_' + 'seowoo';
+    var PERMANENT_DAY_KEY = 'loginchurch_permanent_last_day_' + 'seowoo';
 
     var currentBibleVersion = localStorage.getItem(PERMANENT_VER_KEY) || 'SB';
     var currentFontSize = 0.9;
@@ -756,6 +757,8 @@
 
     window.renderBiblePassage = function() {
       ensureMasterDBFallbacks();
+      var savedDayStr = localStorage.getItem(PERMANENT_DAY_KEY);
+      if (savedDayStr !== null && savedDayStr !== undefined) { var pD3 = parseInt(savedDayStr, 10); if (!isNaN(pD3) && pD3 >= 0) activeDay = pD3; }
       var targetDay = (typeof activeDay !== 'undefined' && activeDay !== null) ? activeDay : 1;
       if (targetDay === 0) targetDay = 1; // Default to Exodus (출애굽기 1~3장)
       activeDay = targetDay;
@@ -789,6 +792,7 @@
           var parsed = JSON.parse(saved);
           journals = parsed.journals || {};
           verseNotes = parsed.verseNotes || {};
+          if (parsed.lastReadDay !== undefined && parsed.lastReadDay !== null) { var pD = parseInt(parsed.lastReadDay, 10); if (!isNaN(pD) && pD >= 0) activeDay = pD; }
           dataLoaded = true;
         } catch(e) {}
       }
@@ -816,6 +820,9 @@
           }
         }
       }
+
+      var savedDay = localStorage.getItem(PERMANENT_DAY_KEY);
+      if (savedDay !== null && savedDay !== undefined) { var pD2 = parseInt(savedDay, 10); if (!isNaN(pD2) && pD2 >= 0) activeDay = pD2; }
 
       var savedTheme = localStorage.getItem(PERMANENT_THEME_KEY);
       if (savedTheme) {
@@ -899,7 +906,7 @@
 
     function saveJournals() {
       try {
-        localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes }));
+        localStorage.setItem(PERMANENT_STORAGE_KEY, JSON.stringify({ journals: journals, verseNotes: verseNotes, lastReadDay: activeDay }));
       } catch(e) {}
     }
 
@@ -1575,6 +1582,12 @@
       return db;
     }
     function renderBible(item) {
+      if (item && item.day !== undefined && item.day !== null) {
+        activeDay = item.day;
+        try {
+          localStorage.setItem(PERMANENT_DAY_KEY, activeDay.toString());
+        } catch(e) {}
+      }
       ensureMasterDBFallbacks();
       autoSaveActiveNote();
       selectedCursorVerseIndex = 0;
