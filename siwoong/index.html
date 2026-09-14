@@ -785,48 +785,69 @@
     var currentTTSSpeedIndex = 2; // Default 1.0x (Index 2 in [0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5])
 
     function loadJournals() {
-      var dataLoaded = false;
-      var saved = localStorage.getItem(PERMANENT_STORAGE_KEY);
-      if (saved) {
-        try {
-          var parsed = JSON.parse(saved);
-          journals = parsed.journals || {};
-          verseNotes = parsed.verseNotes || {};
-          if (parsed.lastReadDay !== undefined && parsed.lastReadDay !== null) { var pD = parseInt(parsed.lastReadDay, 10); if (!isNaN(pD) && pD >= 0) activeDay = pD; }
-          dataLoaded = true;
-        } catch(e) {}
-      }
+      journals = {};
+      verseNotes = {};
 
-      if (!dataLoaded || (Object.keys(journals).length === 0 && Object.keys(verseNotes).length === 0)) {
-        var oldKeys = [
-          'loginchurch_permanent_tongdok_data_kimsiwoong',
-          'tongdok_journal_v7_kimsiwoong',
-          'tongdok_journal_v6_kimsiwoong',
-          'tongdok_journal_kimsiwoong',
-          'loginchurch_permanent_tongdok_data_siwoong',
-          'tongdok_journal_v7_siwoong',
-          'tongdok_journal_v6_siwoong',
-          'tongdok_journal_siwoong',
-          'tongdok_journal_data'
-        ];
-        for (var k = 0; k < oldKeys.length; k++) {
-          var oldSaved = localStorage.getItem(oldKeys[k]);
-          if (oldSaved) {
-            try {
-              var oldParsed = JSON.parse(oldSaved);
-              if (oldParsed.journals) Object.assign(journals, oldParsed.journals);
-              if (oldParsed.verseNotes) Object.assign(verseNotes, oldParsed.verseNotes);
-              if (Object.keys(journals).length > 0 || Object.keys(verseNotes).length > 0) {
-                saveJournals();
-                break;
+      var oldKeys = [
+        PERMANENT_STORAGE_KEY,
+        'loginchurch_permanent_tongdok_data_kimsiwoong',
+        'loginchurch_permanent_tongdok_data_siwoong',
+        'tongdok_journal_v7_kimsiwoong',
+        'tongdok_journal_v7_siwoong',
+        'tongdok_journal_v6_kimsiwoong',
+        'tongdok_journal_v6_siwoong',
+        'tongdok_journal_kimsiwoong',
+        'tongdok_journal_siwoong',
+        'tongdok_journal_siwoong_full',
+        'tongdok_journal_data_v2_kimsiwoong',
+        'tongdok_journal_data'
+      ];
+
+      for (var k = 0; k < oldKeys.length; k++) {
+        var oldSaved = localStorage.getItem(oldKeys[k]);
+        if (oldSaved) {
+          try {
+            var oldParsed = JSON.parse(oldSaved);
+            if (oldParsed.journals) {
+              for (var dKey in oldParsed.journals) {
+                if (oldParsed.journals[dKey]) {
+                  journals[dKey] = true;
+                }
               }
-            } catch(e) {}
-          }
+            }
+            if (oldParsed.verseNotes) {
+              Object.assign(verseNotes, oldParsed.verseNotes);
+            }
+            if (oldParsed.lastReadDay !== undefined && oldParsed.lastReadDay !== null) {
+              var pD = parseInt(oldParsed.lastReadDay, 10);
+              if (!isNaN(pD) && pD > 0) activeDay = pD;
+            }
+          } catch(e) {}
         }
       }
 
       var savedDay = localStorage.getItem(PERMANENT_DAY_KEY) || localStorage.getItem("loginchurch_permanent_last_day_kimsiwoong");
-      if (savedDay !== null && savedDay !== undefined) { var pD2 = parseInt(savedDay, 10); if (!isNaN(pD2) && pD2 >= 0) activeDay = pD2; }
+      if (savedDay !== null && savedDay !== undefined) {
+        var pD2 = parseInt(savedDay, 10);
+        if (!isNaN(pD2) && pD2 > 0 && pD2 < scheduleData.length) {
+          activeDay = pD2;
+        }
+      }
+
+      if (activeDay <= 1) {
+        var maxCheckedDay = 1;
+        for (var jDayStr in journals) {
+          if (journals[jDayStr]) {
+            var jDayNum = parseInt(jDayStr, 10);
+            if (!isNaN(jDayNum) && jDayNum > maxCheckedDay && jDayNum < scheduleData.length) {
+              maxCheckedDay = jDayNum;
+            }
+          }
+        }
+        if (maxCheckedDay > 1) {
+          activeDay = maxCheckedDay;
+        }
+      }
 
       var savedTheme = localStorage.getItem(PERMANENT_THEME_KEY);
       if (savedTheme) {
