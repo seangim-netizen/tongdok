@@ -805,14 +805,39 @@
           if (oldSaved) {
             try {
               var oldParsed = JSON.parse(oldSaved);
-              if (oldParsed.journals) Object.assign(journals, oldParsed.journals);
-              if (oldParsed.verseNotes) Object.assign(verseNotes, oldParsed.verseNotes);
-              if (Object.keys(journals).length > 0 || Object.keys(verseNotes).length > 0) {
-                saveJournals();
-                break;
+              if (oldParsed.journals) {
+              for (var dKey in oldParsed.journals) {
+                var val = oldParsed.journals[dKey];
+                if (val) {
+                  if (typeof val === 'boolean' || val === true) {
+                    journals[dKey] = { completed: true };
+                  } else if (typeof val === 'object') {
+                    journals[dKey] = val;
+                  }
+                }
               }
+            }
+              if (oldParsed.verseNotes) Object.assign(verseNotes, oldParsed.verseNotes);
+              saveJournals();
             } catch(e) {}
           }
+        }
+      }
+
+      
+      if (activeDay <= 1) {
+        var maxCheckedDay = 1;
+        for (var jDayStr in journals) {
+          if (journals[jDayStr] && journals[jDayStr].completed) {
+            var rawNum = jDayStr.replace('day_', '');
+            var jDayNum = parseInt(rawNum, 10);
+            if (!isNaN(jDayNum) && jDayNum > maxCheckedDay && jDayNum < scheduleData.length) {
+              maxCheckedDay = jDayNum;
+            }
+          }
+        }
+        if (maxCheckedDay > 1) {
+          activeDay = maxCheckedDay;
         }
       }
 
