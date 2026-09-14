@@ -810,8 +810,13 @@
             var oldParsed = JSON.parse(oldSaved);
             if (oldParsed.journals) {
               for (var dKey in oldParsed.journals) {
-                if (oldParsed.journals[dKey]) {
-                  journals[dKey] = true;
+                var val = oldParsed.journals[dKey];
+                if (val) {
+                  if (typeof val === 'boolean' || val === true) {
+                    journals[dKey] = { completed: true };
+                  } else if (typeof val === 'object') {
+                    journals[dKey] = val;
+                  }
                 }
               }
             }
@@ -837,8 +842,9 @@
       if (activeDay <= 1) {
         var maxCheckedDay = 1;
         for (var jDayStr in journals) {
-          if (journals[jDayStr]) {
-            var jDayNum = parseInt(jDayStr, 10);
+          if (journals[jDayStr] && journals[jDayStr].completed) {
+            var rawNum = jDayStr.replace('day_', '');
+            var jDayNum = parseInt(rawNum, 10);
             if (!isNaN(jDayNum) && jDayNum > maxCheckedDay && jDayNum < scheduleData.length) {
               maxCheckedDay = jDayNum;
             }
